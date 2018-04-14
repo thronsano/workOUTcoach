@@ -1,3 +1,15 @@
-.test{
-    background-color: green;
+/**
+    background-color:  #dde144;     ACCENT LIME
+    background-color:  #fb9b00;     ACCENT ORANGE
+    background-color:  #282f42;     NAVY DARK BG
+    background-color:  #424E6C;     NAVY LIGHT BG
+**/
+
+.body {
+    background-color: #282f42;
+    color: white;
+}
+
+.test {
+    background-color: purple;
 }

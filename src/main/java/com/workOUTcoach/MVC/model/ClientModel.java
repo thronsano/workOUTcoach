@@ -1,4 +1,4 @@
-package com.workOUTcoach.model;
+package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.utility.DatabaseConnector;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 @Repository
 public class ClientModel {

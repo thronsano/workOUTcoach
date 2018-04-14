@@ -1,7 +1,7 @@
-package com.workOUTcoach.controller;
+package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.entity.Client;
-import com.workOUTcoach.model.ClientModel;
+import com.workOUTcoach.MVC.model.ClientModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

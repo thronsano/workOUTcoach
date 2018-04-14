@@ -3,19 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>TESCIK</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
-<body>
+<body class="body">
+    <div id="react"></div>
 
-<div id="react"></div>
+    <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
 
-<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
-
-<script src="built/bundle.js"></script>
-
+    <script src="built/bundle.js"></script>
 </body>
 </html>

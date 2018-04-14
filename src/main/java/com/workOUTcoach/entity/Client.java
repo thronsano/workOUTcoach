@@ -1,9 +1,9 @@
 package com.workOUTcoach.entity;
 
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 public class Client {
-
     private int id;
     private String name, email;
 
