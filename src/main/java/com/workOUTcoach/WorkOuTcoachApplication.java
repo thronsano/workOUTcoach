@@ -9,6 +9,6 @@ public class WorkOuTcoachApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(WorkOuTcoachApplication.class, args);
-		DatabaseConnector databaseConnector = new DatabaseConnector();
+		//DatabaseConnector databaseConnector = new DatabaseConnector();
 	}
 }
