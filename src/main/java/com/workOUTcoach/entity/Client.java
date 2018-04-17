@@ -1,11 +1,27 @@
 package com.workOUTcoach.entity;
 
-import javax.persistence.Entity;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
+@Entity
+@Table(name = "clients")
 public class Client {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
-    private String name, email;
+
+    @NotBlank
+    @Column
+    private String name;
+
+    @NotBlank
+    @Column
+    private String email;
+
+    public Client() {
+    }
 
     public Client(int id, String name, String email) {
         this.id = id;

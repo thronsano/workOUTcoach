@@ -27,7 +27,7 @@ import static org.hibernate.cfg.Environment.*;
 public class HibernateConfig {
 
     //insert classes you want to map in hibernate here
-    private static final Class[] ANNOTATED_CLASSES = new Class[]{User.class, Authority.class};
+    private static final Class[] ANNOTATED_CLASSES = new Class[]{User.class, Authority.class, Client.class};
 
     @Autowired
     Environment env;
@@ -48,7 +48,7 @@ public class HibernateConfig {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 
         factoryBean.setDataSource(getDataSource());
-        factoryBean.setPackagesToScan("com.workOUTcoach.MVC.model");
+        factoryBean.setPackagesToScan("com.workOUTcoach.entity");
         factoryBean.setHibernateProperties(getHibernateProperties());
         factoryBean.setAnnotatedClasses(ANNOTATED_CLASSES);
 
