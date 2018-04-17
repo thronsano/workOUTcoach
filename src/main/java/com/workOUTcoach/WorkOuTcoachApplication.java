@@ -12,9 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class WorkOuTcoachApplication {
 
     public static void main(String[] args) {
-        //SpringApplication.run(WorkOuTcoachApplication.class, args);
+        SpringApplication.run(WorkOuTcoachApplication.class, args);
         //DatabaseConnector databaseConnector = new DatabaseConnector();
 
+        /**
         SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(User.class)
@@ -22,7 +23,7 @@ public class WorkOuTcoachApplication {
 
 
         Session session = factory.getCurrentSession();
-        User user = new User("User2", "password", "John", "Doe", "Who am I?", "An user", "email2@email.com");
+        User user = new User("User3", "password", "John", "Doe", "Who am I?", "An user", "email23@email.com");
 
         session.beginTransaction();
 
@@ -31,6 +32,7 @@ public class WorkOuTcoachApplication {
 
         session.getTransaction().commit();
         factory.close();
+         **/
     }
 
 }
