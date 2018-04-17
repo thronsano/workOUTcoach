@@ -16,7 +16,6 @@ public class Client {
     @Column
     private String name;
 
-    @NotBlank
     @Column
     private String email;
 
