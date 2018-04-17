@@ -11,6 +11,6 @@ public class UserModel {
     private SessionFactory sessionFactory;
 
     public User getUserByUsername(String username) {
-        return sessionFactory.getCurrentSession().get(User.class, username);
+        return sessionFactory.openSession().get(User.class, username);
     }
 }

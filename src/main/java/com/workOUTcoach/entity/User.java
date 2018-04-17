@@ -8,28 +8,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-                "username"
-        }),
-        @UniqueConstraint(columnNames = {
-                "email"
-        })
-})
+@Table(name = "users")
 public class User {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
 
+    @Id
     @NotBlank
     @Size(max = 20)
     @Column
     private String username;
 
     @NotBlank
-    @Size(max = 30)
+    @Size(max = 100)
     @Column
     private String password;
 
@@ -59,13 +52,9 @@ public class User {
     @Column
     private String email;
 
-    /**
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-**/
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Authority> authorities = new HashSet<>();
+
     public User() {
     }
 
@@ -143,13 +132,11 @@ public class User {
         this.email = email;
     }
 
-    /**
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
-     **/
 }

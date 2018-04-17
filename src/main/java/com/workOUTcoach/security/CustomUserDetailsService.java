@@ -24,7 +24,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if(user != null) {
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
+            builder.disabled(false);
             builder.password(user.getPassword());
+            String[] authorities = user.getAuthorities().stream().map(a -> a.getAuthority()).toArray(String[]::new);
+            builder.authorities(authorities);
         } else
             throw new UsernameNotFoundException("User not found!");
 

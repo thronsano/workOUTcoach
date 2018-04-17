@@ -1,8 +1,10 @@
 package com.workOUTcoach.utility;
 
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.workOUTcoach.entity.Authority;
+import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.User;
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,19 +21,20 @@ import java.util.Properties;
 import static org.hibernate.cfg.Environment.*;
 
 
-
 @Configuration
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
-@ComponentScan("com.workOUTcoach.MVC.model")
-
 public class HibernateConfig {
+
+    //insert classes you want to map in hibernate here
+    private static final Class[] ANNOTATED_CLASSES = new Class[]{User.class, Authority.class};
+
     @Autowired
     Environment env;
 
+    @Bean
     public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-
         dataSource.setDriverClassName(env.getProperty("mysql.driver"));
         dataSource.setUrl(env.getProperty("mysql.jdbcUrl"));
         dataSource.setUsername(env.getProperty("mysql.username"));
@@ -44,19 +47,24 @@ public class HibernateConfig {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 
+        factoryBean.setDataSource(getDataSource());
+        factoryBean.setPackagesToScan("com.workOUTcoach.MVC.model");
+        factoryBean.setHibernateProperties(getHibernateProperties());
+        factoryBean.setAnnotatedClasses(ANNOTATED_CLASSES);
+
+        return factoryBean;
+    }
+
+    private Properties getHibernateProperties() {
         Properties props = new Properties();
 
-        // Setting Hibernate properties
         props.put(SHOW_SQL, env.getProperty("hibernate.show_sql"));
         props.put(HBM2DDL_AUTO, env.getProperty("hibernate.hbm2ddl.auto"));
         props.put(DIALECT, env.getProperty("hibernate.dialect"));
         props.put(POOL_SIZE, env.getProperty("hibernate.pool_size"));
         props.put(CURRENT_SESSION_CONTEXT_CLASS, env.getProperty("hibernate.context_class"));
 
-        factoryBean.setHibernateProperties(props);
-        factoryBean.setAnnotatedClasses(User.class);
-
-        return factoryBean;
+        return props;
     }
 
     @Bean
