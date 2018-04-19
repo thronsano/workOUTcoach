@@ -6,15 +6,17 @@
 </head>
 <body class="body">
     <div th:if="${param.error}">
-        Invalid username and password.
+        Invalid email and password.
     </div>
     <div th:if="${param.logout}">
         You have been logged out.
     </div>
     <form th:action="@{/login}" method="post">
-        <div><label> User Name : <input type="text" name="username"/> </label></div>
+        <div><label> E-mail address : <input type="email" name="username"/> </label></div>
         <div><label> Password: <input type="password" name="password"/> </label></div>
         <div><input type="submit" value="Sign In"/></div>
+        <div><input type="button" value="Reset password"/></div>
+
     </form>
 </body>
 </html>

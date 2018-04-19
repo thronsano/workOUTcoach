@@ -11,15 +11,12 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private int id;
-
     @Id
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
+    @Email
     @Column
-    private String username;
+    private String email;
 
     @NotBlank
     @Size(max = 100)
@@ -46,11 +43,8 @@ public class User {
     @Column
     private String securityAnswer;
 
-    @NotBlank
-    @Size(max = 100)
-    @Email
     @Column
-    private String email;
+    private String resetToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Authority> authorities = new HashSet<>();
@@ -58,30 +52,22 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String name, String surname, String securityQuestion, String securityAnswer, String email) {
-        this.username = username;
+    public User(String password, String name, String surname, String securityQuestion, String securityAnswer, String email) {
+        this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
+        this.resetToken=null;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -124,13 +110,9 @@ public class User {
         this.securityAnswer = securityAnswer;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getResetToken(){ return resetToken; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setResetToken(String resetToken){ this.resetToken=resetToken; }
 
     public Set<Authority> getAuthorities() {
         return authorities;
