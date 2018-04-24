@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body class="body">
+
+<div th:if="${error}=='dataError'">
+    Enter correct data!
+</div>
+
+<div th:if="${error}=='emailError'">
+    Email is already in use!
+</div>
+
+<div th:if="${error}=='passwordError'">
+    Passwords aren't identical!
+</div>
+
+<form th:action="@{/login_featured}" method="get">
+    <div><label> E-mail address:    <input type="email" name="email" placeholder="e-mail"/> </label></div>
+    <div><label> Password:          <input type="password" name="password" placeholder="password"/> </label></div>
+    <div><label> Confirm password:  <input type="password" name="password2" placeholder="confirm password"/> </label></div>
+    <div><label> Name:              <input type="text" name="name" placeholder="name"/> </label></div>
+    <div><label> Surname:           <input type="text" name="surname" placeholder="surname"/> </label></div>
+    <div><label> Security question: <input type="text" name="securityQuestion" placeholder="security question"/> </label></div>
+    <div><label> Answer:            <input type="text" name="securityAnswer" placeholder="security answer"/> </label></div>
+    <div><input type="submit" value="Create account"/></div>
+</form>
+</body>
+</html>

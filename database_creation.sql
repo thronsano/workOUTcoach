@@ -1,4 +1,4 @@
-CREATE DATABASE workoutcoach
+CREATE DATABASE workoutcoach;
 
 CREATE TABLE clients (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -10,7 +10,7 @@ INSERT INTO clients (id, name, email) VALUES (1, 'Steve Stevinsky', 'superSteve@
 INSERT INTO clients (id, name, email) VALUES (2, 'Kate Rabbit', 'katyy@gmail.com');
 
 CREATE TABLE users (
-  email VARCHAR(100) PRIMARY KEY UNIQUE NOT NULL,
+  email VARCHAR(100) PRIMARY KEY NOT NULL,
   password VARCHAR(100) NOT NULL,
   name VARCHAR(50) NOT NULL,
   surname VARCHAR(50) NOT NULL,

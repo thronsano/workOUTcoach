@@ -10,8 +10,15 @@ public class Authority {
     private String authority;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "email")
     private User user;
+
+    public Authority(){}
+
+    public Authority(User user){
+        this.user = user;
+        this.authority = "ROLE_USER";
+    }
 
     public String getAuthority() {
         return authority;

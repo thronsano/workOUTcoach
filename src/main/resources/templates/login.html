@@ -11,12 +11,16 @@
     <div th:if="${param.logout}">
         You have been logged out.
     </div>
+    <div th:if="${success}==true">
+        You have created new account!
+    </div>
     <form th:action="@{/login}" method="post">
         <div><label> E-mail address : <input type="email" name="username"/> </label></div>
         <div><label> Password: <input type="password" name="password"/> </label></div>
         <div><input type="submit" value="Sign In"/></div>
-        <div><input type="button" value="Reset password"/></div>
-
+    </form>
+    <form th:action="@{/register}" method="post">
+        <div><input type="submit" value="Register"/></div>
     </form>
 </body>
 </html>
