@@ -21,6 +21,7 @@ CREATE TABLE users (
 
 -- Sample user's password '$2a$10$9d5AC2CrUGaWSgwRHbtZV.TbKiuixWQh3EzJhZ7tHt0AeifE2AxCq' is a hashed version of password 'password'
 INSERT INTO users(email, password, name, surname, securityQuestion, securityAnswer,resetToken ) VALUES ('sdoe@gmail.com', '$2a$10$9d5AC2CrUGaWSgwRHbtZV.TbKiuixWQh3EzJhZ7tHt0AeifE2AxCq', 'Steve', 'Doe', 'Whats ur name', 'Steve',null);
+INSERT INTO users(email, password, name, surname, securityQuestion, securityAnswer,resetToken ) VALUES ('test@gmail.com', '$2a$10$9d5AC2CrUGa', 'Steve', 'Doe', 'Whats ur name', 'Steve',null);
 
 create table authorities (
   email VARCHAR(100) NOT NULL,

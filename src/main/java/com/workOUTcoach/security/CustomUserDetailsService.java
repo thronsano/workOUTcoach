@@ -20,12 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userModel.getUserByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userModel.getUserByEmail(email);
         UserBuilder builder;
 
         if(user != null) {
-            builder = org.springframework.security.core.userdetails.User.withUsername(username);
+            builder = org.springframework.security.core.userdetails.User.withUsername(email);
             builder.disabled(false);
             builder.password(user.getPassword());
             String[] authorities = user.getAuthorities().stream().map(a -> a.getAuthority()).toArray(String[]::new);
