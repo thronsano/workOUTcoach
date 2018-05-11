@@ -6,15 +6,15 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body class="front">
-    <div class="login-box">
-        <img src="logo.svg" class="logo" alt="workout coach" height="250" width="450">
+    <div class="inside-content-box">
+        <a th:href="@{/index}"><img src="logo.svg" class="logo" alt="workout coach" height="250" width="450"></a>
 
         <form id="loginForm" th:action="@{/home}" method="post">
             <div>
-                <input type="email" class="login-field" value="" placeholder="username" id="username" name="username">
+                <input type="email" class="input-field" value="" placeholder="username" id="username" name="username">
             </div>
             <div>
-                <input type="password" class="login-field" value="" placeholder="password" id="password"
+                <input type="password" class="input-field" value="" placeholder="password" id="password"
                        name="password">
             </div>
             <button type="submit" th:href="@{/index}" class="btn">LOGIN</button>
