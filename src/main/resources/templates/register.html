@@ -6,30 +6,29 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 <body class="front">
+    <section class="inside-content-box" style="top:45%">
+        <a th:href="@{/index}"><img src="logo.svg" class="logo" alt="workout coach" height="250" width="450"></a>
 
-    <div th:if="${error}=='dataError'">
-        Enter correct data!
-    </div>
+        <form th:action="@{/login_featured}" method="get">
+            <div><input type="email" class="input-field" name="email" placeholder="E-mail"/></div>
+            <div><input type="password" class="input-field" name="password" placeholder="Password"/></div>
+            <div><input type="password" class="input-field" name="password2" placeholder="Confirm password"/></div>
+            <div><input type="text" class="input-field" name="name" placeholder="Name"/></div>
+            <div><input type="text" class="input-field" name="surname" placeholder="Surname"/></div>
+            <div><input type="text" class="input-field" name="securityQuestion" placeholder="Security question"/></div>
+            <div><input type="text" class="input-field" name="securityAnswer" placeholder="Security answer"/></div>
+            <button type="submit" class="btn">CREATE ACCOUNT</button>
+        </form>
 
-    <div th:if="${error}=='emailError'">
-        Email is already in use!
-    </div>
-
-    <div th:if="${error}=='passwordError'">
-        Passwords aren't identical!
-    </div>
-
-    <form th:action="@{/login_featured}" method="get">
-        <div><label> E-mail address: <input type="email" name="email" placeholder="e-mail"/> </label></div>
-        <div><label> Password: <input type="password" name="password" placeholder="password"/> </label></div>
-        <div><label> Confirm password: <input type="password" name="password2" placeholder="confirm password"/> </label>
+        <div th:if="${error}=='dataError'">
+            Enter correct data!
         </div>
-        <div><label> Name: <input type="text" name="name" placeholder="name"/> </label></div>
-        <div><label> Surname: <input type="text" name="surname" placeholder="surname"/> </label></div>
-        <div><label> Security question: <input type="text" name="securityQuestion" placeholder="security question"/>
-        </label></div>
-        <div><label> Answer: <input type="text" name="securityAnswer" placeholder="security answer"/> </label></div>
-        <div><input type="submit" value="Create account"/></div>
-    </form>
+        <div th:if="${error}=='emailError'">
+            Email is already in use!
+        </div>
+        <div th:if="${error}=='passwordError'">
+            Passwords aren't identical!
+        </div>
+    </section>
 </body>
 </html>

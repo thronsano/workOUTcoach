@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>workOUTcoach</title>
+    <title>Workout coach</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body class="front">
-    <div class="inside-content-box">
+    <section class="inside-content-box">
         <a th:href="@{/index}"><img src="logo.svg" class="logo" alt="workout coach" height="250" width="450"></a>
 
         <form id="loginForm" th:action="@{/home}" method="post">
@@ -33,6 +33,6 @@
             <a th:href="@{/register}" class="register-forgot-strings" style="float: left;">Register</a>
             <a th:href="@{/forgot}" class="register-forgot-strings" style="float: right">Forgot password?</a>
         </section>
-    </div>
+    </section>
 </body>
 </html>
