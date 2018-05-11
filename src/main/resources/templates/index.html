@@ -6,13 +6,10 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body class="body">
-    <div id="react"></div>
-
     <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
-
     <script src="built/bundle.js"></script>
 </body>
 </html>
