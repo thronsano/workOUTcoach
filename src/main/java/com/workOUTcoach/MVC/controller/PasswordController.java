@@ -45,9 +45,7 @@ public class PasswordController {
         } else {
             // Generate random 36-character string token for reset password
             user.setResetToken(UUID.randomUUID().toString());
-
-            // Save token to database
-            userModel.saveUser(user);
+            userModel.saveUsersResetToken(user);
 
             String appUrl = request.getScheme() + "://" + request.getServerName();
 
@@ -60,9 +58,7 @@ public class PasswordController {
                     + "/reset?token=" + user.getResetToken());
 
             emailService.sendEmail(passwordResetEmail);
-
-            // Add success message to view
-            modelAndView.addObject("successMessage", "A password reset link has been sent to " + userEmail);
+            modelAndView.addObject("successEmail", true);
         }
 
         modelAndView.setViewName("forgotPassword");
@@ -70,55 +66,34 @@ public class PasswordController {
 
     }
 
-    // Display form to reset password
     @RequestMapping(value = "/reset", method = RequestMethod.GET)
-    public ModelAndView displayResetPasswordPage(ModelAndView modelAndView, @RequestParam("token") String token) {
+    public ModelAndView displayResetPasswordPage(ModelAndView modelAndView) {
 
-        User user = userModel.getUserByResetToken(token);
-
-        if (user != null) { // Token found in DB
-            modelAndView.addObject("token", user.getResetToken());
-        } else { // Token not found in DB
-            modelAndView.addObject("errorUser", true);
-        }
         modelAndView.setViewName("resetPassword");
         return modelAndView;
     }
 
-    // Process reset password form
-    @RequestMapping(value = "/reset{token}", method = RequestMethod.POST)
-    public ModelAndView setNewPassword(ModelAndView modelAndView, @PathVariable(value="token") String token, @RequestParam("password") String password, RedirectAttributes redir) {
-
-        //String token = (String)modelAndView.getModelMap().get("token");
-
-        System.out.println("---------------------------------------------------------------------------" + token);
-
-        // Find the user associated with the reset token
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    public ModelAndView setNewPassword(ModelAndView modelAndView, @RequestParam("token") String token, @RequestParam("password") String password, @RequestParam("confirm") String confirmPassword, RedirectAttributes redir) {
         User user;
         if (token != null && !token.equals("")) {
             user = userModel.getUserByResetToken(token);
 
-            // This should always be non-null but we check just in case
             if (user != null) {
+                if(password.equals(confirmPassword)) {
+                    user.setPassword(bCryptPasswordEncoder.encode(password));
+                    user.setResetToken(null);
+                    userModel.saveUsersPasswordAndToken(user);
 
-                // Set new password
-                user.setPassword(bCryptPasswordEncoder.encode(password));
-
-                // Set the reset token to null so it cannot be used again
-                user.setResetToken(null);
-
-                // Save user
-                userModel.saveUser(user);
-
-                // In order to set a model attribute on a redirect, we must use
-                // RedirectAttributes
-                redir.addFlashAttribute("successMessage", true);
-
-                modelAndView.setViewName("redirect:login");
-                return modelAndView;
+                    //@TODO: sending object to "login" to display message
+                    redir.addFlashAttribute("successMessage", true);
+                    modelAndView.setViewName("redirect:login");
+                    return modelAndView;
+                }else {
+                    modelAndView.addObject("errorDifferentPasswords", true);
+                }
             } else {
-                modelAndView.addObject("errorMessage", true);
-
+                modelAndView.addObject("errorUser", true);
             }
         } else {
             modelAndView.addObject("errorTokenLost", true);
