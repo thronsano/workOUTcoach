@@ -11,26 +11,23 @@
 
         <form id="loginForm" th:action="@{/home}" method="post">
             <div>
-                <input type="email" class="input-field" value="" placeholder="username" id="username" name="username">
+                <input type="email" class="input-field" value="" placeholder="Username" id="username" name="username">
             </div>
             <div>
-                <input type="password" class="input-field" value="" placeholder="password" id="password"
+                <input type="password" class="input-field" value="" placeholder="Password" id="password"
                        name="password">
             </div>
             <button type="submit" th:href="@{/index}" class="btn">LOGIN</button>
         </form>
 
-        <div class="login-info">
+        <section class="login-info">
             <div th:if="${param.error}">
                 Invalid email or password
             </div>
-            <div th:if="${param.logout}" class="alert alert-success">
+            <div th:if="${param.logout}">
                 You have been logged out
             </div>
-            <div th:if="${param.logout}" class="alert alert-success">
-                You have successfully reset your password.  You may now login.
-            </div>
-        </div>
+        </section>
 
         <section class="register-forgot-box register-forgot-strings">
             <a th:href="@{/register}" class="register-forgot-strings" style="float: left;">Register</a>
