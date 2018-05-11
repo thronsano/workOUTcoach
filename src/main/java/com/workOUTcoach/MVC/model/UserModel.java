@@ -8,8 +8,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public class UserModel {
     @Autowired
@@ -24,7 +22,8 @@ public class UserModel {
     }
 
     public User getUserByResetToken(String resetToken) {
-        return sessionFactory.openSession().get(User.class, resetToken);
+        return (User)sessionFactory.openSession().createQuery("from User u where u.resetToken = '"+resetToken+"'").getResultList().get(0);
+        //return sessionFactory.openSession().createQuery("from User u where u.resetToken").getFirstResult();
     }
 
     public boolean saveUser(User user) {
@@ -53,6 +52,7 @@ public class UserModel {
             session.save(user);
             session.getTransaction().commit();
             session.close();
+
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.save(authority);
