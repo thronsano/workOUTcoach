@@ -1,4 +1,7 @@
+DROP DATABASE workoutcoach;
+
 CREATE DATABASE workoutcoach;
+USE workoutcoach;
 
 CREATE TABLE clients (
   id INT PRIMARY KEY AUTO_INCREMENT,

@@ -45,10 +45,9 @@ public class PasswordController {
         // Lookup user in database by e-mail
         User user = userModel.getUserByEmail(userEmail);
 
-        if (user==null) {
+        if (user == null) {
             modelAndView.addObject("errorMessage", "We didn't find an account for that e-mail address.");
         } else {
-
             // Generate random 36-character string token for reset password
             user.setResetToken(UUID.randomUUID().toString());
 
@@ -82,7 +81,7 @@ public class PasswordController {
 
         User user = userModel.getUserByResetToken(token);
 
-        if (user!=null) { // Token found in DB
+        if (user != null) { // Token found in DB
             //modelAndView.addObject("resetToken", token);
             modelAndView.addObject("token", user.getResetToken());
         } else { // Token not found in DB
@@ -95,38 +94,37 @@ public class PasswordController {
 
     // Process reset password form
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
-    public ModelAndView setNewPassword(ModelAndView modelAndView, @RequestParam ("token") String token, @RequestParam ("password") String password, RedirectAttributes redir) {
+    public ModelAndView setNewPassword(ModelAndView modelAndView, @RequestParam("token") String token, @RequestParam("password") String password, RedirectAttributes redir) {
 
-        System.out.println("---------------------------------------------------------------------------"+token);
+        System.out.println("---------------------------------------------------------------------------" + token);
 
         // Find the user associated with the reset token
         User user;
-        if(token!=null){
+        if (token != null) {
             user = userModel.getUserByResetToken(token);
 
-        // This should always be non-null but we check just in case
-        if (user!=null) {
+            // This should always be non-null but we check just in case
+            if (user != null) {
 
-            // Set new password
-            user.setPassword(bCryptPasswordEncoder.encode(password));
+                // Set new password
+                user.setPassword(bCryptPasswordEncoder.encode(password));
 
-            // Set the reset token to null so it cannot be used again
-            user.setResetToken(null);
+                // Set the reset token to null so it cannot be used again
+                user.setResetToken(null);
 
-            // Save user
-            userModel.saveUser(user);
+                // Save user
+                userModel.saveUser(user);
 
-            // In order to set a model attribute on a redirect, we must use
-            // RedirectAttributes
-            redir.addFlashAttribute("successMessage", "You have successfully reset your password.  You may now login.");
+                // In order to set a model attribute on a redirect, we must use
+                // RedirectAttributes
+                redir.addFlashAttribute("successMessage", "You have successfully reset your password.  You may now login.");
 
-            modelAndView.setViewName("redirect:login");
-            return modelAndView;
-        }
-        else{
-            modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
+                modelAndView.setViewName("redirect:login");
+                return modelAndView;
+            } else {
+                modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
 
-        }
+            }
         } else {
             modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
             modelAndView.setViewName("resetPassword");

@@ -20,11 +20,11 @@ public class RegisterController {
     PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "/register")
-    public String getRegisterPage(){
+    public String getRegisterPage() {
         return "register";
     }
 
-    @RequestMapping(value="/login_featured")
+    @RequestMapping(value = "/login_featured")
     public String createAccount(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
@@ -34,25 +34,24 @@ public class RegisterController {
             @RequestParam("securityQuestion") String sQuestion,
             @RequestParam("securityAnswer") String sAnswer,
             Model model
-            ){
-
-        if(userModel.getUserByEmail(email)!=null) {
+    ) {
+        if (userModel.getUserByEmail(email) != null) {
             model.addAttribute("error", "emailError");
             return "register";
         }
 
-        if(validateString(email) && validateString(password) && validateString(name) && validateString(surname) && validateString(sQuestion) && validateString(sAnswer)) {
-            if(password.equals(password2)) {
+        if (validateString(email) && validateString(password) && validateString(name) && validateString(surname) && validateString(sQuestion) && validateString(sAnswer)) {
+            if (password.equals(password2)) {
                 password = passwordEncoder.encode(password);
                 User user = new User(email, password, name, surname, sQuestion, sAnswer);
                 Authority authority = new Authority(user);
 
                 if (userModel.addUser(user, authority)) {
                     model.addAttribute("success", true);
-                    return "login";
+                    return "home";
                 }
-            }else{
-                model.addAttribute("error","passwordError");
+            } else {
+                model.addAttribute("error", "passwordError");
                 return "register";
             }
         } else
@@ -60,9 +59,7 @@ public class RegisterController {
         return "register";
     }
 
-    private boolean validateString(String text){
-        if(text==null||text.isEmpty())
-            return false;
-        return true;
+    private boolean validateString(String text) {
+        return text != null && !text.isEmpty();
     }
 }

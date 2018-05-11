@@ -1,0 +1,27 @@
+<svg id="Warstwa_1" data-name="Warstwa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249.63 133.28">
+    <defs>
+        <style>.cls-1,.cls-2{fill:#fff;}.cls-2{font-size:50.41px;font-family:AgencyFB-Bold, Agency
+            FB;font-weight:700;}
+        </style>
+    </defs>
+    <title>Obszar roboczy 1</title>
+    <g id="_Group_" data-name="&lt;Group&gt;">
+        <g id="_Group_2" data-name="&lt;Group&gt;">
+            <rect id="_Rectangle_" data-name="&lt;Rectangle&gt;" class="cls-1" x="28.49" y="20.91" width="13.62"
+                  height="35.37"/>
+            <rect id="_Rectangle_2" data-name="&lt;Rectangle&gt;" class="cls-1" x="47.4" y="11.68" width="13.62"
+                  height="53.83"/>
+            <rect id="_Rectangle_3" data-name="&lt;Rectangle&gt;" class="cls-1" x="66.3" y="-0.13" width="13.62"
+                  height="77.46"/>
+            <rect id="_Rectangle_4" data-name="&lt;Rectangle&gt;" class="cls-1" x="116.72" y="-2.41" width="17.42"
+                  height="77.46" transform="translate(89.1 161.74) rotate(-90)"/>
+            <rect id="_Rectangle_5" data-name="&lt;Rectangle&gt;" class="cls-1" x="208.73" y="21.04" width="13.62"
+                  height="35.37" transform="translate(431.08 77.46) rotate(180)"/>
+            <rect id="_Rectangle_6" data-name="&lt;Rectangle&gt;" class="cls-1" x="189.82" y="11.81" width="13.62"
+                  height="53.83" transform="translate(393.27 77.46) rotate(180)"/>
+            <rect id="_Rectangle_7" data-name="&lt;Rectangle&gt;" class="cls-1" x="170.92" width="13.62" height="77.46"
+                  transform="translate(355.46 77.46) rotate(180)"/>
+        </g>
+        <text class="cls-2" transform="translate(-0.75 133.28)">workout coach</text>
+    </g>
+</svg>

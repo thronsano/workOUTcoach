@@ -1,13 +1,11 @@
 package com.workOUTcoach.utility;
 
-
 import com.workOUTcoach.entity.Authority;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.User;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -19,7 +17,6 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 import static org.hibernate.cfg.Environment.*;
-
 
 @Configuration
 @PropertySource("classpath:db.properties")

@@ -37,15 +37,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/reset",
                         "/register",
                         "/login_featured",
-                        "/*.css")
+                        "/*.css",
+                        "/*.svg",
+                        "/*.bmp",
+                        "/*.jpg")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/home")
                 .permitAll()
                 .and()
                 .logout()
                 .permitAll();
+
+        http.formLogin().defaultSuccessUrl("/index",true);
     }
 }

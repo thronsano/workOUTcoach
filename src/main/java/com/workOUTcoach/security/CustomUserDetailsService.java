@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userModel.getUserByEmail(email);
         UserBuilder builder;
 
-        if(user != null) {
+        if (user != null) {
             builder = org.springframework.security.core.userdetails.User.withUsername(email);
             builder.disabled(false);
             builder.password(user.getPassword());

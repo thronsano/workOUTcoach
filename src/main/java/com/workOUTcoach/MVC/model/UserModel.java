@@ -18,10 +18,16 @@ public class UserModel {
     public User getUserByUsername(String username) {
         return sessionFactory.openSession().get(User.class, username);
     }
-    public User getUserByEmail(String email){ return sessionFactory.openSession().get(User.class, email); }
-    public User getUserByResetToken(String resetToken){ return sessionFactory.openSession().get(User.class,resetToken);}
 
-    public boolean saveUser(User user){
+    public User getUserByEmail(String email) {
+        return sessionFactory.openSession().get(User.class, email);
+    }
+
+    public User getUserByResetToken(String resetToken) {
+        return sessionFactory.openSession().get(User.class, resetToken);
+    }
+
+    public boolean saveUser(User user) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
@@ -31,7 +37,7 @@ public class UserModel {
             session.getTransaction().commit();
             session.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Logger.logError("Exception during saving user into database");
             return false;
         }
@@ -40,7 +46,7 @@ public class UserModel {
         return true;
     }
 
-    public boolean addUser(User user, Authority authority){
+    public boolean addUser(User user, Authority authority) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
@@ -51,7 +57,7 @@ public class UserModel {
             session.beginTransaction();
             session.save(authority);
             session.getTransaction().commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             Logger.logError("Exception during adding new user into database");
             return false;
         }

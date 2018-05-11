@@ -19,5 +19,4 @@ public class ClientModel {
         return sessionFactory.openSession().createQuery("from Client").list();
     }
 
-
 }
