@@ -20,15 +20,17 @@
             <button type="submit" class="btn">CREATE ACCOUNT</button>
         </form>
 
-        <div th:if="${error}=='dataError'">
-            Enter correct data!
-        </div>
-        <div th:if="${error}=='emailError'">
-            Email is already in use!
-        </div>
-        <div th:if="${error}=='passwordError'">
-            Passwords aren't identical!
-        </div>
+        <section class="login-info">
+            <div th:if="${error}=='dataError'">
+                Incorrect data!
+            </div>
+            <div th:if="${error}=='emailError'">
+                Email is already in use!
+            </div>
+            <div th:if="${error}=='passwordError'">
+                Passwords aren't identical!
+            </div>
+        </section>
     </section>
 </body>
 </html>

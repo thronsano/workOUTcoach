@@ -24,7 +24,6 @@ body {
 
 .logo {
     margin: 25px;
-
 }
 
 @keyframes fadein {
@@ -56,6 +55,11 @@ body {
     border: 2px solid transparent;
     display: block;
     width: 250px;
+    transition: 0.2s;
+}
+
+.input-field:focus {
+    border: 2px #fb9b00 solid;
 }
 
 .front {
