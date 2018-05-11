@@ -1,6 +1,5 @@
 package com.workOUTcoach.MVC.controller;
 
-import com.sun.xml.internal.org.jvnet.mimepull.MIMEMessage;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.User;
 import com.workOUTcoach.security.EmailService;
@@ -58,7 +57,7 @@ public class PasswordController {
 
             // Email message
             SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
-            passwordResetEmail.setFrom("workOUT.coach@interia.pl");
+            passwordResetEmail.setFrom("workOUT.coach@wp.pl");
             passwordResetEmail.setTo(user.getEmail());
             passwordResetEmail.setSubject("Password Reset Request");
             passwordResetEmail.setText("To reset your password, click the link below:\n" + appUrl + ":8080"

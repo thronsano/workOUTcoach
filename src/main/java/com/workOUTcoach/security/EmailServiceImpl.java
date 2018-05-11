@@ -16,11 +16,11 @@ public class EmailServiceImpl implements EmailService {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.interia.pl");
+        mailSender.setHost("smtp.wp.pl");
         mailSender.setPort(587);
 
-        mailSender.setUsername("workout.coach@interia.pl");
-        mailSender.setPassword("dzikieOgiery1");
+        mailSender.setUsername("workout.coach@wp.pl");
+        mailSender.setPassword("dzikieOgiery");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
