@@ -31,19 +31,16 @@ public class RegisterController {
             @RequestParam("password2") String password2,
             @RequestParam("name") String name,
             @RequestParam("surname") String surname,
-            @RequestParam("securityQuestion") String sQuestion,
-            @RequestParam("securityAnswer") String sAnswer,
-            Model model
-    ) {
+            Model model) {
         if (userModel.getUserByEmail(email) != null) {
             model.addAttribute("error", "emailError");
             return "register";
         }
 
-        if (validateString(email) && validateString(password) && validateString(name) && validateString(surname) && validateString(sQuestion) && validateString(sAnswer)) {
+        if (validateString(email) && validateString(password) && validateString(name) && validateString(surname)) {
             if (password.equals(password2)) {
                 password = passwordEncoder.encode(password);
-                User user = new User(email, password, name, surname, sQuestion, sAnswer);
+                User user = new User(email, password, name, surname);
                 Authority authority = new Authority(user);
 
                 if (userModel.addUser(user, authority)) {

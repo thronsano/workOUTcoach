@@ -33,32 +33,17 @@ public class User {
     @Column
     private String surname;
 
-    @NotBlank
-    @Size(max = 255)
-    @Column
-    private String securityQuestion;
-
-    @NotBlank
-    @Size(max = 30)
-    @Column
-    private String securityAnswer;
-
     @Column
     private String resetToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Authority> authorities = new HashSet<>();
 
-    public User() {
-    }
-
-    public User(String email, String password, String name, String surname, String securityQuestion, String securityAnswer) {
+    public User(String email, String password, String name, String surname) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.securityQuestion = securityQuestion;
-        this.securityAnswer = securityAnswer;
         this.resetToken=null;
     }
 
@@ -92,22 +77,6 @@ public class User {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getSecurityQuestion() {
-        return securityQuestion;
-    }
-
-    public void setSecurityQuestion(String securityQuestion) {
-        this.securityQuestion = securityQuestion;
-    }
-
-    public String getSecurityAnswer() {
-        return securityAnswer;
-    }
-
-    public void setSecurityAnswer(String securityAnswer) {
-        this.securityAnswer = securityAnswer;
     }
 
     public String getResetToken(){ return resetToken; }
