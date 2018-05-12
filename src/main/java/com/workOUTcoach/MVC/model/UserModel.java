@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserModel {
+
     @Autowired
     private SessionFactory sessionFactory;
 

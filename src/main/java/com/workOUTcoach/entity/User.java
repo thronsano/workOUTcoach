@@ -47,6 +47,8 @@ public class User {
         this.resetToken=null;
     }
 
+    public User(){}
+
     public String getEmail() {
         return email;
     }
