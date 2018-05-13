@@ -33,9 +33,6 @@ public class User {
     @Column
     private String surname;
 
-    @Column
-    private String resetToken;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Authority> authorities = new HashSet<>();
 
@@ -44,7 +41,6 @@ public class User {
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.resetToken=null;
     }
 
     public User(){}
@@ -80,10 +76,6 @@ public class User {
     public void setSurname(String surname) {
         this.surname = surname;
     }
-
-    public String getResetToken(){ return resetToken; }
-
-    public void setResetToken(String resetToken){ this.resetToken=resetToken; }
 
     public Set<Authority> getAuthorities() {
         return authorities;

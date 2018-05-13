@@ -1,6 +1,8 @@
 package com.workOUTcoach.MVC.controller;
 
+import com.workOUTcoach.MVC.model.ResetTokenModel;
 import com.workOUTcoach.MVC.model.UserModel;
+import com.workOUTcoach.entity.ResetToken;
 import com.workOUTcoach.entity.User;
 import com.workOUTcoach.security.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class PasswordController {
 
     @Autowired
     private UserModel userModel;
+
+    @Autowired
+    private ResetTokenModel resetTokenModel;
 
     @Autowired
     private EmailService emailService;
@@ -44,8 +49,11 @@ public class PasswordController {
             modelAndView.addObject("errorUser", true);
         } else {
             // Generate random 36-character string token for reset password
-            user.setResetToken(UUID.randomUUID().toString());
-            userModel.saveUsersResetToken(user);
+            ResetToken resetToken = new ResetToken(userEmail, UUID.randomUUID().toString());
+            //user.setResetToken(UUID.randomUUID().toString());
+            //userModel.saveUsersResetToken(user);
+            resetTokenModel.addResetToken(resetToken);
+
 
             String appUrl = request.getScheme() + "://" + request.getServerName();
 
@@ -55,7 +63,7 @@ public class PasswordController {
             passwordResetEmail.setTo(user.getEmail());
             passwordResetEmail.setSubject("Password Reset Request");
             passwordResetEmail.setText("To reset your password, click the link below:\n" + appUrl + ":8080"
-                    + "/reset?token=" + user.getResetToken());
+                    + "/reset?token=" + resetToken.getResetToken());
 
             emailService.sendEmail(passwordResetEmail);
             modelAndView.addObject("successEmail", true);
@@ -76,20 +84,21 @@ public class PasswordController {
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     public ModelAndView setNewPassword(ModelAndView modelAndView, @RequestParam("token") String token, @RequestParam("password") String password, @RequestParam("confirm") String confirmPassword, RedirectAttributes redir) {
         User user;
+        ResetToken resetToken;
         if (token != null && !token.equals("")) {
-            user = userModel.getUserByResetToken(token);
+            resetToken = resetTokenModel.getByResetToken(token);
+            user = userModel.getUserByEmail(resetToken.getEmail());
 
             if (user != null) {
-                if(password.equals(confirmPassword)) {
+                if (password.equals(confirmPassword)) {
                     user.setPassword(bCryptPasswordEncoder.encode(password));
-                    user.setResetToken(null);
-                    userModel.saveUsersPasswordAndToken(user);
+                    resetTokenModel.deleteResetToken(user.getEmail());
+                    userModel.saveUsersPassword(user);
 
-                    //@TODO: sending object to "login" to display message
-                    redir.addFlashAttribute("successMessage", true);
-                    modelAndView.setViewName("redirect:login");
+                    redir.addFlashAttribute("passwordChanged", true);
+                    modelAndView.setViewName("redirect:/");
                     return modelAndView;
-                }else {
+                } else {
                     modelAndView.addObject("errorDifferentPasswords", true);
                 }
             } else {

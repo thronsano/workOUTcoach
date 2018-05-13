@@ -14,40 +14,20 @@ public class UserModel {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public User getUserByUsername(String username) {
-        return sessionFactory.openSession().get(User.class, username);
-    }
-
     public User getUserByEmail(String email) {
         return sessionFactory.openSession().get(User.class, email);
     }
 
-    public User getUserByResetToken(String resetToken) {
-        return (User)sessionFactory.openSession().createQuery("from User u where u.resetToken = '"+resetToken+"'").getResultList().get(0);
-    }
+//    public User getUserByResetToken(String resetToken) {
+//        return (User)sessionFactory.openSession().createQuery("from User u where u.resetToken = '"+resetToken+"'").getResultList().get(0);
+//    }
 
-    public boolean saveUsersPasswordAndToken(User user) {
+    public boolean saveUsersPassword(User user) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
             User updateUser = session.get(User.class, user.getEmail());
-            updateUser.setResetToken(user.getResetToken());
             updateUser.setPassword(user.getPassword());
-            session.getTransaction().commit();
-            session.close();
-        } catch (Exception e) {
-            Logger.logError("Exception during saving user into database");
-            return false;
-        }
-        return true;
-    }
-
-    public boolean saveUsersResetToken(User user) {
-        try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-            User updateUser = session.get(User.class, user.getEmail());
-            updateUser.setResetToken(user.getResetToken());
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
