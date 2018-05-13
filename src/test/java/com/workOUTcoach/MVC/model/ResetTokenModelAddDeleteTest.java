@@ -2,7 +2,6 @@ package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.ResetToken;
 import com.workOUTcoach.security.WebSecurityConfig;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,12 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(WebSecurityConfig.class)
 public class ResetTokenModelAddDeleteTest {
 
     private ResetToken resetToken;
 
     @Autowired
-    ResetTokenModel resetTokenModel=null;
+    ResetTokenModel resetTokenModel = null;
 
     @Test
     public void createResetToken() {
@@ -28,7 +26,6 @@ public class ResetTokenModelAddDeleteTest {
         assertTrue(resetTokenModel.addResetToken(resetToken));
         assertTrue(resetTokenModel.addResetToken(resetToken));
     }
-
 
     @Test
     public void deleteResetTokenWhenNull() {

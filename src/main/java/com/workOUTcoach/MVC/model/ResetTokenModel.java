@@ -15,11 +15,10 @@ public class ResetTokenModel {
     private SessionFactory sessionFactory;
 
     public ResetToken getByResetToken(String resetToken) {
-        return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.resetToken = '" + resetToken + "'").getResultList().get(0);
+        return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.resetToken = '" + resetToken + "'").uniqueResult();
     }
 
     public ResetToken getResetTokenByEmail(String email) {
-        //return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.email = '"+email+"'").getResultList().get(0);
         return sessionFactory.openSession().get(ResetToken.class, email);
     }
 

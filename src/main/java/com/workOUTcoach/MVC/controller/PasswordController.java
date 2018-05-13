@@ -50,10 +50,7 @@ public class PasswordController {
         } else {
             // Generate random 36-character string token for reset password
             ResetToken resetToken = new ResetToken(userEmail, UUID.randomUUID().toString());
-            //user.setResetToken(UUID.randomUUID().toString());
-            //userModel.saveUsersResetToken(user);
             resetTokenModel.addResetToken(resetToken);
-
 
             String appUrl = request.getScheme() + "://" + request.getServerName();
 
