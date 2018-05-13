@@ -27,8 +27,8 @@
             <div th:if="${param.logout}" class="alert alert-success">
                 You have been logged out
             </div>
-            <div th:if="${param.register}" class="alert alert-success">
-                You have created new account
+            <div th:if="${userCreated}" class="alert alert-success">
+                New account created!
             </div>
             <div th:if="${passwordChanged}" class="alert alert-success">
                 You have successfully reset your password.  You may now login.
