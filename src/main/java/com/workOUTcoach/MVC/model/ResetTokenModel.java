@@ -15,7 +15,7 @@ public class ResetTokenModel {
     private SessionFactory sessionFactory;
 
     public ResetToken getByResetToken(String resetToken) {
-        return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.resetToken = '"+resetToken+"'").getResultList().get(0);
+        return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.resetToken = '" + resetToken + "'").getResultList().get(0);
     }
 
     public ResetToken getResetTokenByEmail(String email) {
@@ -57,18 +57,18 @@ public class ResetTokenModel {
 
     public boolean deleteResetToken(String email) {
         ResetToken existingToken = getResetTokenByEmail(email);
-        if(existingToken!=null){
+        if (existingToken != null) {
             try {
                 Session session = sessionFactory.openSession();
                 session.beginTransaction();
                 session.delete(existingToken);
                 session.getTransaction().commit();
                 session.close();
-            }catch (Exception e){
+            } catch (Exception e) {
                 Logger.logError("Exception during removing existing resetToken");
                 return false;
             }
-        }else {
+        } else {
             Logger.log("Reset token doesn't exist");
         }
         return true;
