@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,12 +21,13 @@ public class RegisterController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @RequestMapping(value = "/register")
-    public String getRegisterPage() {
-        return "register";
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public ModelAndView getRegisterPage(ModelAndView modelAndView) {
+        modelAndView.setViewName("register");
+        return modelAndView;
     }
 
-    @RequestMapping(value = "/login_featured")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ModelAndView createAccount(
             @RequestParam("email") String email,
             @RequestParam("password") String password,

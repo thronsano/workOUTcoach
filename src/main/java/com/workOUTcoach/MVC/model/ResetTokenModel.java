@@ -15,27 +15,11 @@ public class ResetTokenModel {
     private SessionFactory sessionFactory;
 
     public ResetToken getByResetToken(String resetToken) {
-        return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.resetToken = '"+resetToken+"'").getResultList().get(0);
+        return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.resetToken = '"+resetToken+"'").uniqueResult();
     }
 
     public ResetToken getResetTokenByEmail(String email) {
-        //return (ResetToken) sessionFactory.openSession().createQuery("from ResetToken rt where rt.email = '"+email+"'").getResultList().get(0);
         return sessionFactory.openSession().get(ResetToken.class, email);
-    }
-
-    public boolean saveResetToken(ResetToken resetToken) {
-        try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-            ResetToken updateResetToken = session.get(ResetToken.class, resetToken.getEmail());
-            updateResetToken.setResetToken(resetToken.getResetToken());
-            session.getTransaction().commit();
-            session.close();
-        } catch (Exception e) {
-            Logger.logError("Exception during saving ResetToken into database");
-            return false;
-        }
-        return true;
     }
 
     public boolean addResetToken(ResetToken resetToken) {

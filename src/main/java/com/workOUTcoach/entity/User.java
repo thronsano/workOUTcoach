@@ -33,7 +33,7 @@ public class User {
     @Column
     private String surname;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private Set<Authority> authorities = new HashSet<>();
 
     public User(String email, String password, String name, String surname) {
