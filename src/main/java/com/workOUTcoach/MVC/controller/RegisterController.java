@@ -6,9 +6,10 @@ import com.workOUTcoach.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RegisterController {
@@ -25,16 +26,19 @@ public class RegisterController {
     }
 
     @RequestMapping(value = "/login_featured")
-    public String createAccount(
+    public ModelAndView createAccount(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
             @RequestParam("password2") String password2,
             @RequestParam("name") String name,
             @RequestParam("surname") String surname,
-            Model model) {
+            ModelAndView modelAndView,
+            RedirectAttributes redirectAttributes) {
+
         if (userModel.getUserByEmail(email) != null) {
-            model.addAttribute("error", "emailError");
-            return "register";
+            modelAndView.addObject("error", "emailError");
+            modelAndView.setViewName("register");
+            return modelAndView;
         }
 
         if (validateString(email) && validateString(password) && validateString(name) && validateString(surname)) {
@@ -44,16 +48,18 @@ public class RegisterController {
                 Authority authority = new Authority(user);
 
                 if (userModel.addUser(user, authority)) {
-                    model.addAttribute("success", true);
-                    return "home";
+                    redirectAttributes.addFlashAttribute("userCreated", true);
+                    modelAndView.setViewName("redirect:/");
                 }
             } else {
-                model.addAttribute("error", "passwordError");
-                return "register";
+                modelAndView.addObject("error", "passwordError");
+                modelAndView.setViewName("register");
             }
-        } else
-            model.addAttribute("error", "dataError");
-        return "register";
+        } else {
+            modelAndView.addObject("error", "dataError");
+            modelAndView.setViewName("register");
+        }
+        return modelAndView;
     }
 
     private boolean validateString(String text) {

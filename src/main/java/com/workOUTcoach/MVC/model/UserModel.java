@@ -14,10 +14,6 @@ public class UserModel {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public User getUserByUsername(String username) {
-        return sessionFactory.openSession().get(User.class, username);
-    }
-
     public User getUserByEmail(String email) {
         return sessionFactory.openSession().get(User.class, email);
     }

@@ -86,8 +86,8 @@ public class PasswordController {
                     userModel.saveUsersPasswordAndToken(user);
 
                     //@TODO: sending object to "login" to display message
-                    redir.addFlashAttribute("successMessage", true);
-                    modelAndView.setViewName("redirect:login");
+                    redir.addFlashAttribute("message", true);
+                    modelAndView.setViewName("redirect:/");
                     return modelAndView;
                 }else {
                     modelAndView.addObject("errorDifferentPasswords", true);
