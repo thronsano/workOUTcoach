@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-    <meta charset="UTF-8">
-    <title>Client List</title>
+<meta charset="UTF-8">
+<title>Client List</title>
 </head>
 <body>
-<!--<div th:if="${not #lists.isEmpty(clientsProfiles)}">-->
     <h2>Client List</h2>
-    <table class="table">
+    <table class="table table-hover">
         <tr>
             <th>Name</th>
             <th>Email</th>
         </tr>
         <tr th:each="client : ${clients}">
-            <td th:text="${client.name}"></td>
+            <td th:text="${client.name}" onclick="window.location='clientProfile?'+(this.innerText)"></td>
             <td th:text="${client.email}"></td>
         </tr>
     </table>
