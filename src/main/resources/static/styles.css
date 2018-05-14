@@ -112,3 +112,33 @@ body {
     font-style: italic;
     color: lightgrey;
 }
+
+.side-nav {
+    box-sizing: border-box;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    width: 200px;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: black;
+    overflow-x: hidden;
+}
+
+.side-nav-element {
+    display: block;
+    text-decoration: none;
+    font-size: 25px;
+    color: #606060;
+    padding: 6px 6px 6px 32px;
+    transition: 0.25s;
+}
+
+.side-nav-element:hover {
+    color: #fb9b00;
+}
+
+.content {
+    margin-left: 215px;
+}

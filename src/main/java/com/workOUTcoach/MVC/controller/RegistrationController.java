@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-public class RegisterController {
+public class RegistrationController {
 
     @Autowired
     UserModel userModel = new UserModel();

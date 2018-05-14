@@ -28,7 +28,7 @@ CREATE TABLE clients (
 
 INSERT INTO clients (id, name, email,coachEmail) VALUES (1, 'Steve Stevinsky', 'superSteve@gmail.com', 'sdoe@gmail.com');
 INSERT INTO clients (id, name, email,coachEmail) VALUES (2, 'Kate Rabbit', 'katyy@gmail.com', 'sdoe@gmail.com');
-
+INSERT INTO clients VALUES (3, 'Different users client', 'email@email.pl', 'wiktoria.malawska@wp.pl');
 
 
 create table authorities (
