@@ -15,9 +15,8 @@ public class ClientController {
     ClientModel clientModel;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String ListClients(Model model){
-        model.addAttribute("clients", clientModel.getAllClients());
+    public String ListClients(Model model) {
+        model.addAttribute("clients", clientModel.getAllUserClients());
         return "clientList";
     }
-
 }
