@@ -40,6 +40,18 @@ public class HibernateConfig {
         return dataSource;
     }
 
+    private Properties getHibernateProperties() {
+        Properties props = new Properties();
+
+        props.put(SHOW_SQL, env.getProperty("hibernate.show_sql"));
+        props.put(HBM2DDL_AUTO, env.getProperty("hibernate.hbm2ddl.auto"));
+        props.put(DIALECT, env.getProperty("hibernate.dialect"));
+        props.put(POOL_SIZE, env.getProperty("hibernate.pool_size"));
+        props.put(CURRENT_SESSION_CONTEXT_CLASS, env.getProperty("hibernate.context_class"));
+
+        return props;
+    }
+
     @Bean
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
@@ -52,17 +64,6 @@ public class HibernateConfig {
         return factoryBean;
     }
 
-    private Properties getHibernateProperties() {
-        Properties props = new Properties();
-
-        props.put(SHOW_SQL, env.getProperty("hibernate.show_sql"));
-        props.put(HBM2DDL_AUTO, env.getProperty("hibernate.hbm2ddl.auto"));
-        props.put(DIALECT, env.getProperty("hibernate.dialect"));
-        props.put(POOL_SIZE, env.getProperty("hibernate.pool_size"));
-        props.put(CURRENT_SESSION_CONTEXT_CLASS, env.getProperty("hibernate.context_class"));
-
-        return props;
-    }
 
     @Bean
     public HibernateTransactionManager getTransactionManager() {
