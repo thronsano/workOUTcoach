@@ -68,14 +68,7 @@ body {
     position: relative;
 }
 
-.btn {
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
-    margin-top: 30px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 250px;
+.btn-basic {
     padding: 7px 10px;
     display: block;
     border: 2px solid transparent;
@@ -89,7 +82,17 @@ body {
     transition: 0.25s;
 }
 
-.btn:hover {
+.btn-login {
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+}
+
+.btn-basic:hover {
     background-color: #fb9b00;
 }
 
@@ -141,4 +144,29 @@ body {
 
 .content {
     margin-left: 215px;
+}
+
+table {
+    border-spacing: 0px;
+}
+
+th {
+    background-color: #282828;
+}
+
+td {
+    padding: 15px;
+}
+
+tr:nth-child(even) {
+    background-color: #282828;
+}
+
+tr:nth-child(odd) {
+    background-color: #1c1c1c;
+}
+
+tbody tr:hover {
+    background-color: #fb9b00;
+    transition: 0.25s;
 }
