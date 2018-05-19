@@ -19,6 +19,9 @@ public class Client {
     @Column
     private String email;
 
+    @Column
+    private String coachEmail;
+
     public Client() {
     }
 
