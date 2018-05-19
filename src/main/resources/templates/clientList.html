@@ -19,11 +19,16 @@
                 <th>Name</th>
                 <th>Email</th>
             </tr>
-            <tr th:each="client : ${clients}">
-                <td th:text="${client.name}" onclick="window.location='clientProfile?'+(this.innerText)"></td>
+            <tr th:each="client : ${clients}" th:onclick="'javascript:rowClicked(\'' + ${client.id} + '\');'">
+                <td th:text="${client.name}"></td>
                 <td th:text="${client.email}"></td>
             </tr>
         </table>
     </section>
 </body>
+<script>
+    function rowClicked(value) {
+        location.href = "/clientProfile?id=" + value;
+    }
+</script>
 </html>
