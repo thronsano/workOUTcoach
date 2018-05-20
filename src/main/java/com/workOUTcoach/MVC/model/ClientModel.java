@@ -2,6 +2,7 @@ package com.workOUTcoach.MVC.model;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +25,10 @@ public class ClientModel {
 
         try {
             session.beginTransaction();
-            return session.createQuery("from Client where coachEmail = '" + auth.getName() + "'").list();
+            Query query = session.createQuery("from Client where coachEmail =:email");
+            query.setParameter("email", auth.getName());
+
+            return query.list();
         } finally {
             session.getTransaction().commit();
             session.close();
