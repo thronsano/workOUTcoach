@@ -116,7 +116,7 @@ body {
     color: lightgrey;
 }
 
-.side-nav {
+nav {
     box-sizing: border-box;
     padding: 20px;
     position: fixed;
@@ -129,16 +129,22 @@ body {
     overflow-x: hidden;
 }
 
-.side-nav-element {
+nav input {
+    cursor: pointer;
+}
+
+.nav-element {
     display: block;
     text-decoration: none;
     font-size: 25px;
     color: #606060;
     padding: 6px 6px 6px 32px;
+    background-color: transparent;
+    border: 0px;
     transition: 0.25s;
 }
 
-.side-nav-element:hover {
+.nav-element:hover {
     color: #fb9b00;
 }
 
