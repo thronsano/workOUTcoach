@@ -20,6 +20,7 @@ public class Client {
     @Column
     private String surname;
 
+    @NotBlank
     @Column
     private String coachEmail;
 
@@ -47,7 +48,7 @@ public class Client {
         this.surname = surname;
     }
 
-    public Client(@NotBlank String name, @NotBlank String surname, String coachEmail, String gymName, String goal, String healthCondition, boolean isActive, String phoneNumber) {
+    public Client(@NotBlank String name, @NotBlank String surname, @NotBlank String coachEmail, String gymName, String goal, String healthCondition, boolean isActive, String phoneNumber) {
         this.name = name;
         this.surname = surname;
         this.coachEmail = coachEmail;
