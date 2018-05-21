@@ -1,5 +1,6 @@
 package com.workOUTcoach.MVC.model;
 
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -33,5 +34,19 @@ public class ClientModel {
             session.getTransaction().commit();
             session.close();
         }
+    }
+
+    public boolean addClient(Client client) {
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.save(client);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            Logger.logError("Exception during adding new client into database");
+            return false;
+        }
+        return true;
     }
 }

@@ -21,14 +21,19 @@ INSERT INTO users(email, password, name, surname) VALUES ('wiktoria.malawska@tes
 CREATE TABLE clients (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  email VARCHAR(100),
+  surname VARCHAR(100) NOT NULL,
   coachEmail VARCHAR(100) NOT NULL,
+  gymName VARCHAR(100),
+  goal VARCHAR(1000),
+  healthCondition VARCHAR(1000),
+  isActive BIT(1),
+  phoneNumber VARCHAR(15),
   FOREIGN KEY (coachEmail) REFERENCES users(email)
 );
 
-INSERT INTO clients (id, name, email,coachEmail) VALUES (1, 'Steve Stevinsky', 'superSteve@gmail.com', 'sdoe@gmail.com');
-INSERT INTO clients (id, name, email,coachEmail) VALUES (2, 'Kate Rabbit', 'katyy@gmail.com', 'sdoe@gmail.com');
-INSERT INTO clients VALUES (3, 'Different users client', 'email@email.pl', 'wiktoria.malawska@wp.pl');
+INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Steve','Stevinsky', 'sdoe@gmail.com', true);
+INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', true);
+INSERT INTO clients (name, surname, coachEmail, isActive)VALUES ('Different users', 'client', 'wiktoria.malawska@wp.pl', true);
 
 
 create table authorities (

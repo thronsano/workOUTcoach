@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <title>Add Client</title>
+    </head>
+    <body>
+        <nav>
+            <a th:href="@{/home}" class="nav-element">Timetable</a>
+            <a th:href="@{/clientList}" class="nav-element">Client List</a>
+            <a th:href="@{/settings}" class="nav-element">Settings</a>
+            <form th:action="@{/logout}" method="post">
+                <input class="nav-element" type="submit" value="Log out"/>
+            </form>
+        </nav>
+
+        <section class="content">
+            <h2>Add Client</h2>
+            <br>
+
+            <form th:action="@{/clientList/addClient}" method="post">
+                <div><input type="text" class="input-field" name="name" placeholder="Name"/></div>
+                <div><input type="text" class="input-field" name="surname" placeholder="Surname"/></div>
+                <div><input type="text" class="input-field" name="gymName" placeholder="Gym name"/></div>
+                <div><input type="text" class="input-field" name="goal" placeholder="Goal"/></div>
+                <div><input type="text" class="input-field" name="condition" placeholder="Condition"/></div>
+                <div><input type="text" class="input-field" name="phoneNumber" placeholder="Phone number"/></div>
+                <div th:if="${dataError}" class="alert alert-success">
+                    You have to fill name and surname field!
+                </div>
+                <button type="submit" class="btn-login btn-basic">ADD CLIENT</button>
+            </form>
+        </section>
+    </body>
+</html>
