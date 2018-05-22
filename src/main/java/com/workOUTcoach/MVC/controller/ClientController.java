@@ -33,10 +33,18 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
-    public String getClient(@RequestParam(value = "id") String id, Model model) {
-        Client client = clientModel.getClient(id);
-        model.addAttribute("client",client);
-        return ("/clientProfile");
+    public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
+        try {
+            Client client = clientModel.getClient(id);
+            model.addAttribute("client",client);
+        } catch (NullPointerException ex){
+            modelAndView.addObject("error","noClientError");
+            modelAndView.setViewName("clientProfile");
+        } catch (Exception ex) {
+            modelAndView.addObject("error", "incorrectIDError");
+            modelAndView.setViewName("clientProfile");
+        }
+        return modelAndView;
     }
 
     @RequestMapping(value = "/clientList/addClient", method = RequestMethod.GET)

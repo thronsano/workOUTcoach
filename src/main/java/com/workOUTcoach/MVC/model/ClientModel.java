@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.workOUTcoach.entity.Client;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 
@@ -49,17 +50,13 @@ public class ClientModel {
         return true;
     }
 
-    public Client getClient(String id){
+    public Client getClient(String id) throws NullPointerException, NumberFormatException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
         int clientID;
         Client client;
 
-        try {
-            clientID = Integer.parseInt(id);
-        } catch (Exception ex) {
-            throw new IllegalArgumentException("Client ID is incorrect");
-        }
+        clientID = Integer.parseInt(id);
 
         session.beginTransaction();
 
@@ -70,9 +67,9 @@ public class ClientModel {
 
         session.getTransaction().commit();
         session.close();
-        if(client==null){
+
+        if (client == null)
             throw new NullPointerException("Client not found!");
-        }
 
         return client;
     }
