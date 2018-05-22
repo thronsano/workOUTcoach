@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.workOUTcoach.entity.Client;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 
@@ -48,5 +47,33 @@ public class ClientModel {
             return false;
         }
         return true;
+    }
+
+    public Client getClient(String id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+        int clientID;
+        Client client;
+
+        try {
+            clientID = Integer.parseInt(id);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Client ID is incorrect");
+        }
+
+        session.beginTransaction();
+
+        Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
+        query.setParameter("email", auth.getName());
+        query.setParameter("clientID", clientID);
+        client = (Client) query.uniqueResult();
+
+        session.getTransaction().commit();
+        session.close();
+        if(client==null){
+            throw new NullPointerException("Client not found!");
+        }
+
+        return client;
     }
 }

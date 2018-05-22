@@ -15,7 +15,7 @@
         </form>
     </nav>
 
-    <section class="content">
+    <section class="content" th:method="GET">
         <h2>Client List</h2>
 
         <form th:action="@{/clientList/addClient}" method="get">

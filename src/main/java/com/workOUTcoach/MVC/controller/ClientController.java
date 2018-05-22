@@ -3,6 +3,8 @@ package com.workOUTcoach.MVC.controller;
 import com.workOUTcoach.MVC.model.ClientModel;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/clientList")
 public class ClientController {
 
     @Autowired
@@ -24,13 +26,20 @@ public class ClientController {
     @Autowired
     UserModel userModel;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/clientList", method = RequestMethod.GET)
     public String ListClients(Model model) {
         model.addAttribute("clients", clientModel.getAllUserClients());
         return "clientList";
     }
 
-    @RequestMapping(value = "/addClient", method = RequestMethod.GET)
+    @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
+    public String getClient(@RequestParam(value = "id") String id, Model model) {
+        Client client = clientModel.getClient(id);
+        model.addAttribute("client",client);
+        return ("/clientProfile");
+    }
+
+    @RequestMapping(value = "/clientList/addClient", method = RequestMethod.GET)
     public ModelAndView addClient(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
@@ -38,7 +47,7 @@ public class ClientController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/addClient", method = RequestMethod.POST)
+    @RequestMapping(value = "/clientList/addClient", method = RequestMethod.POST)
     public ModelAndView addClient(
             @RequestParam("name") String name,
             @RequestParam("surname") String surname,

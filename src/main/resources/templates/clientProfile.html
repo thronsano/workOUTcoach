@@ -5,6 +5,10 @@
     <title>Client Profile</title>
 </head>
 <body>
-    <h1>Hello i'm client profile</h1>
+    <section th:action="@{/clientProfile/?id=${param.id}}" method="GET">
+        <h1>Hi I'm</h1>
+        <div th:text="${client.name} +' '+ ${client.surname}" ></div>
+    </section>
+
 </body>
 </html>
