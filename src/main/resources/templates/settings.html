@@ -8,12 +8,18 @@
 </head>
 <body>
     <nav>
+        <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
         <a th:href="@{/home}" class="nav-element">Timetable</a>
         <a th:href="@{/clientList}" class="nav-element">Client List</a>
+        <a th:href="@{/payments}" class="nav-element">Payments</a>
         <a th:href="@{/settings}" class="nav-element">Settings</a>
         <form th:action="@{/logout}" method="post">
             <input class="nav-element" type="submit" value="Log out"/>
         </form>
     </nav>
+
+    <section class="content">
+        <h1>Settings</h1>
+    </section>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <title>Client Profile</title>
+    <title>Payments</title>
 </head>
 <body>
     <nav>
@@ -18,26 +18,8 @@
         </form>
     </nav>
 
-    <section class="content" th:action="@{/clientProfile/?id=${param.id}}" method="GET">
-        <section name="errors">
-            <div th:if="${error}=='incorrectIDError'">
-                Client ID is incorrect!
-            </div>
-            <div th:if="${error}=='noClientError'">
-                Client not found!
-            </div>
-        </section>
-
-        <section th:if="${client}!=null">
-            <h1>Hi I'm</h1>
-            <div th:text="${client.name} +' '+ ${client.surname}"></div>
-        </section>
-
-        <br>
-
-        <a th:href="@{/addAppointment(id=${param.id})}" style="text-decoration: none">
-            <button class="btn-basic">SET AN APPOINTMENT</button>
-        </a>
+    <section class="content">
+        <h1>Payments</h1>
     </section>
 </body>
 </html>

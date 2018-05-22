@@ -44,9 +44,12 @@ body {
     text-align: center;
 }
 
-.input-field {
+.center-horizontal {
     margin-left: auto;
     margin-right: auto;
+}
+
+.input-field {
     margin-bottom: 15px;
     padding: 10px;
     font-size: 15px;
@@ -80,6 +83,7 @@ body {
     color: white;
     text-decoration: none;
     transition: 0.25s;
+    cursor: pointer;
 }
 
 .btn-login {
@@ -87,8 +91,6 @@ body {
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
     margin-top: 30px;
-    margin-left: auto;
-    margin-right: auto;
     width: 250px;
 }
 
@@ -158,10 +160,12 @@ table {
 
 th {
     background-color: #282828;
+    padding: 5px;
 }
 
 td {
     padding: 15px;
+    cursor: pointer;
 }
 
 tr:nth-child(even) {

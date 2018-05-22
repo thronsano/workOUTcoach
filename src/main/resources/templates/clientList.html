@@ -8,8 +8,10 @@
 </head>
 <body>
     <nav>
+        <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
         <a th:href="@{/home}" class="nav-element">Timetable</a>
         <a th:href="@{/clientList}" class="nav-element">Client List</a>
+        <a th:href="@{/payments}" class="nav-element">Payments</a>
         <a th:href="@{/settings}" class="nav-element">Settings</a>
         <form th:action="@{/logout}" method="post">
             <input class="nav-element" type="submit" value="Log out"/>
@@ -18,15 +20,6 @@
 
     <section class="content" th:method="GET">
         <h2>Client List</h2>
-
-        <form th:action="@{/clientList/addClient}" method="get">
-            <button type="submit" th:href="@{/addClient}" class="btn-basic">Add a new client</button>
-        </form>
-        <div th:if="${clientCreated}" class="alert alert-success">
-            <br/>
-            You have successfully added new client
-        </div>
-        <br>
         <table>
             <thead>
             <th>Name</th>
@@ -40,6 +33,17 @@
             </tr>
             </tbody>
         </table>
+
+        <br>
+
+        <form th:action="@{/clientList/addClient}" method="get">
+            <button type="submit" th:href="@{/addClient}" class="btn-basic">ADD A NEW CLIENT</button>
+        </form>
+
+        <div th:if="${clientCreated}">
+            <br/>
+            You have successfully added new client
+        </div>
     </section>
 </body>
 <script>
