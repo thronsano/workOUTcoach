@@ -37,34 +37,15 @@ public class RegistrationController {
             ModelAndView modelAndView,
             RedirectAttributes redirectAttributes) {
 
-        if (userModel.getUserByEmail(email) != null) {
-            modelAndView.addObject("error", "emailError");
-            modelAndView.setViewName("register");
-            return modelAndView;
-        }
+        String result = userModel.createUser(email, password, password2, name, surname, passwordEncoder);
 
-        if (validateString(email) && validateString(password) && validateString(name) && validateString(surname)) {
-            if (password.equals(password2)) {
-                password = passwordEncoder.encode(password);
-                User user = new User(email, password, name, surname);
-                Authority authority = new Authority(user);
-
-                if (userModel.addUser(user, authority)) {
-                    redirectAttributes.addFlashAttribute("userCreated", true);
-                    modelAndView.setViewName("redirect:/");
-                }
-            } else {
-                modelAndView.addObject("error", "passwordError");
-                modelAndView.setViewName("register");
-            }
+        if (result.equals("correct")) {
+            redirectAttributes.addFlashAttribute("userCreated", true);
+            modelAndView.setViewName("redirect:/");
         } else {
-            modelAndView.addObject("error", "dataError");
+            modelAndView.addObject("error", result);
             modelAndView.setViewName("register");
         }
         return modelAndView;
-    }
-
-    private boolean validateString(String text) {
-        return text != null && !text.isEmpty();
     }
 }

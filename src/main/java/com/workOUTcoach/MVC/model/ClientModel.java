@@ -36,7 +36,7 @@ public class ClientModel {
         }
     }
 
-    public boolean addClient(Client client) {
+    public boolean saveNewClient(Client client) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
@@ -44,7 +44,7 @@ public class ClientModel {
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
-            Logger.logError("Exception during adding new client into database");
+            Logger.logError("Exception during saving new client into database");
             return false;
         }
         return true;
@@ -72,5 +72,24 @@ public class ClientModel {
             throw new NullPointerException("Client not found!");
 
         return client;
+    }
+
+    public String createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) {
+
+        if (validateString(name) && validateString(surname)) {
+            Client client = new Client(name, surname, coachEmail, gymName, goal, condition, true, phoneNumber);
+
+            if (saveNewClient(client)) {
+                return "correct";
+            }else {
+                return "databaseError";
+            }
+        } else {
+            return "dataError";
+        }
+    }
+
+    private boolean validateString(String text) {
+        return text != null && !text.isEmpty();
     }
 }

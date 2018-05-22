@@ -49,9 +49,7 @@ public class ResetTokenModel {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-
             session.save(resetToken);
-
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -68,9 +66,7 @@ public class ResetTokenModel {
             try {
                 Session session = sessionFactory.openSession();
                 session.beginTransaction();
-
                 session.delete(existingToken);
-
                 session.getTransaction().commit();
                 session.close();
             } catch (Exception e) {

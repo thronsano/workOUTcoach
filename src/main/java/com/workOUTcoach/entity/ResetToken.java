@@ -1,7 +1,5 @@
 package com.workOUTcoach.entity;
 
-import com.sun.org.glassfish.external.statistics.annotations.Reset;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

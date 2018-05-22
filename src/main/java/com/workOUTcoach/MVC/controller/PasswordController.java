@@ -2,12 +2,8 @@ package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.ResetTokenModel;
 import com.workOUTcoach.MVC.model.UserModel;
-import com.workOUTcoach.entity.ResetToken;
-import com.workOUTcoach.entity.User;
-import com.workOUTcoach.security.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
 
 @Controller
 public class PasswordController {
@@ -27,10 +22,7 @@ public class PasswordController {
     private ResetTokenModel resetTokenModel;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     // Display forgotPassword page
     @RequestMapping(value = "/forgot", method = RequestMethod.GET)
@@ -42,31 +34,15 @@ public class PasswordController {
     @RequestMapping(value = "/forgot", method = RequestMethod.POST)
     public ModelAndView processForgotPasswordForm(ModelAndView modelAndView, @RequestParam("email") String userEmail, HttpServletRequest request) {
 
-        // Lookup user in database by e-mail
-        User user = userModel.getUserByEmail(userEmail);
+        String result = userModel.sendResetToken(userEmail, request);
 
-        if (user == null) {
-            modelAndView.addObject("errorUser", true);
-        } else {
-            // Generate random 36-character string token for reset password
-            ResetToken resetToken = new ResetToken(userEmail, UUID.randomUUID().toString());
-            resetTokenModel.addResetToken(resetToken);
-
-            String appUrl = request.getScheme() + "://" + request.getServerName();
-
-            // Email message
-            SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
-            passwordResetEmail.setFrom("workOUT.coach@wp.pl");
-            passwordResetEmail.setTo(user.getEmail());
-            passwordResetEmail.setSubject("Password Reset Request");
-            passwordResetEmail.setText("To reset your password, click the link below:\n" + appUrl + ":8080"
-                    + "/reset?token=" + resetToken.getResetToken());
-
-            emailService.sendEmail(passwordResetEmail);
+        if(result.equals("correct")){
             modelAndView.addObject("successEmail", true);
+        } else {
+            modelAndView.addObject("error", result);
         }
-
         modelAndView.setViewName("forgotPassword");
+
         return modelAndView;
 
     }
@@ -79,33 +55,20 @@ public class PasswordController {
     }
 
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
-    public ModelAndView setNewPassword(ModelAndView modelAndView, @RequestParam("token") String token, @RequestParam("password") String password, @RequestParam("confirm") String confirmPassword, RedirectAttributes redir) {
-        User user;
-        ResetToken resetToken;
-        if (token != null && !token.equals("")) {
-            resetToken = resetTokenModel.getByResetToken(token);
-            user = userModel.getUserByEmail(resetToken.getEmail());
+    public ModelAndView setNewPassword(ModelAndView modelAndView,
+                                       @RequestParam("token") String token,
+                                       @RequestParam("password") String password,
+                                       @RequestParam("confirm") String confirmPassword,
+                                       RedirectAttributes redir) {
 
-            if (user != null) {
-                if (password.equals(confirmPassword)) {
-                    user.setPassword(bCryptPasswordEncoder.encode(password));
-                    resetTokenModel.deleteResetToken(user.getEmail());
-                    userModel.saveUsersPassword(user);
-
-                    redir.addFlashAttribute("passwordChanged", true);
-                    modelAndView.setViewName("redirect:/");
-                    return modelAndView;
-                } else {
-                    modelAndView.addObject("errorDifferentPasswords", true);
-                }
-            } else {
-                modelAndView.addObject("errorUser", true);
-            }
-        } else {
-            modelAndView.addObject("errorTokenLost", true);
+        String result = userModel.resetPasswordFromToken(token, password, confirmPassword, passwordEncoder);
+        if(result.equals("correct")){
+            redir.addFlashAttribute("passwordChanged", true);
+            modelAndView.setViewName("redirect:/");
+        }else {
+            modelAndView.addObject("error", result);
             modelAndView.setViewName("resetPassword");
         }
-
         return modelAndView;
     }
 

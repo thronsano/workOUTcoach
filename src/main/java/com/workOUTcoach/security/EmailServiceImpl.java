@@ -20,7 +20,7 @@ public class EmailServiceImpl implements EmailService {
         mailSender.setPort(587);
 
         mailSender.setUsername("workout.coach@wp.pl");
-        mailSender.setPassword("dzikieOgiery");
+        mailSender.setPassword("dzikieOgiery1");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

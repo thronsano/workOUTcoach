@@ -64,23 +64,16 @@ public class ClientController {
             RedirectAttributes redirectAttributes) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String result = clientModel.createClient(name, surname, auth.getName(), gymName, goal, condition, phoneNumber);
 
-        if (validateString(name) && validateString(surname)) {
-                Client client = new Client(name, surname, auth.getName(), gymName, goal, condition, true, phoneNumber);
-
-                if (clientModel.addClient(client)) {
-                    redirectAttributes.addFlashAttribute("clientCreated", true);
-                    modelAndView.setViewName("redirect:/clientList");
-                }
-
-        } else {
-            modelAndView.addObject("error", "dataError");
+        if (result.equals("correct")){
+            redirectAttributes.addFlashAttribute("clientCreated", true);
+            modelAndView.setViewName("redirect:/clientList");
+        }else{
+            modelAndView.addObject("error", result);
             modelAndView.setViewName("addClient");
         }
-        return modelAndView;
-    }
 
-    private boolean validateString(String text) {
-        return text != null && !text.isEmpty();
+        return modelAndView;
     }
 }
