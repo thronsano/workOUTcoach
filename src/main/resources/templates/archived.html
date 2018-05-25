@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>Client List</title>
+</head>
+<body>
+<nav>
+    <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
+    <a th:href="@{/home}" class="nav-element">Timetable</a>
+    <a th:href="@{/clientList}" class="nav-element">Client List</a>
+    <a th:href="@{/payments}" class="nav-element">Payments</a>
+    <a th:href="@{/settings}" class="nav-element">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <input class="nav-element" type="submit" value="Log out"/>
+    </form>
+</nav>
+
+<section class="content" th:method="GET">
+    <h2>Client List</h2>
+    <table>
+        <thead>
+        <th>Name</th>
+        <th>Surname</th>
+        </thead>
+
+        <tbody>
+        <tr th:each="client : ${archivedClients}" th:onclick="'javascript:rowClicked(\'' + ${client.id} + '\');'">
+            <td th:text="${client.name}"></td>
+            <td th:text="${client.surname}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <form th:action="@{/clientList}" method="get">
+        <button type="submit" th:href="@{/clientList}" class="btn-basic">BACK TO ACTIVE CLIENTS</button>
+    </form>
+
+</section>
+</body>
+<script>
+    function rowClicked(value) {
+        location.href = "/clientProfile?id=" + value;
+    }
+</script>
+</html>

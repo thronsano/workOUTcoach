@@ -32,7 +32,9 @@ CREATE TABLE clients (
 
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', true);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', true);
-INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Different users', 'client', 'wiktoria.malawska@wp.pl', true);
+INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Paul', 'Old', 'sdoe@gmail.com', false);
+INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('William', 'McDonald', 'wiktoria.malawska@wp.pl', true);
+INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Mary', 'Unused', 'wiktoria.malawska@wp.pl', false);
 
 create table authorities (
   email     VARCHAR(100) NOT NULL,
