@@ -40,6 +40,12 @@
             <button type="submit" th:href="@{/addClient}" class="btn-basic">ADD A NEW CLIENT</button>
         </form>
 
+        <br>
+
+        <form th:action="@{/clientList/archived}" method="get">
+            <button type="submit" th:href="@{/archived}" class="btn-basic">SHOW ARCHIVED CLIENTS</button>
+        </form>
+
         <div th:if="${clientCreated}">
             <br/>
             You have successfully added new client

@@ -20,13 +20,13 @@ public class ClientModel {
     private SessionFactory sessionFactory;
 
     @SuppressWarnings("unchecked")
-    public List<Client> getAllUserClients() {
+    public List<Client> getArchivedUserClients() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
 
         try {
             session.beginTransaction();
-            Query query = session.createQuery("from Client where coachEmail =:email");
+            Query query = session.createQuery("from Client where coachEmail =:email and isActive=false");
             query.setParameter("email", auth.getName());
 
             return query.list();
@@ -35,6 +35,23 @@ public class ClientModel {
             session.close();
         }
     }
+
+    public List<Client> getActiveUserClients() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Client where coachEmail =:email and isActive=true");
+            query.setParameter("email", auth.getName());
+
+            return query.list();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
 
     public boolean saveNewClient(Client client) {
         try {
@@ -74,6 +91,87 @@ public class ClientModel {
         return client;
     }
 
+
+    public boolean isActive(String id) throws NullPointerException, NumberFormatException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+
+        int clientID;
+        Client client;
+        Boolean isActive = false;
+        clientID = Integer.parseInt(id);
+
+        session.beginTransaction();
+
+        Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
+        query.setParameter("email", auth.getName());
+        query.setParameter("clientID", clientID);
+        client = (Client) query.uniqueResult();
+        isActive = client.isActive();
+
+        session.getTransaction().commit();
+        session.close();
+
+        if (client == null)
+            throw new NullPointerException("Client not found!");
+
+        return isActive;
+    }
+
+    public boolean setActive(String id) throws NullPointerException, NumberFormatException {
+
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Session session = sessionFactory.openSession();
+            int clientID;
+            Client client;
+            clientID = Integer.parseInt(id);
+
+            session.beginTransaction();
+
+            Query query = session.createQuery("from Client where id=:clientID");
+            query.setParameter("clientID", clientID);
+            client = (Client) query.uniqueResult();
+
+            client.setActive(true);
+
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            Logger.logError("Exception during saving user into database");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean archive(String id) throws NullPointerException, NumberFormatException {
+
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Session session = sessionFactory.openSession();
+            int clientID;
+            Client client;
+            clientID = Integer.parseInt(id);
+
+            session.beginTransaction();
+
+            Query query = session.createQuery("from Client where id=:clientID");
+            query.setParameter("clientID", clientID);
+            client = (Client) query.uniqueResult();
+
+            client.setActive(false);
+
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            Logger.logError("Exception during saving user into database");
+            return false;
+        }
+
+        return true;
+    }
+
     public String createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) {
 
         if (validateString(name) && validateString(surname) && validateString(coachEmail)){
@@ -81,7 +179,7 @@ public class ClientModel {
 
             if (saveNewClient(client)) {
                 return "correct";
-            }else {
+            } else {
                 return "databaseError";
             }
         } else {

@@ -25,7 +25,7 @@ public class ClientController {
 
     @RequestMapping(value = "/clientList", method = RequestMethod.GET)
     public String ListClients(Model model) {
-        model.addAttribute("clients", clientModel.getAllUserClients());
+        model.addAttribute("clients", clientModel.getActiveUserClients());
         return "clientList";
     }
 
@@ -33,24 +33,80 @@ public class ClientController {
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
         try {
             Client client = clientModel.getClient(id);
-            model.addAttribute("client",client);
-        } catch (NullPointerException ex){
-            modelAndView.addObject("error","noClientError");
+            model.addAttribute("client", client);
+            boolean isActive = clientModel.isActive(id);
+
+            if (isActive) {
+                modelAndView.addObject("isActive", isActive);
+                modelAndView.setViewName("clientProfile");
+            } else {
+                modelAndView.addObject("isActive", isActive);
+                modelAndView.setViewName("clientProfile");
+            }
+        } catch (NullPointerException ex) {
+            modelAndView.addObject("error", "noClientError");
             modelAndView.setViewName("clientProfile");
         } catch (Exception ex) {
             modelAndView.addObject("error", "incorrectIDError");
             modelAndView.setViewName("clientProfile");
         }
+
         return modelAndView;
     }
 
     @RequestMapping(value = "/clientList/addClient", method = RequestMethod.GET)
-    public ModelAndView addClient(ModelAndView modelAndView){
+    public ModelAndView addClient(ModelAndView modelAndView) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
         modelAndView.setViewName("addClient");
         return modelAndView;
     }
+
+    @RequestMapping(value = "/clientList/archived", method = RequestMethod.GET)
+    public ModelAndView showArchivedClients(ModelAndView modelAndView, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
+        modelAndView.setViewName("archived");
+        model.addAttribute("archivedClients", clientModel.getArchivedUserClients());
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/makeActive", method = RequestMethod.POST)
+    public ModelAndView makeActive(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = clientModel.setActive(id);
+        if (result) {
+            redirectAttributes.addFlashAttribute("activationSuccess", true);
+            redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
+            modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        } else {
+            modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
+            modelAndView.addObject("id", id);
+            modelAndView.addObject("error", "activationError");
+            modelAndView.setViewName("clientProfile");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/makeArchived", method = RequestMethod.POST)
+    public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = clientModel.archive(id);
+        if (result) {
+            redirectAttributes.addFlashAttribute("archivingSuccess", true);
+            redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
+            modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        } else {
+            modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
+            modelAndView.addObject("id", id);
+            modelAndView.addObject("error", "archivingError");
+            modelAndView.setViewName("clientProfile");
+        }
+
+        return modelAndView;
+    }
+
 
     @RequestMapping(value = "/clientList/addClient", method = RequestMethod.POST)
     public ModelAndView addClient(
@@ -66,10 +122,10 @@ public class ClientController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String result = clientModel.createClient(name, surname, auth.getName(), gymName, goal, condition, phoneNumber);
 
-        if (result.equals("correct")){
+        if (result.equals("correct")) {
             redirectAttributes.addFlashAttribute("clientCreated", true);
             modelAndView.setViewName("redirect:/clientList");
-        }else{
+        } else {
             modelAndView.addObject("error", result);
             modelAndView.setViewName("addClient");
         }

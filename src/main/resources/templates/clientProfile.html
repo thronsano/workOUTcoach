@@ -26,6 +26,15 @@
             <div th:if="${error}=='noClientError'">
                 Client not found!
             </div>
+
+            <div th:if="${error}=='archivingError'">
+                Error during archiving
+            </div>
+
+            <div th:if="${error}=='activationError'">
+                Error during activation
+            </div>
+
         </section>
 
         <section th:if="${client}!=null">
@@ -35,9 +44,73 @@
 
         <br>
 
-        <a th:href="@{/addAppointment(id=${param.id})}" style="text-decoration: none">
-            <button class="btn-basic">SET AN APPOINTMENT</button>
-        </a>
+        <div th:if="${isActive}==true">
+            <br/>
+
+            <a th:href="@{/addAppointment(id=${param.id})}" style="text-decoration: none">
+                <button class="btn-basic">SET AN APPOINTMENT</button>
+            </a>
+
+            <br/>
+            <form th:action="@{/clientProfile/makeArchived}" method="post">
+                <input type="hidden" name="clientID" id="clientID">
+                <script>
+                    function GetURLParameter(sParam) {
+
+                        var sPageURL = window.location.search.substring(1);
+                        var sURLVariables = sPageURL.split('&');
+                        for (var i = 0; i < sURLVariables.length; i++) {
+                            var sParameterName = sURLVariables[i].split('=');
+                            if (sParameterName[0] == sParam) {
+                                return sParameterName[1];
+                            }
+                        }
+                    }
+
+                    document.getElementById('clientID').value = window.GetURLParameter('id');
+                </script>
+                <button type="submit" th:href="@{/makeArchived}" class="btn-basic">ARCHIVE</button>
+            </form>
+
+        </div>
+
+        <div th:if="${isActive}==false">
+            <br/>
+            <form th:action="@{/clientProfile/makeActive}" method="post">
+                <input type="hidden" name="clientID" id="clientID">
+                <script>
+                    function GetURLParameter(sParam) {
+
+                        var sPageURL = window.location.search.substring(1);
+                        var sURLVariables = sPageURL.split('&');
+                        for (var i = 0; i < sURLVariables.length; i++) {
+                            var sParameterName = sURLVariables[i].split('=');
+                            if (sParameterName[0] == sParam) {
+                                return sParameterName[1];
+                            }
+                        }
+                    }
+
+                    document.getElementById('clientID').value = window.GetURLParameter('id');
+                </script>
+                <button type="submit" th:href="@{/makeActive}" class="btn-basic">MAKE ACTIVE</button>
+
+            </form>
+
+        </div>
+
+        <div th:if="${activationSuccess}==true">
+            <br>
+            Client activated!
+            <br><br>
+        </div>
+
+        <div th:if="${archivingSuccess}==true">
+            <br>
+            Client archived!
+            <br><br>
+        </div>
+
     </section>
 </body>
 </html>
