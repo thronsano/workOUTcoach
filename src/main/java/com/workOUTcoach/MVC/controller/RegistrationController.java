@@ -1,8 +1,6 @@
 package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.UserModel;
-import com.workOUTcoach.entity.Authority;
-import com.workOUTcoach.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;

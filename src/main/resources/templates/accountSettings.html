@@ -18,35 +18,35 @@
         </form>
     </nav>
 
-    <section class="content">
+    <section class="content" th:action="@{/settings}" method="GET">
         <h1>Settings</h1>
         <button type="submit" class="btn-basic" th:onclick="'javascript:editInformationClicked(\'' + ${user.email} + '\');'">EDIT INFORMATION</button>
         <br>
         <button type="submit" class="btn-basic" th:onclick="'javascript:changePasswordClicked(\'' + ${user.email} + '\');'">CHANGE PASSWORD</button>
-    </section>
 
-    <section class="login-info">
-        <div th:if="${error}=='dataError'">
-            Incorrect data!
-        </div>
-        <div th:if="${error}=='emailError'">
-            Email is already in use!
-        </div>
-        <div th:if="${error}=='databaseError'">
-            Try again!
-        </div>
-        <div th:if="${error}=='passwordError'">
-            Current password is incorrect!
-        </div>
-        <div th:if="${error}=='differentPasswordError'">
-            Passwords aren't identical!
-        </div>
-        <div th:if="${userEdited}">
-            Information saved!
-        </div>
-        <div th:if="${passwordChanged}">
-            Password is changed!
-        </div>
+        <section class="login-info">
+            <div th:if="${error}=='dataError'">
+                Incorrect data!
+            </div>
+            <div th:if="${error}=='emailError'">
+                Email is already in use!
+            </div>
+            <div th:if="${error}=='databaseError'">
+                Try again!
+            </div>
+            <div th:if="${error}=='passwordError'">
+                Current password is incorrect!
+            </div>
+            <div th:if="${error}=='differentPasswordError'">
+                Passwords aren't identical!
+            </div>
+            <div th:if="${userEdited}">
+                Information saved!
+            </div>
+            <div th:if="${passwordChanged}">
+                Password is changed!
+            </div>
+        </section>
     </section>
 
 </body>

@@ -2,6 +2,7 @@ package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.User;
+import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,10 +47,11 @@ public class SettingsController {
     public ModelAndView postEditUser(@RequestParam("email") String email,
                                      @RequestParam("name") String name,
                                      @RequestParam("surname") String surname,
+                                     @RequestParam("hiddenEmail") String hiddenEmail,
                                      ModelAndView modelAndView,
                                      RedirectAttributes redirectAttributes) {
 
-        String result = userModel.editUser(email, name, surname);
+        String result = userModel.editUser(email, name, surname, hiddenEmail);
 
         if (result.equals("correct")) {
             redirectAttributes.addFlashAttribute("userEdited", true);
@@ -82,11 +84,11 @@ public class SettingsController {
 
         if (result.equals("correct")) {
             redirectAttributes.addFlashAttribute("passwordChanged", true);
+            modelAndView.setViewName("redirect:/settings");
         } else {
             redirectAttributes.addFlashAttribute("error", result);
+            modelAndView.setViewName("redirect:/settings");
         }
-
-        modelAndView.setViewName("redirect:/settings");
         return modelAndView;
     }
 }

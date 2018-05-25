@@ -158,21 +158,63 @@ public class UserModel {
         return text != null && !text.isEmpty();
     }
 
-    public String editUser(String email, String name, String surname) {
+    public String editUser(String email, String name, String surname, String hiddenEmail) {
         User user = new User(email, "", name, surname);
         Authority authority = new Authority(user);
 
-        if (editUserInDatabase(user, authority)) {
-            return "correct";
-        } else {
-            return "databaseError";
+        if (!hiddenEmail.equals(email)) {
+            User availableUser = getUserByEmail(email);
+            if (availableUser != null)
+                return "emailError";
         }
+
+        if (!hiddenEmail.equals(email)) {
+            if (editUserAndAuthorityInDatabase(user, authority)) {
+                return "correct";
+            } else {
+                return "databaseError";
+            }
+        } else {
+            if (editUserInDatabase(user)) {
+                return "correct";
+            } else {
+                return "databaseError";
+            }
+        }
+
     }
 
-    private boolean editUserInDatabase(User user, Authority authority) {
+    private boolean editUserInDatabase(User user) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            User updateUser = session.get(User.class, user.getEmail());
+
+            updateUser.setEmail(user.getEmail());
+            updateUser.setName(user.getName());
+            updateUser.setSurname(user.getSurname());
+
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
+            Logger.logError("Exception during saving user into database");
+            return false;
+        } finally {
+            session.close();
+        }
+        return true;
+    }
+
+    //@TODO: delete authority and add new (cannot edit child row)
+    private boolean editUserAndAuthorityInDatabase(User user, Authority authority) {
 
         Session session = sessionFactory.openSession();
         try {
+            session.beginTransaction();
+            Authority updateAuthority = session.get(Authority.class, authority.getAuthority());
+            updateAuthority.setUser(user);
+            session.getTransaction().commit();
+
             session.beginTransaction();
             User updateUser = session.get(User.class, user.getEmail());
             updateUser.setEmail(user.getEmail());
@@ -180,10 +222,6 @@ public class UserModel {
             updateUser.setSurname(user.getSurname());
             session.getTransaction().commit();
 
-            session.beginTransaction();
-            Authority updateAuthority = session.get(Authority.class, authority.getAuthority());
-            updateAuthority.setUser(user);
-            session.getTransaction().commit();
         } catch (Exception e) {
             Logger.logError("Exception during saving user into database");
             return false;
@@ -199,10 +237,11 @@ public class UserModel {
             if (newPassword.equals(confirmNewPassword)) {
                 newPassword = passwordEncoder.encode(newPassword);
                 user = new User(email, newPassword, "", "");
-                if (saveUsersPassword(user))
+                if (saveUsersPassword(user)) {
                     return "correct";
-                else
+                } else {
                     return "databaseError";
+                }
             } else {
                 return "differentPasswordError";
             }
@@ -212,6 +251,8 @@ public class UserModel {
 
     private boolean checkPassword(String email, String password) {
         User user = getUserByEmail(email);
+        Logger.log(user.getPassword());
+        Logger.log(password);
         if (user.getPassword().equals(password))
             return true;
         else
