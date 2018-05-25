@@ -112,9 +112,9 @@ public class UserModel {
                 if (password.equals(confirmPassword)) {
                     user.setPassword(passwordEncoder.encode(password));
                     resetTokenModel.deleteResetToken(user.getEmail());
-                    if(saveUsersPassword(user)) {
+                    if (saveUsersPassword(user)) {
                         return "correct";
-                    }else {
+                    } else {
                         return "databaseError";
                     }
                 } else {
@@ -158,4 +158,63 @@ public class UserModel {
         return text != null && !text.isEmpty();
     }
 
+    public String editUser(String email, String name, String surname) {
+        User user = new User(email, "", name, surname);
+        Authority authority = new Authority(user);
+
+        if (editUserInDatabase(user, authority)) {
+            return "correct";
+        } else {
+            return "databaseError";
+        }
+    }
+
+    private boolean editUserInDatabase(User user, Authority authority) {
+
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            User updateUser = session.get(User.class, user.getEmail());
+            updateUser.setEmail(user.getEmail());
+            updateUser.setName(user.getName());
+            updateUser.setSurname(user.getSurname());
+            session.getTransaction().commit();
+
+            session.beginTransaction();
+            Authority updateAuthority = session.get(Authority.class, authority.getAuthority());
+            updateAuthority.setUser(user);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            Logger.logError("Exception during saving user into database");
+            return false;
+        } finally {
+            session.close();
+        }
+        return true;
+    }
+
+    public String changePassword(String email, String currentPassword, String newPassword, String confirmNewPassword, PasswordEncoder passwordEncoder) {
+        User user;
+        if (checkPassword(email, passwordEncoder.encode(currentPassword))) {
+            if (newPassword.equals(confirmNewPassword)) {
+                newPassword = passwordEncoder.encode(newPassword);
+                user = new User(email, newPassword, "", "");
+                if (saveUsersPassword(user))
+                    return "correct";
+                else
+                    return "databaseError";
+            } else {
+                return "differentPasswordError";
+            }
+        } else
+            return "passwordError";
+    }
+
+    private boolean checkPassword(String email, String password) {
+        User user = getUserByEmail(email);
+        if (user.getPassword().equals(password))
+            return true;
+        else
+            return false;
+    }
 }

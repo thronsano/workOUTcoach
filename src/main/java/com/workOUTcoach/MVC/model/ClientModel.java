@@ -76,7 +76,7 @@ public class ClientModel {
 
     public String createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) {
 
-        if (validateString(name) && validateString(surname)) {
+        if (validateString(name) && validateString(surname) && validateString(coachEmail)){
             Client client = new Client(name, surname, coachEmail, gymName, goal, condition, true, phoneNumber);
 
             if (saveNewClient(client)) {

@@ -34,9 +34,6 @@ public class PasswordControllerTest {
     @Autowired
     UserModel usermodel;
 
-    @Mock
-    User user;
-
     @Autowired
     PasswordController passwordController;
 

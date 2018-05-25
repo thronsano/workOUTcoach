@@ -48,6 +48,12 @@ public class Client {
         this.surname = surname;
     }
 
+    public Client(@NotBlank String name, @NotBlank String surname, @NotBlank String coachEmail) {
+        this.name = name;
+        this.surname = surname;
+        this.coachEmail = coachEmail;
+    }
+
     public Client(@NotBlank String name, @NotBlank String surname, @NotBlank String coachEmail, String gymName, String goal, String healthCondition, boolean isActive, String phoneNumber) {
         this.name = name;
         this.surname = surname;
