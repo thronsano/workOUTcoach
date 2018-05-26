@@ -24,9 +24,9 @@
         <br>
 
         <form th:action="@{/settings/editAccountInformation}" method="post">
-            DON'T CHANGE EMAIL
-            <div><input type="email" class="input-field" name="email" th:value="${user.email}" placeholder="E-mail"/></div>
+            Name:
             <div><input type="text" class="input-field" name="name" th:value="${user.name}"placeholder="Name"/></div>
+            Surname:
             <div><input type="text" class="input-field" name="surname" th:value="${user.surname}" placeholder="Surname"/></div>
             <div><input type="hidden" class="input-field" name="hiddenEmail" th:value="${user.email}"/></div>
 

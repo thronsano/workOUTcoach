@@ -19,9 +19,6 @@ public class PasswordController {
     private UserModel userModel;
 
     @Autowired
-    private ResetTokenModel resetTokenModel;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     // Display forgotPassword page

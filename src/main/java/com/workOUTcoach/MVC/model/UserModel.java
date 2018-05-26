@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -158,30 +159,14 @@ public class UserModel {
         return text != null && !text.isEmpty();
     }
 
-    public String editUser(String email, String name, String surname, String hiddenEmail) {
-        User user = new User(email, "", name, surname);
-        Authority authority = new Authority(user);
+    public String editUser(String hiddenEmail, String name, String surname) {
+        User user = new User(hiddenEmail, "", name, surname);
 
-        if (!hiddenEmail.equals(email)) {
-            User availableUser = getUserByEmail(email);
-            if (availableUser != null)
-                return "emailError";
-        }
-
-        if (!hiddenEmail.equals(email)) {
-            if (editUserAndAuthorityInDatabase(user, authority)) {
-                return "correct";
-            } else {
-                return "databaseError";
-            }
+        if (editUserInDatabase(user)) {
+            return "correct";
         } else {
-            if (editUserInDatabase(user)) {
-                return "correct";
-            } else {
-                return "databaseError";
-            }
+            return "databaseError";
         }
-
     }
 
     private boolean editUserInDatabase(User user) {
@@ -205,35 +190,9 @@ public class UserModel {
         return true;
     }
 
-    //@TODO: delete authority and add new (cannot edit child row)
-    private boolean editUserAndAuthorityInDatabase(User user, Authority authority) {
-
-        Session session = sessionFactory.openSession();
-        try {
-            session.beginTransaction();
-            Authority updateAuthority = session.get(Authority.class, authority.getAuthority());
-            updateAuthority.setUser(user);
-            session.getTransaction().commit();
-
-            session.beginTransaction();
-            User updateUser = session.get(User.class, user.getEmail());
-            updateUser.setEmail(user.getEmail());
-            updateUser.setName(user.getName());
-            updateUser.setSurname(user.getSurname());
-            session.getTransaction().commit();
-
-        } catch (Exception e) {
-            Logger.logError("Exception during saving user into database");
-            return false;
-        } finally {
-            session.close();
-        }
-        return true;
-    }
-
     public String changePassword(String email, String currentPassword, String newPassword, String confirmNewPassword, PasswordEncoder passwordEncoder) {
         User user;
-        if (checkPassword(email, passwordEncoder.encode(currentPassword))) {
+        if (checkPassword(email, currentPassword, passwordEncoder)) {
             if (newPassword.equals(confirmNewPassword)) {
                 newPassword = passwordEncoder.encode(newPassword);
                 user = new User(email, newPassword, "", "");
@@ -249,11 +208,11 @@ public class UserModel {
             return "passwordError";
     }
 
-    private boolean checkPassword(String email, String password) {
+    private boolean checkPassword(String email, String password, PasswordEncoder passwordEncoder) {
         User user = getUserByEmail(email);
         Logger.log(user.getPassword());
         Logger.log(password);
-        if (user.getPassword().equals(password))
+        if (passwordEncoder.matches(password, user.getPassword()))
             return true;
         else
             return false;

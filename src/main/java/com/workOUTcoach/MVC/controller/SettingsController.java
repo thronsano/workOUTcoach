@@ -44,14 +44,13 @@ public class SettingsController {
     }
 
     @RequestMapping(value = "/editAccountInformation", method = RequestMethod.POST)
-    public ModelAndView postEditUser(@RequestParam("email") String email,
-                                     @RequestParam("name") String name,
+    public ModelAndView postEditUser(@RequestParam("name") String name,
                                      @RequestParam("surname") String surname,
                                      @RequestParam("hiddenEmail") String hiddenEmail,
                                      ModelAndView modelAndView,
                                      RedirectAttributes redirectAttributes) {
 
-        String result = userModel.editUser(email, name, surname, hiddenEmail);
+        String result = userModel.editUser(hiddenEmail, name, surname);
 
         if (result.equals("correct")) {
             redirectAttributes.addFlashAttribute("userEdited", true);
