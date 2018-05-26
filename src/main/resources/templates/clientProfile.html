@@ -35,6 +35,11 @@
                 Error during activation
             </div>
 
+            <div th:if="${error}=='deleteError'">
+                Error during deleting
+            </div>
+
+
         </section>
 
         <section th:if="${client}!=null">
@@ -96,6 +101,29 @@
                 <button type="submit" th:href="@{/makeActive}" class="btn-basic">MAKE ACTIVE</button>
 
             </form>
+
+            <br/>
+            <form th:action="@{/clientProfile/deleteClient}" method="post">
+                <input type="hidden" name="clientID2" id="clientID2">
+                <script>
+                    function GetURLParameter(sParam) {
+
+                        var sPageURL = window.location.search.substring(1);
+                        var sURLVariables = sPageURL.split('&');
+                        for (var i = 0; i < sURLVariables.length; i++) {
+                            var sParameterName = sURLVariables[i].split('=');
+                            if (sParameterName[0] == sParam) {
+                                return sParameterName[1];
+                            }
+                        }
+                    }
+
+                    document.getElementById('clientID2').value = window.GetURLParameter('id');
+                </script>
+                <button type="submit" th:href="@{/deleteClient}" class="btn-basic">DELETE</button>
+
+            </form>
+
 
         </div>
 

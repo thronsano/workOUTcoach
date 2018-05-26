@@ -67,7 +67,7 @@ public class ClientModel {
         return true;
     }
 
-    public Client getClient(String id) throws NullPointerException, NumberFormatException {
+    public Client getClientById(String id) throws NullPointerException, NumberFormatException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
         int clientID;
@@ -78,6 +78,7 @@ public class ClientModel {
         session.beginTransaction();
 
         Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
+
         query.setParameter("email", auth.getName());
         query.setParameter("clientID", clientID);
         client = (Client) query.uniqueResult();
@@ -91,8 +92,27 @@ public class ClientModel {
         return client;
     }
 
+    public boolean deleteById(String id) throws NullPointerException, NumberFormatException {
+        Client client = getClientById(id);
+        if (client == null)
+            throw new NullPointerException("Client not found!");
 
-    public boolean isActive(String id) throws NullPointerException, NumberFormatException {
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.delete(client);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            Logger.logError("Exception during deleting client from database");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public boolean isActiveById(String id) throws NullPointerException, NumberFormatException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
 
@@ -118,7 +138,7 @@ public class ClientModel {
         return isActive;
     }
 
-    public boolean setActive(String id) throws NullPointerException, NumberFormatException {
+    public boolean setActiveById(String id) throws NullPointerException, NumberFormatException {
 
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -145,7 +165,7 @@ public class ClientModel {
         return true;
     }
 
-    public boolean archive(String id) throws NullPointerException, NumberFormatException {
+    public boolean archiveById(String id) throws NullPointerException, NumberFormatException {
 
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -174,7 +194,7 @@ public class ClientModel {
 
     public String createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) {
 
-        if (validateString(name) && validateString(surname) && validateString(coachEmail)){
+        if (validateString(name) && validateString(surname) && validateString(coachEmail)) {
             Client client = new Client(name, surname, coachEmail, gymName, goal, condition, true, phoneNumber);
 
             if (saveNewClient(client)) {

@@ -50,7 +50,17 @@
             <br/>
             You have successfully added new client
         </div>
+
+        <div th:if="${deleteSuccess}==true">
+            <br>
+            Client deleted!
+            <br><br>
+        </div>
+
     </section>
+
+
+
 </body>
 <script>
     function rowClicked(value) {

@@ -32,9 +32,9 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
         try {
-            Client client = clientModel.getClient(id);
+            Client client = clientModel.getClientById(id);
             model.addAttribute("client", client);
-            boolean isActive = clientModel.isActive(id);
+            boolean isActive = clientModel.isActiveById(id);
 
             if (isActive) {
                 modelAndView.addObject("isActive", isActive);
@@ -74,7 +74,7 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/makeActive", method = RequestMethod.POST)
     public ModelAndView makeActive(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.setActive(id);
+        boolean result = clientModel.setActiveById(id);
         if (result) {
             redirectAttributes.addFlashAttribute("activationSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
@@ -89,10 +89,28 @@ public class ClientController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/clientProfile/deleteClient", method = RequestMethod.POST)
+    public ModelAndView deleteClient(ModelAndView modelAndView, @RequestParam(value = "clientID2") String id, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = clientModel.deleteById(id);
+        if (result) {
+            redirectAttributes.addFlashAttribute("deleteSuccess", true);
+            redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
+            modelAndView.setViewName("redirect:/clientList");
+        } else {
+            modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
+            modelAndView.addObject("id", id);
+            modelAndView.addObject("error", "deleteError");
+            modelAndView.setViewName("clientProfile");
+        }
+
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/clientProfile/makeArchived", method = RequestMethod.POST)
     public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.archive(id);
+        boolean result = clientModel.archiveById(id);
         if (result) {
             redirectAttributes.addFlashAttribute("archivingSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
