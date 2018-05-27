@@ -3,6 +3,8 @@ package com.workOUTcoach.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "appointments")
@@ -14,10 +16,10 @@ public class Appointment {
     private int id;
 
     @Column
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @Column
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
     private Payment payment;
@@ -34,13 +36,13 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(LocalDate startDate, Client client) {
+    public Appointment(LocalDateTime startDate, Client client) {
         this.startDate = startDate;
-        this.endDate = LocalDate.of(9999, 12, 31);
+        this.endDate = LocalDateTime.of(LocalDate.of(9999, 12, 31), LocalTime.of(23, 59));
         this.client = client;
     }
 
-    public Appointment(LocalDate startDate, LocalDate endDate, Client client) {
+    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.client = client;
@@ -54,19 +56,19 @@ public class Appointment {
         this.id = id;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 

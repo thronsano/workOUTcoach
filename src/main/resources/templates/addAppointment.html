@@ -23,7 +23,9 @@
         <form th:action="@{/addAppointment}" method="POST">
             <input type="hidden" name="id" th:value="${param.id}"/>
 
-            <div>Starting date<input type="date" class="input-field" name="date" placeholder="Date" required/></div>
+            <div>Date<input type="date" class="input-field" name="date" required/></div>
+            <div>Starting time<input type="time" class="input-field" name="startTime" required/></div>
+            <div>Ending time<input type="time" class="input-field" name="endTime" required/></div>
             <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat"/></div>
             <div>Is a part of a scheme:<input type="checkbox" class="input-field" name="scheme"/></div>
 

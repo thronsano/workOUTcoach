@@ -77,8 +77,8 @@ INSERT INTO schemes (title, cycleID, sequence) VALUES ("tytul schematu", 1, 3);
 
 CREATE TABLE appointments (
   id        INT PRIMARY KEY AUTO_INCREMENT,
-  startDate DATE,
-  endDate   DATE,
+  startDate DATETIME,
+  endDate   DATETIME,
   clientID  int,
   schemeID  int,
   CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id)
@@ -91,7 +91,7 @@ INSERT INTO appointments (startDate, endDate, clientID, schemeID) VALUES ('2018-
 
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
-  paymentDate   DATE,
+  paymentDate   DATETIME,
   clientID      INT,
   appointmentID INT,
   isPaid        BIT(1),
