@@ -2,7 +2,7 @@ package com.workOUTcoach.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "appointments")
@@ -13,13 +13,11 @@ public class Appointment {
     @Column
     private int id;
 
-    @NotBlank
     @Column
-    private Date startDate;
+    private LocalDate startDate;
 
-    @NotBlank
     @Column
-    private Date endDate;
+    private LocalDate endDate;
 
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
     private Payment payment;
@@ -36,9 +34,16 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(@NotBlank Date startDate, @NotBlank Date endDate) {
+    public Appointment(LocalDate startDate, Client client) {
+        this.startDate = startDate;
+        this.endDate = LocalDate.of(9999, 12, 31);
+        this.client = client;
+    }
+
+    public Appointment(LocalDate startDate, LocalDate endDate, Client client) {
         this.startDate = startDate;
         this.endDate = endDate;
+        this.client = client;
     }
 
     public int getId() {
@@ -49,19 +54,19 @@ public class Appointment {
         this.id = id;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

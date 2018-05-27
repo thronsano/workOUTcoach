@@ -18,10 +18,29 @@
                 <input class="nav-element" type="submit" value="Log out"/>
             </form>
         </nav>
+
+
+        <form th:action="@{/addAppointment}" method="POST">
+            <input type="hidden" name="id" th:value="${param.id}"/>
+
+            <div>Starting date<input type="date" class="input-field" name="date" placeholder="Date" required/></div>
+            <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat"/></div>
+            <div>Is a part of a scheme:<input type="checkbox" class="input-field" name="scheme"/></div>
+
+            <button type="submit" class="btn-login btn-basic">APPOINT</button>
+
+            <section class="login-info">
+                <div th:if="${status}=='successful'">
+                    Appointment has been set correctly!
+                </div>
+                <div th:if="${status}=='failed'">
+                    Appointment has been not been set!
+                </div>
+            </section>
+        </form>
+
     </section>
-    <form th:action="@{/addAppointment}" th:method="GET">
-        <input type="hidden" name="id" th:value="${param.id}"/>
-        <input class="btn-basic" type="submit" value="ADD"/>
-    </form>
+
+
 </body>
 </html>
