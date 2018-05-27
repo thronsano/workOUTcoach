@@ -32,9 +32,9 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
         try {
-            Client client = clientModel.getClientById(id);
+            Client client = clientModel.getClientById(Integer.parseInt(id));
             model.addAttribute("client", client);
-            boolean isActive = clientModel.isActiveById(id);
+            boolean isActive = clientModel.isActiveById(Integer.parseInt(id));
 
             if (isActive) {
                 modelAndView.addObject("isActive", isActive);
@@ -74,7 +74,7 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/makeActive", method = RequestMethod.POST)
     public ModelAndView makeActive(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.setActiveById(id);
+        boolean result = clientModel.setActiveById(Integer.parseInt(id));
         if (result) {
             redirectAttributes.addFlashAttribute("activationSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
@@ -92,7 +92,7 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/deleteClient", method = RequestMethod.POST)
     public ModelAndView deleteClient(ModelAndView modelAndView, @RequestParam(value = "clientID2") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.deleteById(id);
+        boolean result = clientModel.deleteById(Integer.parseInt(id));
         if (result) {
             redirectAttributes.addFlashAttribute("deleteSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
@@ -110,7 +110,7 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/makeArchived", method = RequestMethod.POST)
     public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.archiveById(id);
+        boolean result = clientModel.archiveById(Integer.parseInt(id));
         if (result) {
             redirectAttributes.addFlashAttribute("archivingSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));

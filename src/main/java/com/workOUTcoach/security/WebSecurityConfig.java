@@ -35,10 +35,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/forgot",
                         "/reset",
                         "/register",
-                        "/*.css",
-                        "/*.svg",
-                        "/*.bmp",
-                        "/*.jpg")
+                        "/styles.css",
+                        "/logo.svg",
+                        "/bg.jpg",
+                        "/favicon.ico")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

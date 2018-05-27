@@ -1,6 +1,7 @@
 package com.workOUTcoach.utility;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,5 +21,4 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/addAppointment").setViewName("addAppointment");
         registry.addViewController("/payments").setViewName("payments");
     }
-
 }

@@ -54,33 +54,33 @@ public class ClientModel {
 
 
     public boolean saveNewClient(Client client) {
+        Session session = sessionFactory.openSession();
+
         try {
-            Session session = sessionFactory.openSession();
             session.beginTransaction();
             session.save(client);
-            session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             Logger.logError("Exception during saving new client into database");
             return false;
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
+
         return true;
     }
 
-    public Client getClientById(String id) throws NullPointerException, NumberFormatException {
+    public Client getClientById(int id) throws NullPointerException, NumberFormatException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
-        int clientID;
-        Client client;
-
-        clientID = Integer.parseInt(id);
-
         session.beginTransaction();
+
+        Client client;
 
         Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
 
         query.setParameter("email", auth.getName());
-        query.setParameter("clientID", clientID);
+        query.setParameter("clientID", id);
         client = (Client) query.uniqueResult();
 
         session.getTransaction().commit();
@@ -92,41 +92,42 @@ public class ClientModel {
         return client;
     }
 
-    public boolean deleteById(String id) throws NullPointerException, NumberFormatException {
+    public boolean deleteById(int id) throws NullPointerException, NumberFormatException {
         Client client = getClientById(id);
+
         if (client == null)
             throw new NullPointerException("Client not found!");
 
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
             session.delete(client);
-            session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             Logger.logError("Exception during deleting client from database");
             return false;
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
 
         return true;
     }
 
 
-    public boolean isActiveById(String id) throws NullPointerException, NumberFormatException {
+    public boolean isActiveById(int id) throws NullPointerException, NumberFormatException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
 
-        int clientID;
         Client client;
         Boolean isActive = false;
-        clientID = Integer.parseInt(id);
-
-        session.beginTransaction();
 
         Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
         query.setParameter("email", auth.getName());
-        query.setParameter("clientID", clientID);
+        query.setParameter("clientID", id);
         client = (Client) query.uniqueResult();
+
         isActive = client.isActive();
 
         session.getTransaction().commit();
@@ -138,19 +139,16 @@ public class ClientModel {
         return isActive;
     }
 
-    public boolean setActiveById(String id) throws NullPointerException, NumberFormatException {
-
+    public boolean setActiveById(int id) throws NullPointerException, NumberFormatException {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Session session = sessionFactory.openSession();
-            int clientID;
-            Client client;
-            clientID = Integer.parseInt(id);
-
             session.beginTransaction();
 
+            Client client;
+
             Query query = session.createQuery("from Client where id=:clientID");
-            query.setParameter("clientID", clientID);
+            query.setParameter("clientID", id);
             client = (Client) query.uniqueResult();
 
             client.setActive(true);
@@ -165,19 +163,15 @@ public class ClientModel {
         return true;
     }
 
-    public boolean archiveById(String id) throws NullPointerException, NumberFormatException {
-
+    public boolean archiveById(int id) throws NullPointerException, NumberFormatException {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Session session = sessionFactory.openSession();
-            int clientID;
             Client client;
-            clientID = Integer.parseInt(id);
 
             session.beginTransaction();
 
             Query query = session.createQuery("from Client where id=:clientID");
-            query.setParameter("clientID", clientID);
+            query.setParameter("clientID", id);
             client = (Client) query.uniqueResult();
 
             client.setActive(false);
@@ -193,18 +187,17 @@ public class ClientModel {
     }
 
     public String createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) {
-
         if (validateString(name) && validateString(surname) && validateString(coachEmail)) {
             Client client = new Client(name, surname, coachEmail, gymName, goal, condition, true, phoneNumber);
 
-            if (saveNewClient(client)) {
+            if (saveNewClient(client))
                 return "correct";
-            } else {
+            else
                 return "databaseError";
-            }
-        } else {
+
+        } else
             return "dataError";
-        }
+
     }
 
     private boolean validateString(String text) {
