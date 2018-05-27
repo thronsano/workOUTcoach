@@ -63,6 +63,8 @@ CREATE TABLE cycles (
   CONSTRAINT fk_cycles_clients FOREIGN KEY (clientID) REFERENCES clients (id)
 );
 
+INSERT INTO cycles(clientID, title) VALUES (6,"tytul cyklu");
+
 CREATE TABLE schemes (
   id       INT PRIMARY KEY AUTO_INCREMENT,
   title    VARCHAR(100),
@@ -71,12 +73,29 @@ CREATE TABLE schemes (
   CONSTRAINT fk_schemes_cycles FOREIGN KEY (cycleID) REFERENCES cycles (id)
 );
 
+INSERT INTO schemes (title,cycleID,sequence) VALUES ("tytul schematu",1,3);
+
 CREATE TABLE appointments (
   id        INT PRIMARY KEY AUTO_INCREMENT,
   startDate DATE,
   endDate   DATE,
-  clientID  int,
-  schemeID  int,
-  CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id),
-  CONSTRAINT fk_appointments_schemes FOREIGN KEY (schemeID) REFERENCES schemes (id)
+  clientID  int ,
+  schemeID  int ,
+  CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id) ON DELETE CASCADE,
+  CONSTRAINT fk_appointments_schemes FOREIGN KEY (schemeID) REFERENCES schemes (id) ON DELETE CASCADE
 );
+
+INSERT INTO appointments (startDate, endDate, clientID,schemeID) VALUES ('2018-02-10', '2018-03-10',6,1);
+
+CREATE TABLE payments (
+  id            INT PRIMARY KEY AUTO_INCREMENT,
+  paymentDate   DATE,
+  clientID      INT ,
+  appointmentID INT ,
+  isPaid        BIT(1),
+  amount        FLOAT,
+  CONSTRAINT fk_payments_clients FOREIGN KEY (clientID) REFERENCES clients (id),
+  CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
+);
+
+INSERT INTO payments(paymentDate,clientID,appointmentID,isPaid,amount) VALUES ('2018-05-15',6,1,false,40.50);

@@ -2,6 +2,8 @@ package com.workOUTcoach.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
@@ -38,6 +40,16 @@ public class Client {
 
     @Column
     private String phoneNumber;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Appointment> appointmentList = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.EAGER)
+    private Cycle cycle;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Payment> paymentList = new ArrayList<>();
+
 
     public Client() {
     }
@@ -81,31 +93,83 @@ public class Client {
         this.name = name;
     }
 
-    public String getSurname() { return surname; }
+    public String getSurname() {
+        return surname;
+    }
 
-    public void setSurname(String surname) { this.surname = surname; }
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 
-    public String getCoachEmail() { return coachEmail; }
+    public String getCoachEmail() {
+        return coachEmail;
+    }
 
-    public void setCoachEmail(String coachEmail) { this.coachEmail = coachEmail; }
+    public void setCoachEmail(String coachEmail) {
+        this.coachEmail = coachEmail;
+    }
 
-    public String getGymName() { return gymName; }
+    public String getGymName() {
+        return gymName;
+    }
 
-    public void setGymName(String gymName) { this.gymName = gymName; }
+    public void setGymName(String gymName) {
+        this.gymName = gymName;
+    }
 
-    public String getGoal() { return goal; }
+    public String getGoal() {
+        return goal;
+    }
 
-    public void setGoal(String goal) { this.goal = goal; }
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
 
-    public String getHealthCondition() { return healthCondition; }
+    public String getHealthCondition() {
+        return healthCondition;
+    }
 
-    public void setHealthCondition(String healthCondition) { this.healthCondition = healthCondition; }
+    public void setHealthCondition(String healthCondition) {
+        this.healthCondition = healthCondition;
+    }
 
-    public boolean isActive() { return isActive; }
+    public boolean isActive() {
+        return isActive;
+    }
 
-    public void setActive(boolean active) { isActive = active; }
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
-    public String  getPhoneNumber() { return phoneNumber; }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public List<Appointment> getAppointmentList() {
+        return appointmentList;
+    }
+
+    public void setAppointmentList(List<Appointment> appointmentList) {
+        this.appointmentList = appointmentList;
+    }
+
+    public Cycle getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(Cycle cycle) {
+        this.cycle = cycle;
+    }
+
+    public List<Payment> getPaymentList() {
+        return paymentList;
+    }
+
+    public void setPaymentList(List<Payment> paymentList) {
+        this.paymentList = paymentList;
+    }
 }

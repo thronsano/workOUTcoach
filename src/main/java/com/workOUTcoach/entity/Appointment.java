@@ -21,38 +21,71 @@ public class Appointment {
     @Column
     private Date endDate;
 
-    @NotBlank
-    @Column
-    private int clientID;
+    @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
+    private Payment payment;
 
-    @Column
-    private int schemeID;
+    @ManyToOne
+    @JoinColumn(name = "clientID")
+    private Client client;
 
-    public Appointment() {}
+    @OneToOne
+    @JoinColumn(name = "schemeID")
+    private Scheme scheme;
 
-    public Appointment(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank int clientID) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.clientID = clientID;
+
+    public Appointment() {
     }
 
-    public int getId() { return id; }
+    public Appointment(@NotBlank Date startDate, @NotBlank Date endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public Date getStartDate() { return startDate; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public void setStartDate(Date startDate) { this.startDate = startDate; }
+    public Date getStartDate() {
+        return startDate;
+    }
 
-    public Date getEndDate() { return endDate; }
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
 
-    public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public Date getEndDate() {
+        return endDate;
+    }
 
-    public int getCoachEmail() { return clientID; }
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
-    public void setCoachEmail(int clientID) { this.clientID = clientID; }
+    public Payment getPayment() {
+        return payment;
+    }
 
-    public int getSchemeID() { return schemeID; }
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
 
-    public void setSchemeID(int schemeID) { this.schemeID = schemeID; }
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Scheme getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(Scheme scheme) {
+        this.scheme = scheme;
+    }
 }
