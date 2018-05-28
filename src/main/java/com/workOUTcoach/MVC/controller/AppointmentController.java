@@ -35,18 +35,16 @@ public class AppointmentController {
                                        @RequestParam(value = "repeat", required = false) boolean repeat,
                                        @RequestParam(value = "scheme", required = false) boolean scheme,
                                        ModelAndView modelAndView) {
-        Logger.log(startTime.toString());
-
-
         try {
             LocalDateTime localDateTimeStart = LocalDateTime.of(startDate, startTime);
             LocalDateTime localDateTimeEnd = LocalDateTime.of(startDate, endTime);
 
             appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, repeat, scheme);
+
             modelAndView.addObject("status", "successful");
         } catch (Exception ex) {
             modelAndView.addObject("status", "failed");
-            ex.printStackTrace();
+            modelAndView.addObject("reason", ex.getMessage());
         }
 
         return modelAndView;

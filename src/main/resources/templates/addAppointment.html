@@ -36,7 +36,7 @@
                     Appointment has been set correctly!
                 </div>
                 <div th:if="${status}=='failed'">
-                    Appointment has been not been set!
+                    <div th:text="${reason}"></div>
                 </div>
             </section>
         </form>
