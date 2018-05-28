@@ -52,7 +52,7 @@ INSERT INTO authorities (email, authority) VALUES ('wiktoria.malawska@test.pl', 
 CREATE TABLE resetToken (
   email      VARCHAR(100) PRIMARY KEY,
   resetToken CHAR(36),
-  date       date,
+  date       DATETIME,
   CONSTRAINT fk_resetToken_users FOREIGN KEY (email) REFERENCES users (email)
 );
 
@@ -79,6 +79,7 @@ CREATE TABLE appointments (
   id        INT PRIMARY KEY AUTO_INCREMENT,
   startDate DATETIME,
   endDate   DATETIME,
+  cyclic    BIT(1),
   clientID  int,
   schemeID  int,
   CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id)
@@ -87,7 +88,7 @@ CREATE TABLE appointments (
     ON DELETE CASCADE
 );
 
-INSERT INTO appointments (startDate, endDate, clientID, schemeID) VALUES ('2018-02-10', '2018-03-10', 6, 1);
+INSERT INTO appointments (startDate, endDate, cyclic, clientID, schemeID) VALUES ('2018-02-10', '2018-03-10', 1, 6, 1);
 
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
