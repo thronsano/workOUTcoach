@@ -92,6 +92,46 @@ public class ClientModel {
         return client;
     }
 
+    public void editClientDetails(int clientID, String newValueOfElement, String elementToChange) throws Exception {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from Client where id=:clientID");
+        query.setParameter("clientID", clientID);
+
+        Client client = (Client) query.uniqueResult();
+
+        session.getTransaction().commit();
+
+        switch (elementToChange) {
+            case "goal":
+                client.setGoal(newValueOfElement);
+                break;
+            case "health":
+                client.setHealthCondition(newValueOfElement);
+                break;
+            case "phone":
+                client.setPhoneNumber(newValueOfElement);
+                break;
+            case "gym":
+                client.setGymName(newValueOfElement);
+                break;
+            default:
+                throw new Exception("Chosen incorrect parameter to edit");
+        }
+
+        session.beginTransaction();
+
+        session.update(client);
+
+        session.getTransaction().commit();
+        session.close();
+
+        if (client == null)
+            throw new NullPointerException("Client not found!");
+    }
+
+
     public boolean deleteById(int id) throws NullPointerException, NumberFormatException {
         Client client = getClientById(id);
 

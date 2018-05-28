@@ -3,6 +3,7 @@ package com.workOUTcoach.MVC.controller;
 import com.workOUTcoach.MVC.model.ClientModel;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,17 +63,78 @@ public class ClientController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/clientProfile/goal", method = RequestMethod.GET)
+    public ModelAndView editGoal(@RequestParam(value = "clientID") String id,
+                                 @RequestParam(value = "goal", required = false) String goal,
+                                 ModelAndView modelAndView) {
+        try {
+            clientModel.editClientDetails(Integer.parseInt(id), goal, "goal");
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/health", method = RequestMethod.GET)
+    public ModelAndView editHealth(@RequestParam(value = "clientID") String id,
+                                   @RequestParam(value = "health", required = false) String health,
+                                   ModelAndView modelAndView) {
+        try {
+            clientModel.editClientDetails(Integer.parseInt(id), health, "health");
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/gym", method = RequestMethod.GET)
+    public ModelAndView editGym(@RequestParam(value = "clientID") String id,
+                                @RequestParam(value = "gym", required = false) String gym,
+                                ModelAndView modelAndView) {
+        try {
+            clientModel.editClientDetails(Integer.parseInt(id), gym, "gym");
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/phone", method = RequestMethod.GET)
+    public ModelAndView editPhone(@RequestParam(value = "clientID") String id,
+                                  @RequestParam(value = "phone", required = false) String phone,
+                                  ModelAndView modelAndView) {
+        try {
+            clientModel.editClientDetails(Integer.parseInt(id), phone, "phone");
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+        
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        return modelAndView;
+    }
+
+
     @RequestMapping(value = "/clientList/archived", method = RequestMethod.GET)
     public ModelAndView showArchivedClients(ModelAndView modelAndView, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
         modelAndView.setViewName("archived");
+
         model.addAttribute("archivedClients", clientModel.getArchivedUserClients());
         return modelAndView;
     }
 
     @RequestMapping(value = "/clientProfile/makeActive", method = RequestMethod.POST)
-    public ModelAndView makeActive(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
+    public ModelAndView makeActive(ModelAndView modelAndView,
+                                   @RequestParam(value = "clientID") String id,
+                                   RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean result = clientModel.setActiveById(Integer.parseInt(id));
         if (result) {

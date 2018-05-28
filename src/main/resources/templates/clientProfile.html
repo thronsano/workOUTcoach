@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script type="text/javascript" src="clientProfileScript.js"></script>
     <title>Client Profile</title>
 </head>
 <body>
@@ -43,8 +44,43 @@
         </section>
 
         <section th:if="${client}!=null">
-            <h1>Hi I'm</h1>
-            <div th:text="${client.name} +' '+ ${client.surname}"></div>
+            <br>
+
+            <h1>This is:</h1>
+            <a th:text="${client.name} +' '+ ${client.surname}"></a>
+
+            <h1>Goal:</h1>
+            <section id="goalSection" style="display: block">
+                <a th:text="${client.goal}" id="goal"></a>
+                <input type="hidden" name="clientID" id="hiddenGoalID" th:value="${param.id}">
+                <button type="button" class="editButton" id="goalButton" th:onclick="'javascript:editGoal()'">Edit
+                </button>
+            </section>
+
+            <h1>Health condition: </h1>
+            <section id="healthSection" style="display: block">
+                <a th:text="${client.healthCondition}" id="health"></a>
+                <input type="hidden" name="clientID" id="hiddenHealthID" th:value="${param.id}">
+                <button type="button" class="editButton" id="healthButton" th:onclick="'java:editHealthCondition()'">
+                    Edit
+                </button>
+            </section>
+
+            <h1>Phone number:</h1>
+            <section id="phoneSection" style="display: block">
+                <a th:text="${client.phoneNumber}" id="phone"></a>
+                <input type="hidden" name="clientID" id="hiddenPhoneID" th:value="${param.id}">
+                <button type="button" class="editButton" id="phoneButton" th:onclick="'java:editPhoneNumber()'">Edit
+                </button>
+            </section>
+
+            <h1>Gym name:</h1>
+            <section id="gymSection" style="display: block">
+                <a th:text="${client.gymName}" id="gym"></a>
+                <input type="hidden" name="clientID" id="hiddenGymID" th:value="${param.id}">
+                <button type="button" class="editButton" id="gymButton" th:onclick="'java:editGymName()'">Edit
+                </button>
+            </section>
         </section>
 
         <br>
