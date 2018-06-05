@@ -1,7 +1,7 @@
 # workOUTcoach
 ### A web app that is going to be a support system for personal trainers.
 
-Application is being developed as a part of university project. It's going to aid the trainers in organizing their schedule, storing clients' data, their progress and keep track of the financials.  
+An application that is being developed as a part of university project. It's going to aid the trainers in organizing their schedule, storing clients' data, their progress and keep track of the financials. Features ability to create accounts, arrange meetings, list as well as archive clients, keep track of payments etc.
   
 Basically the goal is to learn as much about web development as we can! 
 
