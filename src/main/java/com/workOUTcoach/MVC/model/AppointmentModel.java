@@ -6,10 +6,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public class AppointmentModel {
@@ -22,7 +24,7 @@ public class AppointmentModel {
 
 
     public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, boolean scheme) throws Exception {
-        if(endDate.isBefore(startDate))
+        if (endDate.isBefore(startDate))
             throw new Exception("Appointment ends before it starts!");
 
         if (verifyTimeline(startDate, endDate)) {
@@ -62,5 +64,40 @@ public class AppointmentModel {
         session.close();
 
         return count == 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Appointment> listAppointments() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail AND app.startDate>= current_date order by app.endDate");
+            query.setParameter("userEmail", auth.getName());
+
+            return query.list();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public List<Appointment> getArchivedAppointments() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail and app.startDate<current_date order by app.endDate");
+            query.setParameter("userEmail", auth.getName());
+
+            return query.list();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 }

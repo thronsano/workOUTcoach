@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <title>Workout coach</title>
 </head>
 <body>
     <nav>
@@ -18,12 +17,8 @@
         </form>
     </nav>
 
-    <section class="content">
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-    </section>
-
     <section class="content" th:method="GET">
-        <h2>Timetable</h2>
+        <h2>Archive Appointments</h2>
         <table>
             <thead>
             <th>StartDate</th>
@@ -34,7 +29,7 @@
             </thead>
 
             <tbody>
-            <tr th:each="appointment : ${appointments}">
+            <tr th:each="appointment : ${archivedApp}">
                 <td th:text="${#temporals.format(appointment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
                 <td th:text="${#temporals.format(appointment.endDate, 'dd-MM-yyyy HH:mm')}"></td>
                 <td th:text="${appointment.client.name}"></td>
@@ -44,11 +39,12 @@
             </tbody>
         </table>
 
-        <form th:action="@{/home/archivedAppointments}" method="get">
-            <button type="submit" th:href="@{/archivedAppointments}" class="btn-basic">SHOW ARCHIVED APPOINTMENTS</button>
+        <br>
+
+        <form th:action="@{/home}" method="get">
+            <button type="submit" th:href="@{/home}" class="btn-basic">BACK TO ACTIVE APPOINTMENTS</button>
         </form>
 
     </section>
-    <script src="built/bundle.js"></script>
 </body>
 </html>
