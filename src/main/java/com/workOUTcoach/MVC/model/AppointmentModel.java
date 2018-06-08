@@ -6,10 +6,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Repository
 public class AppointmentModel {
@@ -20,29 +22,45 @@ public class AppointmentModel {
     @Autowired
     private ClientModel clientModel;
 
+    @Autowired
+    Environment env;
 
-    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, boolean scheme) throws Exception {
-        if(endDate.isBefore(startDate))
+    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, boolean scheme, int repeatAmount) throws Exception {
+        if (endDate.isBefore(startDate))
             throw new Exception("Appointment ends before it starts!");
 
-        if (verifyTimeline(startDate, endDate)) {
-            Client client = clientModel.getClientById(id);
-            Appointment appointment;
+        if (cyclic && repeatAmount <= 0)
+            throw new Exception("Incorrect repetition amount!");
 
-            appointment = new Appointment(startDate, endDate, client, cyclic);
+        int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
+        Client client = clientModel.getClientById(id);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
 
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
+        for (int i = 0; i < repeatAmount; i++) {
+            LocalDateTime newStartDate = startDate.plusWeeks(i);
+            LocalDateTime newEndDate = endDate.plusWeeks(i);
 
+            if (!timelineClear(newStartDate, newEndDate)) {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                throw new Exception("Appointment from " + newStartDate.format(dateFormatter) + " to " + newEndDate.format(timeFormatter) + " overlaps another one!");
+            }
+
+            Appointment appointment = new Appointment(newStartDate, newEndDate, client);
             session.save(appointment);
 
-            session.getTransaction().commit();
-            session.close();
-        } else
-            throw new Exception("Appointment overlaps another one!");
+            if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
+                session.flush();
+                session.clear();
+            }
+        }
+
+        session.getTransaction().commit();
+        session.close();
     }
 
-    private boolean verifyTimeline(LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd) {
+    private boolean timelineClear(LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 

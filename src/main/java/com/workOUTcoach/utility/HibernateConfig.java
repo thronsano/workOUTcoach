@@ -48,6 +48,7 @@ public class HibernateConfig {
         props.put(DIALECT, env.getProperty("hibernate.dialect"));
         props.put(POOL_SIZE, env.getProperty("hibernate.pool_size"));
         props.put(CURRENT_SESSION_CONTEXT_CLASS, env.getProperty("hibernate.context_class"));
+        props.put(STATEMENT_BATCH_SIZE, env.getProperty("hibernate.jdbc.batch_size"));
 
         return props;
     }

@@ -33,12 +33,13 @@ public class AppointmentController {
                                        @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
                                        @RequestParam(value = "repeat", required = false) boolean repeat,
                                        @RequestParam(value = "scheme", required = false) boolean scheme,
+                                       @RequestParam(value = "repeatAmount", required = false) int repeatAmount,
                                        ModelAndView modelAndView) {
         try {
             LocalDateTime localDateTimeStart = LocalDateTime.of(startDate, startTime);
             LocalDateTime localDateTimeEnd = LocalDateTime.of(startDate, endTime);
 
-            appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, repeat, scheme);
+            appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, repeat, scheme, repeatAmount);
 
             modelAndView.addObject("status", "successful");
         } catch (Exception ex) {
