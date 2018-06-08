@@ -45,10 +45,12 @@ public class ClientController {
                 modelAndView.setViewName("clientProfile");
             }
         } catch (NullPointerException ex) {
-            modelAndView.addObject("error", "noClientError");
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Client not found!");
             modelAndView.setViewName("clientProfile");
         } catch (Exception ex) {
-            modelAndView.addObject("error", "incorrectIDError");
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Client ID is incorrect!");
             modelAndView.setViewName("clientProfile");
         }
 
@@ -114,7 +116,7 @@ public class ClientController {
         } catch (Exception ex) {
             ex.getMessage();
         }
-        
+
         modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;
     }
@@ -137,6 +139,7 @@ public class ClientController {
                                    RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean result = clientModel.setActiveById(Integer.parseInt(id));
+
         if (result) {
             redirectAttributes.addFlashAttribute("activationSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
@@ -144,7 +147,8 @@ public class ClientController {
         } else {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
-            modelAndView.addObject("error", "activationError");
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Error during activation.");
             modelAndView.setViewName("clientProfile");
         }
 
@@ -155,6 +159,7 @@ public class ClientController {
     public ModelAndView deleteClient(ModelAndView modelAndView, @RequestParam(value = "clientID2") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean result = clientModel.deleteById(Integer.parseInt(id));
+
         if (result) {
             redirectAttributes.addFlashAttribute("deleteSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
@@ -162,7 +167,8 @@ public class ClientController {
         } else {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
-            modelAndView.addObject("error", "deleteError");
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Error when deleting client.");
             modelAndView.setViewName("clientProfile");
         }
 
@@ -173,6 +179,7 @@ public class ClientController {
     public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean result = clientModel.archiveById(Integer.parseInt(id));
+
         if (result) {
             redirectAttributes.addFlashAttribute("archivingSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
@@ -180,7 +187,8 @@ public class ClientController {
         } else {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
-            modelAndView.addObject("error", "archivingError");
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Error during archiving the client.");
             modelAndView.setViewName("clientProfile");
         }
 
@@ -200,13 +208,13 @@ public class ClientController {
             RedirectAttributes redirectAttributes) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String result = clientModel.createClient(name, surname, auth.getName(), gymName, goal, condition, phoneNumber);
-
-        if (result.equals("correct")) {
+        try {
+            clientModel.createClient(name, surname, auth.getName(), gymName, goal, condition, phoneNumber);
             redirectAttributes.addFlashAttribute("clientCreated", true);
             modelAndView.setViewName("redirect:/clientList");
-        } else {
-            modelAndView.addObject("error", result);
+        } catch (Exception ex) {
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("addClient");
         }
 
