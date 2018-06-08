@@ -79,7 +79,6 @@ CREATE TABLE appointments (
   id        INT PRIMARY KEY AUTO_INCREMENT,
   startDate DATETIME,
   endDate   DATETIME,
-  cyclic    BIT(1),
   clientID  int,
   schemeID  int,
   CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id)
@@ -98,5 +97,3 @@ CREATE TABLE payments (
   CONSTRAINT fk_payments_clients FOREIGN KEY (clientID) REFERENCES clients (id),
   CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
 );
-
-INSERT INTO payments (paymentDate, clientID, appointmentID, isPaid, amount) VALUES ('2018-05-15', 6, 1, false, 40.50);

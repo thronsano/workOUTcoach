@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script type="text/javascript" src="appointmentScript.js"></script>
     <title>Add appointment</title>
 </head>
 <body>
@@ -26,8 +27,9 @@
             <div>Date<input type="date" class="input-field" name="date" required/></div>
             <div>Starting time<input type="time" class="input-field" name="startTime" required/></div>
             <div>Ending time<input type="time" class="input-field" name="endTime" required/></div>
-            <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat"/></div>
+            <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:showRepeatAmountField()'"/></div>
             <div>Is a part of a scheme:<input type="checkbox" class="input-field" name="scheme"/></div>
+            <div id="hiddenRepeatAmount"></div>
 
             <button type="submit" class="btn-login btn-basic">APPOINT</button>
 

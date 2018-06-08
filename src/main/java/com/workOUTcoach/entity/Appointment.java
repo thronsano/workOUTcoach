@@ -18,9 +18,6 @@ public class Appointment {
     @Column
     private LocalDateTime endDate;
 
-    @Column
-    private boolean cyclic;
-
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
     private Payment payment;
 
@@ -36,11 +33,10 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client, boolean cyclic) {
+    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.client = client;
-        this.cyclic = cyclic;
     }
 
     public int getId() {
