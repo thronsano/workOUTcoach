@@ -21,19 +21,18 @@ public class AppointmentModel {
     private ClientModel clientModel;
 
 
-    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean repeat, boolean scheme) throws Exception {
+    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, boolean scheme) throws Exception {
+        if(endDate.isBefore(startDate))
+            throw new Exception("Appointment ends before it starts!");
+
         if (verifyTimeline(startDate, endDate)) {
             Client client = clientModel.getClientById(id);
             Appointment appointment;
 
-            if (repeat)
-                appointment = new Appointment(startDate, client);
-            else
-                appointment = new Appointment(startDate, endDate, client);
+            appointment = new Appointment(startDate, endDate, client, cyclic);
 
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-
 
             session.save(appointment);
 
@@ -48,10 +47,9 @@ public class AppointmentModel {
         session.beginTransaction();
 
         Query query = session.createQuery("select count(*) from Appointment as app where (" +
-                "(app.startDate >=:newStartDate AND app.endDate >=:newEndDate) OR " +
-                "(app.startDate <=:newStartDate AND app.endDate <=:newEndDate) OR " +
+                "(app.startDate <=:newStartDate AND app.endDate >=:newStartDate) OR " +
                 "(app.startDate >=:newStartDate AND app.endDate <=:newEndDate) OR " +
-                "(app.startDate <=:newStartDate AND app.endDate >=:newEndDate)" +
+                "(app.startDate <=:newEndDate AND app.endDate >=:newEndDate)" +
                 ") AND app.client.coachEmail =:userEmail");
 
         query.setParameter("newStartDate", localDateTimeStart);

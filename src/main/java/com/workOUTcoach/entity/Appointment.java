@@ -1,10 +1,7 @@
 package com.workOUTcoach.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "appointments")
@@ -21,6 +18,9 @@ public class Appointment {
     @Column
     private LocalDateTime endDate;
 
+    @Column
+    private boolean cyclic;
+
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
     private Payment payment;
 
@@ -36,16 +36,11 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(LocalDateTime startDate, Client client) {
-        this.startDate = startDate;
-        this.endDate = LocalDateTime.of(LocalDate.of(9999, 12, 31), LocalTime.of(23, 59));
-        this.client = client;
-    }
-
-    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client) {
+    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client, boolean cyclic) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.client = client;
+        this.cyclic = cyclic;
     }
 
     public int getId() {

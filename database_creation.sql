@@ -88,8 +88,6 @@ CREATE TABLE appointments (
     ON DELETE CASCADE
 );
 
-INSERT INTO appointments (startDate, endDate, cyclic, clientID, schemeID) VALUES ('2018-02-10', '2018-03-10', 1, 6, 1);
-
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
   paymentDate   DATETIME,

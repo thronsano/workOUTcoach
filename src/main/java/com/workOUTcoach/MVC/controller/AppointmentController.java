@@ -1,7 +1,6 @@
 package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.AppointmentModel;
-import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
