@@ -22,7 +22,7 @@ public class Scheme {
     @JoinColumn(name = "cycleID")
     private Cycle cycle;
 
-    @OneToMany(mappedBy = "scheme", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scheme", fetch = FetchType.EAGER)
     private List<Exercise> exerciseList;
 
     @OneToOne

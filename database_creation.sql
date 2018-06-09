@@ -30,8 +30,8 @@ CREATE TABLE clients (
   FOREIGN KEY (coachEmail) REFERENCES users (email)
 );
 
-INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', true);
-INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', true);
+INSERT INTO clients (name, surname, coachEmail, gymName, goal, healthCondition, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', 'Jatomi', 'Muscle gain', 'Healthy', true);
+INSERT INTO clients (name, surname, coachEmail, gymName, goal, healthCondition, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', 'Platinium', 'To be fit!', 'healthy', true);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Paul', 'Old', 'sdoe@gmail.com', false);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('William', 'McDonald', 'wiktoria.malawska@wp.pl', true);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Ann', 'McDonald2', 'wiktoria.malawska@wp.pl', true);
@@ -82,16 +82,20 @@ INSERT INTO schemes (title, cycleID, sequence) VALUES ('Nogi dla leniwych', 1, 3
 INSERT INTO schemes (title, cycleID, sequence) VALUES ('Nogi dla zaawansowanych', 1, 3);
 
 CREATE TABLE appointments (
-  id        INT PRIMARY KEY AUTO_INCREMENT,
-  startDate DATETIME,
-  endDate   DATETIME,
-  clientID  int,
-  schemeID  int,
+  id          INT PRIMARY KEY AUTO_INCREMENT,
+  startDate   DATETIME,
+  endDate     DATETIME,
+  isCancelled BIT(1),
+  clientID    int,
+  schemeID    int,
   CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id)
     ON DELETE CASCADE,
   CONSTRAINT fk_appointments_schemes FOREIGN KEY (schemeID) REFERENCES schemes (id)
     ON DELETE CASCADE
 );
+
+INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (1, '2018-06-10 11:00:00', '2018-06-10 11:40:00', 0, 2, 1);
+INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (2, '2018-06-12 10:00:00', '2018-06-12 11:00:00', 0, 1, 1);
 
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
@@ -104,6 +108,9 @@ CREATE TABLE payments (
   CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
 );
 
+INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (2, 1, 0, 50);
+INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (1, 2, 0, 25);
+
 CREATE TABLE exercises (
   id          int PRIMARY KEY AUTO_INCREMENT,
   name        VARCHAR(100),
@@ -113,4 +120,4 @@ CREATE TABLE exercises (
 );
 
 insert into exercises (name, schemeID, repetitions) VALUES ('przysiady', 1, 10);
-insert into exercises (name, schemeID, repetitions) VALUES ('przysiady na jednej nodze', 1, 10);
+insert into exercises (name, schemeID, repetitions) VALUES ('przysiady na jednej nodze', 2, 10);

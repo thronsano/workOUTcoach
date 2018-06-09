@@ -3,6 +3,7 @@ package com.workOUTcoach.MVC.model;
 import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Scheme;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -38,7 +39,7 @@ public class AppointmentModel {
         if (cyclic && repeatAmount <= 0)
             throw new Exception("Incorrect repetition amount!");
 
-        if(!partOfCycle && schemeId == -1)
+        if (!partOfCycle && schemeId == -1)
             throw new Exception("Scheme hasn't been chosen!");
 
         int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
@@ -59,7 +60,7 @@ public class AppointmentModel {
 
                 Appointment appointment;
 
-                if(!partOfCycle) {
+                if (!partOfCycle) {
                     Scheme scheme = schemeModel.getSchemeById(schemeId);
                     appointment = new Appointment(newStartDate, newEndDate, client, scheme);
                 } else {
@@ -88,7 +89,7 @@ public class AppointmentModel {
                 "(app.startDate <=:newStartDate AND app.endDate >=:newStartDate) OR " +
                 "(app.startDate >=:newStartDate AND app.endDate <=:newEndDate) OR " +
                 "(app.startDate <=:newEndDate AND app.endDate >=:newEndDate)" +
-                ") AND app.client.coachEmail =:userEmail");
+                ") AND app.client.coachEmail =:userEmail AND app.isCancelled = false");
 
         query.setParameter("newStartDate", localDateTimeStart);
         query.setParameter("newEndDate", localDateTimeEnd);
@@ -102,32 +103,44 @@ public class AppointmentModel {
         return count == 0;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Appointment> listAppointments(int offset) {
+    public Appointment getAppointment(int id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
+        Appointment appointment;
+
+
+        session.beginTransaction();
+        Query query = session.createQuery("from Appointment as app where app.id =:id AND app.client.coachEmail =:email");
+        query.setParameter("email", auth.getName());
+        query.setParameter("id", id);
+        appointment = (Appointment) query.uniqueResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        if (appointment == null)
+            throw new NullPointerException("Appointment not found!");
+
+        return appointment;
+    }
+
+    public void setCancelledValue(boolean value, int appointmentID) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
 
         try {
-            LocalDateTime bDate=this.setBegginingDate(offset);
-            LocalDateTime eDate = this.setEndingDate(offset);
-            session.beginTransaction();
-            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail AND app.startDate >=:begginingDate AND app.endDate <=:endingDate order by app.endDate");
-            query.setParameter("userEmail", auth.getName());
-            query.setParameter("begginingDate", bDate);
-            query.setParameter("endingDate", eDate);
+            Query query = session.createQuery("from Appointment where id =:appointmentID");
+            query.setParameter("appointmentID", appointmentID);
 
+            Appointment appointment = (Appointment) query.uniqueResult();
 
-            return query.list();
+            if (appointment == null)
+                throw new NullPointerException("Appointment not found!");
+            else
+                appointment.setIsCancelled(value);
         } finally {
             session.getTransaction().commit();
             session.close();
         }
-    }
-
-    public LocalDateTime setBegginingDate(int offset){
-        return LocalDateTime.now().plusWeeks(offset);
-    }
-    public LocalDateTime setEndingDate(int offset){
-        return LocalDateTime.now().plusWeeks(offset+1);
     }
 }
