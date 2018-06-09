@@ -103,14 +103,19 @@ public class AppointmentModel {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Appointment> listAppointments() {
+    public List<Appointment> listAppointments(int offset) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
 
         try {
+            LocalDateTime bDate=this.setBegginingDate(offset);
+            LocalDateTime eDate = this.setEndingDate(offset);
             session.beginTransaction();
-            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail AND app.startDate>= current_date order by app.endDate");
+            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail AND app.startDate >=:begginingDate AND app.endDate <=:endingDate order by app.endDate");
             query.setParameter("userEmail", auth.getName());
+            query.setParameter("begginingDate", bDate);
+            query.setParameter("endingDate", eDate);
+
 
             return query.list();
         } finally {
@@ -119,21 +124,10 @@ public class AppointmentModel {
         }
     }
 
-
-    @SuppressWarnings("unchecked")
-    public List<Appointment> getArchivedAppointments() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Session session = sessionFactory.openSession();
-
-        try {
-            session.beginTransaction();
-            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail and app.startDate<current_date order by app.endDate");
-            query.setParameter("userEmail", auth.getName());
-
-            return query.list();
-        } finally {
-            session.getTransaction().commit();
-            session.close();
-        }
+    public LocalDateTime setBegginingDate(int offset){
+        return LocalDateTime.now().plusWeeks(offset);
+    }
+    public LocalDateTime setEndingDate(int offset){
+        return LocalDateTime.now().plusWeeks(offset+1);
     }
 }

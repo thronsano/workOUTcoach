@@ -4,8 +4,6 @@ import com.workOUTcoach.MVC.model.AppointmentModel;
 import com.workOUTcoach.MVC.model.SchemeModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class AppointmentController {
@@ -61,15 +60,12 @@ public class AppointmentController {
     }
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public ModelAndView ListAppointments(Model model, ModelAndView modelAndView) {
-        model.addAttribute("appointments", appointmentModel.listAppointments());
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/home/archivedAppointments", method = RequestMethod.GET)
-    public ModelAndView showArchivedAppointments(ModelAndView modelAndView, Model model) {
-        model.addAttribute("archivedApp", appointmentModel.getArchivedAppointments());
-        modelAndView.setViewName("archivedAppointments");
+    public ModelAndView listAppointments(@RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+                                         Model model, ModelAndView modelAndView) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        model.addAttribute("appointments", appointmentModel.listAppointments(offset));
+        model.addAttribute("startingDate", (appointmentModel.setBegginingDate(offset).format(dateFormatter)));
+        model.addAttribute("endingDate", (appointmentModel.setEndingDate(offset)).format(dateFormatter));
         return modelAndView;
     }
 }
