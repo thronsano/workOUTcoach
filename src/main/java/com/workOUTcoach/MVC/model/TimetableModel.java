@@ -19,19 +19,18 @@ public class TimetableModel {
 
 
     @SuppressWarnings("unchecked")
-    public List<Appointment> listAppointments(int offset) {
+    public List<Appointment> listAppointments(int offset, boolean showCancelled) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
 
         try {
-            LocalDateTime bDate=this.setBeginingDate(offset);
+            LocalDateTime bDate = this.setBeginningDate(offset);
             LocalDateTime eDate = this.setEndingDate(offset);
             session.beginTransaction();
-            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail AND app.startDate >=:begginingDate AND app.endDate <=:endingDate order by app.endDate");
+            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:userEmail AND app.startDate >=:beginningDate AND app.endDate <=:endingDate " + (!showCancelled ? "AND app.isCancelled = false " : "") + "order by app.endDate");
             query.setParameter("userEmail", auth.getName());
-            query.setParameter("begginingDate", bDate);
+            query.setParameter("beginningDate", bDate);
             query.setParameter("endingDate", eDate);
-
 
             return query.list();
         } finally {
@@ -40,11 +39,12 @@ public class TimetableModel {
         }
     }
 
-    public LocalDateTime setBeginingDate(int offset){
+    public LocalDateTime setBeginningDate(int offset) {
         return LocalDateTime.now().plusWeeks(offset);
     }
-    public LocalDateTime setEndingDate(int offset){
-        return LocalDateTime.now().plusWeeks(offset+1);
+
+    public LocalDateTime setEndingDate(int offset) {
+        return LocalDateTime.now().plusWeeks(offset + 1);
     }
 
 }

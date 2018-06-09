@@ -90,7 +90,7 @@ CREATE TABLE appointments (
 );
 
 INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (1, '2018-06-10 11:00:00', '2018-06-10 11:40:00', 0, 2, 1);
-INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (2, '2018-06-12 10:00:00', '2018-06-12 11:00:00', 0, 2, 1);
+INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (2, '2018-06-12 10:00:00', '2018-06-12 11:00:00', 0, 1, 1);
 
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
@@ -104,7 +104,7 @@ CREATE TABLE payments (
 );
 
 INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (2, 1, 0, 50);
-INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (2, 2, 0, 25);
+INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (1, 2, 0, 25);
 
 CREATE TABLE exercises (
   id          int PRIMARY KEY AUTO_INCREMENT,
@@ -115,4 +115,4 @@ CREATE TABLE exercises (
 );
 
 insert into exercises (name, schemeID, repetitions) VALUES ('przysiady', 1, 10);
-insert into exercises (name, schemeID, repetitions) VALUES ('przysiady na jednej nodze', 1, 10);
+insert into exercises (name, schemeID, repetitions) VALUES ('przysiady na jednej nodze', 2, 10);

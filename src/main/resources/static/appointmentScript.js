@@ -1,4 +1,4 @@
-function showRepeatAmountField() {
+function toggleRepeatAmountField() {
     var repeatElement = document.getElementById("hiddenRepeatAmount");
 
     if (repeatElement.innerHTML.length === 0)

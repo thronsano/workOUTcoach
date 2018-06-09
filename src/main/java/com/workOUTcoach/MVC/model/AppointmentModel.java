@@ -89,7 +89,7 @@ public class AppointmentModel {
                 "(app.startDate <=:newStartDate AND app.endDate >=:newStartDate) OR " +
                 "(app.startDate >=:newStartDate AND app.endDate <=:newEndDate) OR " +
                 "(app.startDate <=:newEndDate AND app.endDate >=:newEndDate)" +
-                ") AND app.client.coachEmail =:userEmail");
+                ") AND app.client.coachEmail =:userEmail AND app.isCancelled = false");
 
         query.setParameter("newStartDate", localDateTimeStart);
         query.setParameter("newEndDate", localDateTimeEnd);
