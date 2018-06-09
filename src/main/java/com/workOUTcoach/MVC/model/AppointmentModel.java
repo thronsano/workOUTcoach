@@ -3,6 +3,7 @@ package com.workOUTcoach.MVC.model;
 import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Scheme;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -121,5 +122,25 @@ public class AppointmentModel {
             throw new NullPointerException("Appointment not found!");
 
         return appointment;
+    }
+
+    public void setCancelledValue(boolean value, int appointmentID) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            Query query = session.createQuery("from Appointment where id =:appointmentID");
+            query.setParameter("appointmentID", appointmentID);
+
+            Appointment appointment = (Appointment) query.uniqueResult();
+
+            if (appointment == null)
+                throw new NullPointerException("Appointment not found!");
+            else
+                appointment.setIsCancelled(value);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 }
