@@ -50,6 +50,8 @@ public class Client {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Payment> paymentList = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Scheme> schemeList = new ArrayList<>();
 
     public Client() {
     }
@@ -75,6 +77,14 @@ public class Client {
         this.healthCondition = healthCondition;
         this.isActive = isActive;
         this.phoneNumber = phoneNumber;
+    }
+
+    public List<Scheme> getSchemeList() {
+        return schemeList;
+    }
+
+    public void setSchemeList(List<Scheme> schemeList) {
+        this.schemeList = schemeList;
     }
 
     public int getId() {

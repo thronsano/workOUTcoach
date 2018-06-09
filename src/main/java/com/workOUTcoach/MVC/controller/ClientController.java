@@ -35,7 +35,7 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
-        modelAndView.addObject("schemeList", schemeModel.schemeList());
+        modelAndView.addObject("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
 
         try {
             Client client = clientModel.getClientById(Integer.parseInt(id));

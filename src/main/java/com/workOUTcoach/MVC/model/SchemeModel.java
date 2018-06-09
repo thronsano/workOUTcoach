@@ -79,6 +79,51 @@ public class SchemeModel {
         return true;
     }
 
+    public List<Scheme> getUnusedSchemeListByClient(int clientId) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        List<Scheme> schemes = null;
+        try {
+            Query query = session.createQuery("from Scheme where clientID=:clientId AND cycleID=null");
+            query.setParameter("clientId", clientId);
+            schemes = query.list();
+
+        } catch (Exception e) {
+            Logger.logError("Exception during access to cycle");
+
+            session.getTransaction().commit();
+            session.close();
+
+
+        }
+        return schemes;
+    }
+
+    public List<Scheme> getUsedSchemeListByClient(int clientId) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        Cycle cycle;
+        List<Scheme> schemes = null;
+        try {
+            cycle = cycleModel.getCycleByClientId(clientId);
+            int cycleId = cycle.getId();
+            Query query = session.createQuery("from Scheme where clientID=:clientId AND cycleID=:cycleId");
+            query.setParameter("clientId", clientId);
+            query.setParameter("cycleId", cycleId);
+            schemes = query.list();
+
+        } catch (Exception e) {
+            Logger.logError("Exception during access to cycle");
+
+            session.getTransaction().commit();
+            session.close();
+
+
+        }
+        return schemes;
+    }
+
+
     @SuppressWarnings("unchecked")
     public List<Exercise> listExercise(int appointmentID) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

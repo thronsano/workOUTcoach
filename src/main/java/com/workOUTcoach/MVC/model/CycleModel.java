@@ -33,9 +33,7 @@ public class CycleModel {
     public Cycle getCycleByClientId(int clientId) throws NotFoundException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-
         Cycle cycle;
-
         Query query = session.createQuery("from Cycle where clientID=:clientId");
 
         query.setParameter("clientId", clientId);

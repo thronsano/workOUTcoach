@@ -19,6 +19,10 @@ public class Scheme {
     private int sequence;
 
     @ManyToOne
+    @JoinColumn(name = "clientID")
+    private Client client;
+
+    @ManyToOne
     @JoinColumn(name = "cycleID")
     private Cycle cycle;
 
@@ -28,12 +32,21 @@ public class Scheme {
     @OneToOne
     private Appointment appointment;
 
-    public Scheme(String title, int sequence) {
+    public Scheme(String title, int sequence, Client client) {
         this.title = title;
         this.sequence = sequence;
+        this.client=client;
     }
 
     public Scheme() {
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public int getId() {
