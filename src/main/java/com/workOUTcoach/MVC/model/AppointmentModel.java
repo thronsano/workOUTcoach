@@ -2,7 +2,9 @@ package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.entity.Payment;
 import com.workOUTcoach.entity.Scheme;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -27,6 +30,9 @@ public class AppointmentModel {
 
     @Autowired
     private ClientModel clientModel;
+
+    @Autowired
+    private PaymentModel paymentModel;
 
     @Autowired
     Environment env;
@@ -46,8 +52,12 @@ public class AppointmentModel {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
+        System.out.println("----------------------------------------------TEST1");
+        List<Payment> payments = new LinkedList<>();
         try {
             for (int i = 0; i < repeatAmount; i++) {
+                System.out.println("----------------------------------------------TEST "+i);
+
                 LocalDateTime newStartDate = startDate.plusWeeks(i);
                 LocalDateTime newEndDate = endDate.plusWeeks(i);
 
@@ -58,15 +68,17 @@ public class AppointmentModel {
                 }
 
                 Appointment appointment;
-
                 if(!partOfCycle) {
                     Scheme scheme = schemeModel.getSchemeById(schemeId);
                     appointment = new Appointment(newStartDate, newEndDate, client, scheme);
                 } else {
                     appointment = new Appointment(newStartDate, newEndDate, client);
                 }
-
+                Payment payment = new Payment(appointment, 100);
+                appointment.setPayment(payment);
                 session.save(appointment);
+
+                payments.add(payment);
 
                 if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
                     session.flush();
@@ -76,6 +88,10 @@ public class AppointmentModel {
         } finally {
             session.getTransaction().commit();
             session.close();
+        }
+
+        for (Payment p : payments) {
+            paymentModel.setNewPayment(p);
         }
     }
 
