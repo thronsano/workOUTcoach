@@ -18,8 +18,31 @@
         </form>
     </nav>
 
-    <section class="content">
+    <section class="content" th:method="GET">
         <h1>Payments</h1>
+
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Amount</th>
+                <th>Paid</th>
+                <th>Payment Date</th>
+            </thead>
+
+            <tbody>
+                <tr th:each="payment : ${payments}" th:onclick="'javascript:rowClicked(\'' + ${payment.id} + '\');'">
+
+                    <td th:text="${payment.appointment.client.name}"></td>
+                    <td th:text="${payment.appointment.client.surname}"></td>
+                    <td th:text="${payment.amount}"></td>
+                    <td th:text="${payment.isPaid()}"></td>
+                    <td th:text="${payment.paymentDate}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
     </section>
 </body>
 </html>

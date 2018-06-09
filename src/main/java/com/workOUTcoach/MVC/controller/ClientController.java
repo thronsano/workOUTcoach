@@ -3,7 +3,6 @@ package com.workOUTcoach.MVC.controller;
 import com.workOUTcoach.MVC.model.ClientModel;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.Client;
-import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
