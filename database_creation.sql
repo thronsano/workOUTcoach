@@ -30,8 +30,8 @@ CREATE TABLE clients (
   FOREIGN KEY (coachEmail) REFERENCES users (email)
 );
 
-INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', true);
-INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', true);
+INSERT INTO clients (name, surname, coachEmail, gymName, goal, healthCondition, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', 'Jatomi', 'Muscle gain', 'Healthy', true);
+INSERT INTO clients (name, surname, coachEmail, gymName, goal, healthCondition, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', 'Platinium', 'To be fit!', 'healthy', true);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Paul', 'Old', 'sdoe@gmail.com', false);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('William', 'McDonald', 'wiktoria.malawska@wp.pl', true);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Ann', 'McDonald2', 'wiktoria.malawska@wp.pl', true);
@@ -88,6 +88,9 @@ CREATE TABLE appointments (
     ON DELETE CASCADE
 );
 
+INSERT INTO appointments (id, startDate, endDate, clientID, schemeID) values (1, '2018-06-10 11:00:00', '2018-06-10 11:40:00', 2, 1);
+INSERT INTO appointments (id, startDate, endDate, clientID, schemeID) values (2, '2018-06-12 10:00:00', '2018-06-12 11:00:00', 2, 1);
+
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
   paymentDate   DATETIME,
@@ -98,6 +101,9 @@ CREATE TABLE payments (
   CONSTRAINT fk_payments_clients FOREIGN KEY (clientID) REFERENCES clients (id),
   CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
 );
+
+INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (2, 1, 0, 50);
+INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (2, 2, 0, 25);
 
 CREATE TABLE exercises (
   id          int PRIMARY KEY AUTO_INCREMENT,
