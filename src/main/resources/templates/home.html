@@ -38,6 +38,17 @@
             <input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:toggleDisplayArchived()'" checked/>
         </div>
 
+        <form method="get">
+            <button type="button" class="btn-basic"
+                    th:onclick="'java:buttonClicked(-1);'">SHOW PREVIOUS WEEK
+            </button>
+            <br>
+            <button type="button" class="btn-basic"
+                    th:onclick="'java:buttonClicked(1);'">SHOW NEXT WEEK
+            </button>
+            <br>
+        </form>
+
         <table>
             <thead>
             <th>Starting date</th>
@@ -58,14 +69,6 @@
             </tr>
             </tbody>
         </table>
-        <form method="get">
-            <button type="button" class="btn-basic"
-                    th:onclick="'java:buttonClicked(-1);'">SHOW PREVIOUS WEEK
-            </button>
-            <button type="button" class="btn-basic"
-                    th:onclick="'java:buttonClicked(1);'">SHOW NEXT WEEK
-            </button>
-        </form>
     </section>
     <script src="built/bundle.js"></script>
 </body>
