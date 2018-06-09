@@ -181,7 +181,6 @@ public class ClientModel {
 
     public boolean setActiveById(int id) throws NullPointerException, NumberFormatException {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Session session = sessionFactory.openSession();
             session.beginTransaction();
 
@@ -226,18 +225,15 @@ public class ClientModel {
         return true;
     }
 
-    public String createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) {
+    public void createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) throws Exception {
         if (validateString(name) && validateString(surname) && validateString(coachEmail)) {
             Client client = new Client(name, surname, coachEmail, gymName, goal, condition, true, phoneNumber);
 
-            if (saveNewClient(client))
-                return "correct";
-            else
-                return "databaseError";
-
-        } else
-            return "dataError";
-
+            if (!saveNewClient(client))
+                throw new Exception("Error occurred during creating new client! Try again.");
+        } else {
+            throw new Exception("You have to fill name and surname field!");
+        }
     }
 
     private boolean validateString(String text) {

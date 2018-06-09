@@ -20,28 +20,9 @@
     </nav>
 
     <section class="content" th:action="@{/clientProfile/?id=${param.id}}" method="GET">
-        <section name="errors">
-            <div th:if="${error}=='incorrectIDError'">
-                Client ID is incorrect!
-            </div>
-            <div th:if="${error}=='noClientError'">
-                Client not found!
-            </div>
-
-            <div th:if="${error}=='archivingError'">
-                Error during archiving
-            </div>
-
-            <div th:if="${error}=='activationError'">
-                Error during activation
-            </div>
-
-            <div th:if="${error}=='deleteError'">
-                Error during deleting
-            </div>
-
-
-        </section>
+        <div th:if="${status}=='failed'">
+            <div th:text="${reason}"></div>
+        </div>
 
         <section th:if="${client}!=null">
             <br>
@@ -86,30 +67,14 @@
         <br>
 
         <div th:if="${isActive}==true">
-            <br/>
-
+            <br>
             <a th:href="@{/addAppointment(id=${param.id})}" style="text-decoration: none">
                 <button class="btn-basic">SET AN APPOINTMENT</button>
             </a>
-
-            <br/>
+            <br>
             <form th:action="@{/clientProfile/makeArchived}" method="post">
                 <input type="hidden" name="clientID" id="clientID">
-                <script>
-                    function GetURLParameter(sParam) {
-
-                        var sPageURL = window.location.search.substring(1);
-                        var sURLVariables = sPageURL.split('&');
-                        for (var i = 0; i < sURLVariables.length; i++) {
-                            var sParameterName = sURLVariables[i].split('=');
-                            if (sParameterName[0] == sParam) {
-                                return sParameterName[1];
-                            }
-                        }
-                    }
-
-                    document.getElementById('clientID').value = window.GetURLParameter('id');
-                </script>
+                <script>document.getElementById('clientID').value = window.GetURLParameter('id');</script>
                 <button type="submit" th:href="@{/makeArchived}" class="btn-basic">ARCHIVE</button>
             </form>
 
@@ -119,21 +84,7 @@
             <br/>
             <form th:action="@{/clientProfile/makeActive}" method="post">
                 <input type="hidden" name="clientID" id="clientID">
-                <script>
-                    function GetURLParameter(sParam) {
-
-                        var sPageURL = window.location.search.substring(1);
-                        var sURLVariables = sPageURL.split('&');
-                        for (var i = 0; i < sURLVariables.length; i++) {
-                            var sParameterName = sURLVariables[i].split('=');
-                            if (sParameterName[0] == sParam) {
-                                return sParameterName[1];
-                            }
-                        }
-                    }
-
-                    document.getElementById('clientID').value = window.GetURLParameter('id');
-                </script>
+                <script>document.getElementById('clientID').value = window.GetURLParameter('id');</script>
                 <button type="submit" th:href="@{/makeActive}" class="btn-basic">MAKE ACTIVE</button>
 
             </form>
@@ -141,40 +92,18 @@
             <br/>
             <form th:action="@{/clientProfile/deleteClient}" method="post">
                 <input type="hidden" name="clientID2" id="clientID2">
-                <script>
-                    function GetURLParameter(sParam) {
-
-                        var sPageURL = window.location.search.substring(1);
-                        var sURLVariables = sPageURL.split('&');
-                        for (var i = 0; i < sURLVariables.length; i++) {
-                            var sParameterName = sURLVariables[i].split('=');
-                            if (sParameterName[0] == sParam) {
-                                return sParameterName[1];
-                            }
-                        }
-                    }
-
-                    document.getElementById('clientID2').value = window.GetURLParameter('id');
-                </script>
+                <script>document.getElementById('clientID2').value = window.GetURLParameter('id');</script>
                 <button type="submit" th:href="@{/deleteClient}" class="btn-basic">DELETE</button>
-
             </form>
-
-
         </div>
 
         <div th:if="${activationSuccess}==true">
-            <br>
-            Client activated!
-            <br><br>
+            <br>Client activated!<br><br>
         </div>
 
         <div th:if="${archivingSuccess}==true">
-            <br>
-            Client archived!
-            <br><br>
+            <br>Client archived!<br><br>
         </div>
-
     </section>
 </body>
 </html>

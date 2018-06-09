@@ -28,15 +28,11 @@
             <div><input type="text" class="input-field" name="gymName" placeholder="Gym name"/></div>
             <div><input type="text" class="input-field" name="goal" placeholder="Goal"/></div>
             <div><input type="text" class="input-field" name="condition" placeholder="Condition"/></div>
-            <div><input type="text" class="input-field" name="phoneNumber" placeholder="Phone number"/></div>
+            <div><input type="number" class="input-field" name="phoneNumber" placeholder="Phone number"/></div>
             <br/>
-            <div th:if="${error}=='dataError'" class="alert alert-success">
-                You have to fill name and surname field!
-                <br/>
-            </div>
-            <div th:if="${error}=='databaseError'" class="alert alert-success">
-                Error occurred during creating new client! Try again.
-                <br/>
+
+            <div th:if="${status}=='failed'">
+                <div th:text="${reason}"></div>
             </div>
             <button type="submit" class="btn-login btn-basic">ADD CLIENT</button>
         </form>

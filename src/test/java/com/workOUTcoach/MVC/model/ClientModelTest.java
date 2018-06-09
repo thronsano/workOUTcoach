@@ -69,9 +69,8 @@ public class ClientModelTest {
         session.close();
     }
 
-    @Test
-    public void createClientTest() {
-
-        assertEquals("dataError", clientModel.createClient("", "", "", "", "", "", ""));
+    @Test(expected = Exception.class)
+    public void createClientTest() throws Exception {
+        clientModel.createClient("", "", "", "", "", "", "");
     }
 }
