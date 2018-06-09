@@ -39,7 +39,7 @@ public class AppointmentController {
             LocalDateTime localDateTimeStart = LocalDateTime.of(startDate, startTime);
             LocalDateTime localDateTimeEnd = LocalDateTime.of(startDate, endTime);
 
-            appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, repeat, scheme, repeatAmount);
+            appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, repeat, partOfCycle, repeatAmount);
 
             modelAndView.addObject("status", "successful");
         } catch (Exception ex) {
