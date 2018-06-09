@@ -31,9 +31,9 @@ public class AppointmentController {
                                        @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                        @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
                                        @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
-                                       @RequestParam(value = "repeat", required = false) boolean repeat,
-                                       @RequestParam(value = "scheme", required = false) boolean scheme,
-                                       @RequestParam(value = "repeatAmount", required = false) int repeatAmount,
+                                       @RequestParam(value = "repeat", required = false, defaultValue = "false") boolean repeat,
+                                       @RequestParam(value = "cycle", required = false, defaultValue = "false") boolean partOfCycle,
+                                       @RequestParam(value = "repeatAmount", required = false, defaultValue = "0") int repeatAmount,
                                        ModelAndView modelAndView) {
         try {
             LocalDateTime localDateTimeStart = LocalDateTime.of(startDate, startTime);
