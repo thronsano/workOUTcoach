@@ -39,7 +39,7 @@ public class AppointmentController {
                                        @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
                                        @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
                                        @RequestParam(value = "repeat", required = false, defaultValue = "false") boolean cyclic,
-                                       @RequestParam(value = "repeatAmount", required = false, defaultValue = "0") int repeatAmount,
+                                       @RequestParam(value = "repeatAmount", required = false, defaultValue = "1") int repeatAmount,
                                        @RequestParam(value = "cycle", required = false, defaultValue = "false") boolean partOfCycle,
                                        @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
                                        ModelAndView modelAndView) {
