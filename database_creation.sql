@@ -63,7 +63,7 @@ CREATE TABLE cycles (
   CONSTRAINT fk_cycles_clients FOREIGN KEY (clientID) REFERENCES clients (id)
 );
 
-INSERT INTO cycles (clientID, title) VALUES (6, "tytul cyklu");
+INSERT INTO cycles (clientID, title) VALUES (1, 'Rzezba');
 
 CREATE TABLE schemes (
   id       INT PRIMARY KEY AUTO_INCREMENT,
@@ -73,7 +73,8 @@ CREATE TABLE schemes (
   CONSTRAINT fk_schemes_cycles FOREIGN KEY (cycleID) REFERENCES cycles (id)
 );
 
-INSERT INTO schemes (title, cycleID, sequence) VALUES ("tytul schematu", 1, 3);
+INSERT INTO schemes (title, cycleID, sequence) VALUES ('Nogi dla leniwych', 1, 3);
+INSERT INTO schemes (title, cycleID, sequence) VALUES ('Nogi dla zaawansowanych', 1, 3);
 
 CREATE TABLE appointments (
   id        INT PRIMARY KEY AUTO_INCREMENT,
@@ -97,3 +98,14 @@ CREATE TABLE payments (
   CONSTRAINT fk_payments_clients FOREIGN KEY (clientID) REFERENCES clients (id),
   CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
 );
+
+CREATE TABLE exercises (
+  id          int PRIMARY KEY AUTO_INCREMENT,
+  name        VARCHAR(100),
+  schemeID    int,
+  repetitions int,
+  CONSTRAINT fk_exercises_schemes FOREIGN KEY (schemeID) REFERENCES schemes (id)
+);
+
+insert into exercises (name, schemeID, repetitions) VALUES ('przysiady', 1, 10);
+insert into exercises (name, schemeID, repetitions) VALUES ('przysiady na jednej nodze', 1, 10);

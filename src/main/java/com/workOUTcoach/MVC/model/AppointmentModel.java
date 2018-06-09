@@ -2,6 +2,7 @@ package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.entity.Scheme;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -22,45 +23,62 @@ public class AppointmentModel {
     private SessionFactory sessionFactory;
 
     @Autowired
+    private SchemeModel schemeModel;
+
+    @Autowired
     private ClientModel clientModel;
 
     @Autowired
     Environment env;
 
-    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, boolean scheme, int repeatAmount) throws Exception {
+    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
         if (endDate.isBefore(startDate))
             throw new Exception("Appointment ends before it starts!");
 
         if (cyclic && repeatAmount <= 0)
             throw new Exception("Incorrect repetition amount!");
 
+        if(!partOfCycle && schemeId == -1)
+            throw new Exception("Scheme hasn't been chosen!");
+
         int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
         Client client = clientModel.getClientById(id);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        for (int i = 0; i < repeatAmount; i++) {
-            LocalDateTime newStartDate = startDate.plusWeeks(i);
-            LocalDateTime newEndDate = endDate.plusWeeks(i);
+        try {
+            for (int i = 0; i < repeatAmount; i++) {
+                LocalDateTime newStartDate = startDate.plusWeeks(i);
+                LocalDateTime newEndDate = endDate.plusWeeks(i);
 
-            if (!timelineClear(newStartDate, newEndDate)) {
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-                throw new Exception("Appointment from " + newStartDate.format(dateFormatter) + " to " + newEndDate.format(timeFormatter) + " overlaps another one!");
+                if (!timelineClear(newStartDate, newEndDate)) {
+                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                    throw new Exception("Appointment from " + newStartDate.format(dateFormatter) + " to " + newEndDate.format(timeFormatter) + " overlaps another one!");
+                }
+
+                Appointment appointment;
+
+                if(!partOfCycle) {
+                    Scheme scheme = schemeModel.getSchemeById(schemeId);
+                    appointment = new Appointment(newStartDate, newEndDate, client, scheme);
+                } else {
+                    appointment = new Appointment(newStartDate, newEndDate, client);
+                }
+
+                session.save(appointment);
+
+                if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
+                    session.flush();
+                    session.clear();
+                }
             }
-
-            Appointment appointment = new Appointment(newStartDate, newEndDate, client);
-            session.save(appointment);
-
-            if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
-                session.flush();
-                session.clear();
-            }
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
-
-        session.getTransaction().commit();
-        session.close();
     }
+
 
     private boolean timelineClear(LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd) {
         Session session = sessionFactory.openSession();

@@ -20,16 +20,21 @@
             </form>
         </nav>
 
-
         <form th:action="@{/addAppointment}" method="POST">
             <input type="hidden" name="id" th:value="${param.id}"/>
 
             <div>Date<input type="date" class="input-field" name="date" required/></div>
             <div>Starting time<input type="time" class="input-field" name="startTime" required/></div>
             <div>Ending time<input type="time" class="input-field" name="endTime" required/></div>
-            <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:showRepeatAmountField()'"/></div>
-            <div>Is a part of a scheme:<input type="checkbox" class="input-field" name="scheme"/></div>
+            <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat"
+                                      th:onchange="'javascript:showRepeatAmountField()'"/></div>
             <div id="hiddenRepeatAmount"></div>
+
+            <div>Is a part of a cycle:<input type="checkbox" class="input-field" name="cycle"/></div>
+            <div>Scheme: <select name="schemeId">
+                <option th:each="scheme : ${schemeList}" th:value="${scheme.getId()}"
+                        th:text="${scheme.getTitle()}"></option>
+            </select></div>
 
             <button type="submit" class="btn-login btn-basic">APPOINT</button>
 
@@ -42,9 +47,6 @@
                 </div>
             </section>
         </form>
-
     </section>
-
-
 </body>
 </html>

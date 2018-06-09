@@ -121,9 +121,7 @@ public class ClientModel {
         }
 
         session.beginTransaction();
-
         session.update(client);
-
         session.getTransaction().commit();
         session.close();
 
