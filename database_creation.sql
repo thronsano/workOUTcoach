@@ -77,19 +77,20 @@ INSERT INTO schemes (title, cycleID, sequence) VALUES ('Nogi dla leniwych', 1, 3
 INSERT INTO schemes (title, cycleID, sequence) VALUES ('Nogi dla zaawansowanych', 1, 3);
 
 CREATE TABLE appointments (
-  id        INT PRIMARY KEY AUTO_INCREMENT,
-  startDate DATETIME,
-  endDate   DATETIME,
-  clientID  int,
-  schemeID  int,
+  id          INT PRIMARY KEY AUTO_INCREMENT,
+  startDate   DATETIME,
+  endDate     DATETIME,
+  isCancelled BIT(1),
+  clientID    int,
+  schemeID    int,
   CONSTRAINT fk_appointments_clients FOREIGN KEY (clientID) REFERENCES clients (id)
     ON DELETE CASCADE,
   CONSTRAINT fk_appointments_schemes FOREIGN KEY (schemeID) REFERENCES schemes (id)
     ON DELETE CASCADE
 );
 
-INSERT INTO appointments (id, startDate, endDate, clientID, schemeID) values (1, '2018-06-10 11:00:00', '2018-06-10 11:40:00', 2, 1);
-INSERT INTO appointments (id, startDate, endDate, clientID, schemeID) values (2, '2018-06-12 10:00:00', '2018-06-12 11:00:00', 2, 1);
+INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (1, '2018-06-10 11:00:00', '2018-06-10 11:40:00', 0, 2, 1);
+INSERT INTO appointments (id, startDate, endDate, isCancelled, clientID, schemeID) values (2, '2018-06-12 10:00:00', '2018-06-12 11:00:00', 0, 2, 1);
 
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
