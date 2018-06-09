@@ -19,3 +19,7 @@ function getURLParameter(sParam) {
     }
     return null;
 }
+
+function rowClicked(value) {
+    location.href = "/appointmentPage?id=" + value;
+}

@@ -58,14 +58,16 @@ public class AppointmentController {
 
         return modelAndView;
     }
-
-    @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public ModelAndView listAppointments(@RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
-                                         Model model, ModelAndView modelAndView) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        model.addAttribute("appointments", appointmentModel.listAppointments(offset));
-        model.addAttribute("startingDate", (appointmentModel.setBegginingDate(offset).format(dateFormatter)));
-        model.addAttribute("endingDate", (appointmentModel.setEndingDate(offset)).format(dateFormatter));
+    @RequestMapping(value = "/appointmentPage", method = RequestMethod.GET)
+    public ModelAndView getAppointment(@RequestParam(value = "id") String id, ModelAndView modelAndView){
+    try{
+        modelAndView.addObject("appointments", appointmentModel.getAppointment(Integer.parseInt(id)));
+        modelAndView.addObject("exercises", schemeModel.listExercise(Integer.parseInt(id)));
+    }catch (NullPointerException ex){
+        modelAndView.addObject("status", "failed");
+        modelAndView.addObject("reason", "Appointment not found!");
+        modelAndView.setViewName("appointmentPage");
+    }
         return modelAndView;
     }
 }

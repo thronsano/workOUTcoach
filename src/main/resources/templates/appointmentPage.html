@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <script type="text/javascript" src="timetableScript.js"></script>
     <title>Workout coach</title>
 </head>
 <body>
@@ -19,42 +18,52 @@
         </form>
     </nav>
 
-    <section class="content">
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+    <section class="content" th:action="@{/appointmentPage/?id=${param.id}}" method="GET">
+        <div th:if="${status}=='failed'">
+            <div th:text="${reason}"></div>
+        </div>
     </section>
 
     <section class="content" th:method="GET">
-        <h1>Timetable
-            <a th:text="${startingDate}"></a>
-            <a> - </a>
-            <a th:text="${endingDate}"></a>
-        </h1>
+        <h1>Appointment</h1>
         <table>
             <thead>
             <th>StartDate</th>
             <th>EndDate</th>
             <th>Name</th>
             <th>Surname</th>
-            <th>GymName</th>
+            <th>Gym name</th>
+            <th>Scheme</th>
+            <th>Is Paid</th>
             </thead>
 
             <tbody>
-            <tr th:each="appointment : ${timetable}" th:onclick="'javascript:rowClicked(\'' + ${appointment.id} + '\');'">
+            <tr th:each="appointment : ${appointments}">
                 <td th:text="${#temporals.format(appointment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
                 <td th:text="${#temporals.format(appointment.endDate, 'dd-MM-yyyy HH:mm')}"></td>
                 <td th:text="${appointment.client.name}"></td>
                 <td th:text="${appointment.client.surname}"></td>
                 <td th:text="${appointment.client.gymName}"></td>
+                <td th:text="${appointment.scheme.title}"></td>
+                <td th:text="${appointment.payment.isPaid}"></td>
             </tr>
             </tbody>
         </table>
-        <form method="get">
-            <button type="button" class="btn-basic"
-                    th:onclick="'java:buttonClicked(-1);'">SHOW PREVIOUS WEEK</button>
-            <button type="button" class="btn-basic"
-                    th:onclick="'java:buttonClicked(1);'">SHOW NEXT WEEK</button>
-        </form>
+
+        <h1>Scheme</h1>
+        <table>
+            <thead>
+            <th>Exercise</th>
+            <th>Repetitions</th>
+            </thead>
+
+            <tbody>
+            <tr th:each="exercise : ${exercises}">
+                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.repetitions}"></td>
+            </tr>
+            </tbody>
+        </table>
     </section>
-    <script src="built/bundle.js"></script>
 </body>
 </html>
