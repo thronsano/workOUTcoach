@@ -39,6 +39,13 @@ public class Appointment {
         this.client = client;
     }
 
+    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client, Scheme scheme) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.client = client;
+        this.scheme = scheme;
+    }
+
     public int getId() {
         return id;
     }

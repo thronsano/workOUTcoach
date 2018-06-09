@@ -1,7 +1,7 @@
 package com.workOUTcoach.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 @Table(name = "schemes")
@@ -21,6 +21,9 @@ public class Scheme {
     @ManyToOne
     @JoinColumn(name = "cycleID")
     private Cycle cycle;
+
+    @OneToMany(mappedBy = "scheme", fetch = FetchType.LAZY)
+    private List<Exercise> exerciseList;
 
     @OneToOne
     private Appointment appointment;
@@ -71,5 +74,13 @@ public class Scheme {
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
+    }
+
+    public List<Exercise> getExerciseList() {
+        return exerciseList;
+    }
+
+    public void setExerciseList(List<Exercise> exerciseList) {
+        this.exerciseList = exerciseList;
     }
 }

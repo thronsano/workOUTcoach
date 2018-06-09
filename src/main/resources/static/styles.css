@@ -129,6 +129,13 @@ nav {
     z-index: 1;
     background-color: black;
     overflow-x: hidden;
+    opacity: 0.6;
+    transition: 0.30s;
+}
+
+nav:hover {
+    opacity: 1;
+    transition: 0.50s;
 }
 
 nav input {
