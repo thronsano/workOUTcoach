@@ -1,9 +1,9 @@
 package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.ClientModel;
+import com.workOUTcoach.MVC.model.SchemeModel;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.Client;
-import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +24,9 @@ public class ClientController {
     @Autowired
     UserModel userModel;
 
+    @Autowired
+    private SchemeModel schemeModel;
+
     @RequestMapping(value = "/clientList", method = RequestMethod.GET)
     public ModelAndView ListClients(Model model, ModelAndView modelAndView) {
         model.addAttribute("clients", clientModel.getActiveUserClients());
@@ -32,6 +35,8 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
+        modelAndView.addObject("schemeList", schemeModel.schemeList());
+
         try {
             Client client = clientModel.getClientById(Integer.parseInt(id));
             model.addAttribute("client", client);
@@ -218,6 +223,24 @@ public class ClientController {
             modelAndView.setViewName("addClient");
         }
 
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/editCycle", method = RequestMethod.POST)
+    public ModelAndView setAppointment(@RequestParam("id") String id,
+                                       @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
+                                       ModelAndView modelAndView,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            schemeModel.addCycleToScheme(Integer.parseInt(id), schemeId);
+            redirectAttributes.addFlashAttribute("status", "successful");
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.schemeList());
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("status", "failed");
+            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.schemeList());
+        }
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;
     }
 }

@@ -31,6 +31,10 @@ public class Cycle {
     public Cycle() {
     }
 
+    public Cycle(Client client){
+        this.client=client;
+    }
+
     public int getId() {
         return id;
     }

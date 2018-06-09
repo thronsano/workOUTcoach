@@ -1,5 +1,7 @@
 package com.workOUTcoach.MVC.model;
 
+import com.workOUTcoach.entity.Cycle;
+import com.workOUTcoach.entity.Scheme;
 import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,6 +20,9 @@ public class ClientModel {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private CycleModel cycleModel;
 
     @SuppressWarnings("unchecked")
     public List<Client> getArchivedUserClients() {
@@ -229,9 +234,12 @@ public class ClientModel {
 
             if (!saveNewClient(client))
                 throw new Exception("Error occurred during creating new client! Try again.");
+            Cycle cycle=new Cycle(client);
+            cycleModel.saveNewCycle(cycle);
         } else {
             throw new Exception("You have to fill name and surname field!");
         }
+
     }
 
     private boolean validateString(String text) {

@@ -64,7 +64,12 @@ CREATE TABLE cycles (
 );
 
 INSERT INTO cycles (clientID, title) VALUES (1, 'Rzezba');
-
+INSERT INTO cycles (clientID, title) VALUES (2, 'Figura');
+INSERT INTO cycles (clientID, title) VALUES (3, 'Rzezba');
+INSERT INTO cycles (clientID, title) VALUES (4, 'Figura');
+INSERT INTO cycles (clientID, title) VALUES (5, 'Rzezba');
+INSERT INTO cycles (clientID, title) VALUES (6, 'Figura');
+INSERT INTO cycles (clientID, title) VALUES (7, 'Rzezba');
 CREATE TABLE schemes (
   id       INT PRIMARY KEY AUTO_INCREMENT,
   title    VARCHAR(100),
