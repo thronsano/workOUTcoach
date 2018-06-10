@@ -19,10 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ClientController {
 
     @Autowired
-    ClientModel clientModel;
+    private ClientModel clientModel;
 
     @Autowired
-    UserModel userModel;
+    private UserModel userModel;
 
     @Autowired
     private SchemeModel schemeModel;
@@ -146,7 +146,7 @@ public class ClientController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         try {
-            clientModel.setActiveById(Integer.parseInt(id));
+            clientModel.activateById(Integer.parseInt(id));
 
             redirectAttributes.addFlashAttribute("activationSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));

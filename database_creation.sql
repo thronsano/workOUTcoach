@@ -4,11 +4,11 @@ CREATE DATABASE workoutcoach;
 USE workoutcoach;
 
 CREATE TABLE users (
-  email    VARCHAR(100) PRIMARY KEY NOT NULL,
-  password VARCHAR(100)             NOT NULL,
-  name     VARCHAR(50)              NOT NULL,
-  surname  VARCHAR(50)              NOT NULL,
-  hourlyRate INT                    NOT NULL
+  email      VARCHAR(100) PRIMARY KEY NOT NULL,
+  password   VARCHAR(100)             NOT NULL,
+  name       VARCHAR(50)              NOT NULL,
+  surname    VARCHAR(50)              NOT NULL,
+  hourlyRate INT                      NOT NULL
 );
 
 -- Sample user's password '$2a$10$9d5AC2CrUGaWSgwRHbtZV.TbKiuixWQh3EzJhZ7tHt0AeifE2AxCq' is a hashed version of password 'password'
@@ -82,11 +82,11 @@ CREATE TABLE schemes (
 
 INSERT INTO schemes (title, cycleID, sequence, clientID) VALUES ('Nogi dla leniwych', 1, 1, 1);
 INSERT INTO schemes (title, cycleID, sequence, clientID) VALUES ('Nogi dla zaawansowanych', 1, 2, 1);
-INSERT INTO schemes (title, clientID, sequence) VALUES ('Rece dla zaawansowanych', 1,0);
-INSERT INTO schemes (title, clientID, sequence) VALUES ('Brzuch dla leniwych', 1,0);
+INSERT INTO schemes (title, clientID, sequence) VALUES ('Rece dla zaawansowanych', 1, 0);
+INSERT INTO schemes (title, clientID, sequence) VALUES ('Brzuch dla leniwych', 1, 0);
 INSERT INTO schemes (title, cycleID, sequence, clientID) VALUES ('Nogi dla leniwych', 2, 1, 2);
 INSERT INTO schemes (title, cycleID, sequence, clientID) VALUES ('Rece dla zaawansowanych', 2, 2, 2);
-INSERT INTO schemes (title, clientID, sequence) VALUES ('Brzuch dla leniwych', 2,0);
+INSERT INTO schemes (title, clientID, sequence) VALUES ('Brzuch dla leniwych', 2, 0);
 INSERT INTO schemes (title, cycleID, sequence, clientID) VALUES ('Rece dla zaawansowanych', 3, 1, 3);
 
 CREATE TABLE appointments (

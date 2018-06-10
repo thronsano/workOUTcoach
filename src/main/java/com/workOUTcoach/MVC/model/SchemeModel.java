@@ -26,36 +26,29 @@ public class SchemeModel {
 
     public List<Scheme> schemeList() {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        Query query = session.createQuery("from Scheme");
-        List<Scheme> schemes = query.list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return schemes;
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Scheme");
+            return query.list();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
     public Scheme getSchemeById(int id) throws NotFoundException {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        Scheme scheme = null;
         try {
+            session.beginTransaction();
             Query query = session.createQuery("from Scheme where id=:schemeID");
-
             query.setParameter("schemeID", id);
-            scheme = (Scheme) query.uniqueResult();
-        } catch (Exception e) {
-            Logger.logError("Exception during access to scheme");
+
+            return (Scheme) query.uniqueResult();
+        } finally {
             session.getTransaction().commit();
             session.close();
-
-            if (scheme == null)
-                throw new NotFoundException("Scheme not found!");
         }
-        return scheme;
     }
 
     public void addSchemeToCycle(int clientId, int schemeId) throws Exception {
@@ -64,21 +57,22 @@ public class SchemeModel {
 
         Cycle cycle = cycleModel.getCycleByClientId(clientId);
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         try {
+            session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, schemeId);
+
             scheme.setCycle(cycle);
             List<Scheme> schemesList = getUsedSchemeListByClient(clientId);
+
             if (schemesList.isEmpty())
                 scheme.setSequence(1);
             else {
                 int maxSequence = 0;
-                for (Scheme s : schemesList) {
-                    if (s.getSequence() > maxSequence) {
+                for (Scheme s : schemesList)
+                    if (s.getSequence() > maxSequence)
                         maxSequence = s.getSequence();
-                    }
-                }
+
                 scheme.setSequence(maxSequence + 1);
             }
         } catch (Exception e) {
@@ -92,11 +86,10 @@ public class SchemeModel {
     public List<Scheme> getUnusedSchemeListByClient(int clientId) {
         List<Scheme> schemes = null;
         Client client = clientModel.getClientById(clientId);
-
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         try {
+            session.beginTransaction();
             Query query = session.createQuery("from Scheme where client=:currentClient AND sequence=0");
             query.setParameter("currentClient", client);
 
@@ -107,18 +100,18 @@ public class SchemeModel {
             session.getTransaction().commit();
             session.close();
         }
+
         return schemes;
     }
 
     public List<Scheme> getUsedSchemeListByClient(int clientId) {
         List<Scheme> schemes = null;
         Client client = clientModel.getClientById(clientId);
-
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         try {
-            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence is not 0 order by sequence");
+            session.beginTransaction();
+            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence != 0 order by sequence");
             query.setParameter("currentClient", client);
 
             schemes = query.list();
@@ -128,6 +121,7 @@ public class SchemeModel {
             session.getTransaction().commit();
             session.close();
         }
+
         return schemes;
     }
 
@@ -135,11 +129,10 @@ public class SchemeModel {
     @SuppressWarnings("unchecked")
     public List<Exercise> listExercise(int appointmentID) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         try {
+            session.beginTransaction();
             Query query = session.createQuery("from Appointment as app where app.id =:appID AND app.client.coachEmail =:coachEmail");
             query.setParameter("appID", appointmentID);
             query.setParameter("coachEmail", auth.getName());
@@ -155,9 +148,10 @@ public class SchemeModel {
 
     public void removeSchemeFromCycle(int clientId, int schemeId) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
         int numberOfSequence;
+
         try {
+            session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, schemeId);
             numberOfSequence = scheme.getSequence();
             scheme.setSequence(0);
@@ -165,17 +159,18 @@ public class SchemeModel {
             session.getTransaction().commit();
             session.close();
         }
+
         List<Scheme> schemesList = getSchemeListBySequenceBiggerThan(clientId, numberOfSequence);
 
-        for (Scheme s : schemesList) {
+        for (Scheme s : schemesList)
             changeSequenceByOneBackwards(s);
-        }
     }
 
     private void changeSequenceByOneBackwards(Scheme s) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
+
         try {
+            session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, s.getId());
             scheme.setSequence(scheme.getSequence() - 1);
         } finally {
@@ -187,14 +182,14 @@ public class SchemeModel {
     public List<Scheme> getSchemeListBySequenceBiggerThan(int clientId, int numberOfSequence) {
         List<Scheme> schemes = null;
         Client client = clientModel.getClientById(clientId);
-
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         try {
+            session.beginTransaction();
             Query query = session.createQuery("from Scheme where client=:currentClient AND sequence>:biggerSequence");
             query.setParameter("currentClient", client);
             query.setParameter("biggerSequence", numberOfSequence);
+
             schemes = query.list();
         } catch (Exception e) {
             Logger.logError("Exception during access to list of schemes");
@@ -202,6 +197,7 @@ public class SchemeModel {
             session.getTransaction().commit();
             session.close();
         }
+
         return schemes;
     }
 

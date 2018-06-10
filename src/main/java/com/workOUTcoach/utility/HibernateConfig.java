@@ -1,8 +1,6 @@
 package com.workOUTcoach.utility;
 
-import com.workOUTcoach.entity.Authority;
-import com.workOUTcoach.entity.Client;
-import com.workOUTcoach.entity.User;
+import com.workOUTcoach.entity.*;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +22,7 @@ import static org.hibernate.cfg.Environment.*;
 public class HibernateConfig {
 
     //insert classes you want to map in hibernate here
-    private static final Class[] ANNOTATED_CLASSES = new Class[]{User.class, Authority.class, Client.class};
+    private static final Class[] ANNOTATED_CLASSES = new Class[]{User.class, Authority.class, Client.class, Cycle.class, Appointment.class, Exercise.class, Payment.class, ResetToken.class, Scheme.class};
 
     @Autowired
     Environment env;

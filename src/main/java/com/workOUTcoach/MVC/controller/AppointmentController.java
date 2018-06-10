@@ -1,7 +1,6 @@
 package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.AppointmentModel;
-import com.workOUTcoach.MVC.model.PaymentModel;
 import com.workOUTcoach.MVC.model.SchemeModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -76,7 +75,7 @@ public class AppointmentController {
         try {
             appointmentModel.setCancelledValue(true, Integer.parseInt(id));
             modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             modelAndView.addObject("status", "failed");
             modelAndView.addObject("reason", "Appointment not found!");
             modelAndView.setViewName("appointmentPage");
@@ -89,7 +88,7 @@ public class AppointmentController {
         try {
             appointmentModel.setCancelledValue(false, Integer.parseInt(id));
             modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             modelAndView.addObject("status", "failed");
             modelAndView.addObject("reason", "Appointment not found!");
             modelAndView.setViewName("appointmentPage");

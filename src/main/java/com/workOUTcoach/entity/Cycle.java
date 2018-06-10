@@ -1,8 +1,10 @@
 package com.workOUTcoach.entity;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +19,9 @@ public class Cycle {
     @Column
     private String title;
 
-    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cycle", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    @Fetch(FetchMode.SELECT)
     private List<Scheme> schemeList;
 
     @OneToOne

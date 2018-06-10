@@ -1,5 +1,9 @@
 package com.workOUTcoach.entity;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -41,10 +45,14 @@ public class Client {
     @Column
     private String phoneNumber;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    @Fetch(FetchMode.SELECT)
     private List<Appointment> appointmentList = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "client", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    @Fetch(FetchMode.SELECT)
     private Cycle cycle;
 
     public Client() {

@@ -4,7 +4,6 @@ import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Payment;
 import com.workOUTcoach.entity.Scheme;
-import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -15,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
@@ -81,7 +78,9 @@ public class AppointmentModel {
                 } else {
                     appointment = new Appointment(newStartDate, newEndDate, client);
                 }
+
                 Payment payment = new Payment(appointment, amount);
+
                 appointment.setPayment(payment);
                 session.save(appointment);
 
@@ -96,31 +95,30 @@ public class AppointmentModel {
             session.getTransaction().commit();
             session.close();
         }
-
-        for (Payment p : payments) {
-            paymentModel.setNewPayment(p);
-        }
     }
 
 
     private boolean timelineClear(LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
+        long count;
 
-        Query query = session.createQuery("select count(*) from Appointment as app where (" +
-                "(app.startDate <=:newStartDate AND app.endDate >=:newStartDate) OR " +
-                "(app.startDate >=:newStartDate AND app.endDate <=:newEndDate) OR " +
-                "(app.startDate <=:newEndDate AND app.endDate >=:newEndDate)" +
-                ") AND app.client.coachEmail =:userEmail AND app.isCancelled = false");
+        try {
+            Query query = session.createQuery("select count(*) from Appointment as app where (" +
+                    "(app.startDate <=:newStartDate AND app.endDate >=:newStartDate) OR " +
+                    "(app.startDate >=:newStartDate AND app.endDate <=:newEndDate) OR " +
+                    "(app.startDate <=:newEndDate AND app.endDate >=:newEndDate)" +
+                    ") AND app.client.coachEmail =:userEmail AND app.isCancelled = false");
 
-        query.setParameter("newStartDate", localDateTimeStart);
-        query.setParameter("newEndDate", localDateTimeEnd);
-        query.setParameter("userEmail", SecurityContextHolder.getContext().getAuthentication().getName());
+            query.setParameter("newStartDate", localDateTimeStart);
+            query.setParameter("newEndDate", localDateTimeEnd);
+            query.setParameter("userEmail", SecurityContextHolder.getContext().getAuthentication().getName());
 
-        long count = (long) query.uniqueResult();
-
-        session.getTransaction().commit();
-        session.close();
+            count = (long) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
 
         return count == 0;
     }
@@ -128,22 +126,17 @@ public class AppointmentModel {
     public Appointment getAppointment(int id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
-        Appointment appointment;
-
-
         session.beginTransaction();
-        Query query = session.createQuery("from Appointment as app where app.id =:id AND app.client.coachEmail =:email");
-        query.setParameter("email", auth.getName());
-        query.setParameter("id", id);
-        appointment = (Appointment) query.uniqueResult();
 
-        session.getTransaction().commit();
-        session.close();
-
-        if (appointment == null)
-            throw new NullPointerException("Appointment not found!");
-
-        return appointment;
+        try {
+            Query query = session.createQuery("from Appointment as app where app.id =:id AND app.client.coachEmail =:email");
+            query.setParameter("email", auth.getName());
+            query.setParameter("id", id);
+            return (Appointment) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
     public void setCancelledValue(boolean value, int appointmentID) {

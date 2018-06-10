@@ -1,5 +1,9 @@
 package com.workOUTcoach.entity;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -22,6 +26,8 @@ public class Appointment {
     private boolean isCancelled;
 
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    @Fetch(FetchMode.SELECT)
     private Payment payment;
 
     @ManyToOne

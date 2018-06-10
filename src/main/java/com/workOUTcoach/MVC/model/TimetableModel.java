@@ -1,6 +1,7 @@
 package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Appointment;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -33,6 +35,9 @@ public class TimetableModel {
             query.setParameter("endingDate", eDate);
 
             return query.list();
+        } catch (Exception ex) {
+            Logger.logError(ex.getMessage());
+            return Collections.emptyList();
         } finally {
             session.getTransaction().commit();
             session.close();

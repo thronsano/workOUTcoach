@@ -1,7 +1,6 @@
 package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.PaymentModel;
-import com.workOUTcoach.entity.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,7 @@ public class PaymentController {
     PaymentModel paymentModel;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getPayments(ModelAndView modelAndView, Model model){
+    public ModelAndView getPayments(ModelAndView modelAndView, Model model) {
         model.addAttribute("payments", paymentModel.getPaymentsByUser());
 
         modelAndView.setViewName("payments");
@@ -31,13 +30,15 @@ public class PaymentController {
     public ModelAndView postChangePayment(
             @RequestParam(value = "paymentID") int paymentID,
             ModelAndView modelAndView, Model model,
-            RedirectAttributes redirectAttributes){
-
-        String result = paymentModel.editIsPaid(paymentID);
-        redirectAttributes.addFlashAttribute("error", result);
+            RedirectAttributes redirectAttributes) {
+        try {
+            paymentModel.editIsPaid(paymentID);
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
         redirectAttributes.addFlashAttribute("payments", paymentModel.getPaymentsByUser());
-
         modelAndView.setViewName("redirect:/payments");
+
         return modelAndView;
     }
 

@@ -36,7 +36,8 @@ public class ResetTokenModel {
 
         try {
             session.beginTransaction();
-            return sessionFactory.openSession().get(ResetToken.class, email);
+            ResetToken resetToken = sessionFactory.openSession().get(ResetToken.class, email);
+            return resetToken;
         } finally {
             session.getTransaction().commit();
             session.close();
@@ -45,17 +46,19 @@ public class ResetTokenModel {
 
     public boolean addResetToken(ResetToken resetToken) {
         deleteResetToken(resetToken.getEmail());
+        Session session = sessionFactory.openSession();
 
         try {
-            Session session = sessionFactory.openSession();
             session.beginTransaction();
             session.save(resetToken);
-            session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             Logger.logError("Exception during adding new resetToken into database");
             return false;
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
+
         return true;
     }
 
@@ -63,15 +66,16 @@ public class ResetTokenModel {
         ResetToken existingToken = getResetTokenByEmail(email);
 
         if (existingToken != null) {
+            Session session = sessionFactory.openSession();
             try {
-                Session session = sessionFactory.openSession();
                 session.beginTransaction();
                 session.delete(existingToken);
-                session.getTransaction().commit();
-                session.close();
             } catch (Exception e) {
                 Logger.logError("Exception during removing existing resetToken");
                 return false;
+            } finally {
+                session.getTransaction().commit();
+                session.close();
             }
         } else
             Logger.log("Reset token doesn't exist");
