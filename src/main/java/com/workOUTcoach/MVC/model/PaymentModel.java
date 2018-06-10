@@ -57,11 +57,11 @@ public class PaymentModel {
             session.beginTransaction();
 
             Payment payment = session.get(Payment.class, paymentID);
-            if(payment.isPaid()){
-                payment.setPaid(false);
+            if(payment.getIsPaid()){
+                payment.setIsPaid(false);
                 payment.setPaymentDate(null);
             }else {
-                payment.setPaid(true);
+                payment.setIsPaid(true);
                 payment.setPaymentDate(LocalDate.now());
             }
             result="correct";
