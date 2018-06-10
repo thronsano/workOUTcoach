@@ -1,6 +1,7 @@
 package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Payment;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -9,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -43,6 +46,30 @@ public class PaymentModel {
         }finally {
             session.getTransaction().commit();
             session.close();
+        }
+    }
+
+    public String editIsPaid(int paymentID) {
+
+        Session session = sessionFactory.openSession();
+        String result = "databaseError";
+        try {
+            session.beginTransaction();
+
+            Payment payment = session.get(Payment.class, paymentID);
+            if(payment.isPaid()){
+                payment.setPaid(false);
+                payment.setPaymentDate(null);
+            }else {
+                payment.setPaid(true);
+                payment.setPaymentDate(LocalDate.now());
+            }
+            result="correct";
+        }
+        finally {
+            session.getTransaction().commit();
+            session.close();
+            return result;
         }
     }
 }

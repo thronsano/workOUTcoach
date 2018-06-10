@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script type="text/javascript" src="paymentScript.js"></script>
     <title>Payments</title>
 </head>
 <body>
@@ -31,16 +32,21 @@
             </thead>
 
             <tbody>
-                <tr th:each="payment : ${payments}" th:onclick="'javascript:rowClicked(\'' + ${payment.id} + '\');'">
-
+                <tr th:each="payment : ${payments}">
                     <td th:text="${payment.appointment.client.name}"></td>
                     <td th:text="${payment.appointment.client.surname}"></td>
                     <td th:text="${payment.amount}"></td>
-                    <td th:text="${payment.isPaid()}"></td>
+                    <td th:if="${payment.isPaid()}==true"><input type="checkbox" th:checked="true" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                    <td th:if="${payment.isPaid()}==false"><input type="checkbox" th:checked="false" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
                     <td th:text="${payment.paymentDate}"></td>
+
                 </tr>
             </tbody>
+            <form th:method="post" id="myForm" th:action="@{/payments/changePaidValue}">
+                <input type="hidden" name="paymentID" id="paymentID">
+            </form>
         </table>
+
 
         <br>
     </section>

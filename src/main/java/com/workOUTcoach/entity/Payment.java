@@ -3,6 +3,7 @@ package com.workOUTcoach.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,7 +16,7 @@ public class Payment {
     private int id;
 
     @Column
-    private LocalDateTime paymentDate;
+    private LocalDate paymentDate;
 
     @Column
     private boolean isPaid;
@@ -31,7 +32,7 @@ public class Payment {
     @JoinColumn(name = "clientID")
     private Client client;
 
-    public Payment(@NotBlank LocalDateTime paymentDate, boolean isPaid, float amount) {
+    public Payment(@NotBlank LocalDate paymentDate, boolean isPaid, float amount) {
         this.paymentDate = paymentDate;
         this.isPaid = isPaid;
         this.amount = amount;
@@ -53,11 +54,11 @@ public class Payment {
         this.id = id;
     }
 
-    public LocalDateTime getPaymentDate() {
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(LocalDateTime paymentDate) {
+    public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
     }
 
