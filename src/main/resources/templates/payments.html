@@ -36,8 +36,8 @@
                     <td th:text="${payment.appointment.client.name}"></td>
                     <td th:text="${payment.appointment.client.surname}"></td>
                     <td th:text="${payment.amount}"></td>
-                    <td th:if="${payment.isPaid()}==true"><input type="checkbox" th:checked="true" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
-                    <td th:if="${payment.isPaid()}==false"><input type="checkbox" th:checked="false" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                    <td th:if="${payment.getIsPaid()}==true"><input type="checkbox" th:checked="true" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                    <td th:if="${payment.getIsPaid()}==false"><input type="checkbox" th:checked="false" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
                     <td th:text="${payment.paymentDate}"></td>
 
                 </tr>
