@@ -3,6 +3,7 @@ package com.workOUTcoach.entity;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,14 +34,19 @@ public class User {
     @Column
     private String surname;
 
+    @NotNull
+    @Column
+    private int hourlyRate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-    public User(String email, String password, String name, String surname) {
+    public User(String email, String password, String name, String surname, int hourlyRate) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
+        this.hourlyRate = hourlyRate;
     }
 
     public User(){}
@@ -83,5 +89,13 @@ public class User {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public int getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(int hourlyRate) {
+        this.hourlyRate = hourlyRate;
     }
 }

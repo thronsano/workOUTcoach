@@ -79,20 +79,25 @@ public class UserModel {
         return true;
     }
 
-    public String createUser(String email, String password, String password2, String name, String surname, PasswordEncoder passwordEncoder) {
+    public String createUser(String email, String password, String password2, String name, String surname, int hourlyRate, PasswordEncoder passwordEncoder) {
         if (getUserByEmail(email) != null) {
             return "emailError";
         }
         if (validateString(email) && validateString(password) && validateString(name) && validateString(surname)) {
             if (password.equals(password2)) {
-                password = passwordEncoder.encode(password);
-                User user = new User(email, password, name, surname);
-                Authority authority = new Authority(user);
+                if(hourlyRate>=0) {
+                    password = passwordEncoder.encode(password);
+                    User user = new User(email, password, name, surname, hourlyRate);
+                    Authority authority = new Authority(user);
 
-                if (saveNewUser(user, authority)) {
-                    return "correct";
-                } else {
-                    return "databaseError";
+                    if (saveNewUser(user, authority)) {
+                        return "correct";
+                    } else {
+                        return "databaseError";
+                    }
+                }
+                else {
+                    return "hourlyRateError";
                 }
             } else {
                 return "passwordError";
@@ -159,8 +164,8 @@ public class UserModel {
         return text != null && !text.isEmpty();
     }
 
-    public String editUser(String hiddenEmail, String name, String surname) {
-        User user = new User(hiddenEmail, "", name, surname);
+    public String editUser(String hiddenEmail, String name, String surname, int hourlyRate) {
+        User user = new User(hiddenEmail, "", name, surname, hourlyRate);
 
         if (editUserInDatabase(user)) {
             return "correct";
@@ -178,6 +183,7 @@ public class UserModel {
             updateUser.setEmail(user.getEmail());
             updateUser.setName(user.getName());
             updateUser.setSurname(user.getSurname());
+            updateUser.setHourlyRate(user.getHourlyRate());
 
             session.getTransaction().commit();
 
@@ -195,7 +201,7 @@ public class UserModel {
         if (checkPassword(email, currentPassword, passwordEncoder)) {
             if (newPassword.equals(confirmNewPassword)) {
                 newPassword = passwordEncoder.encode(newPassword);
-                user = new User(email, newPassword, "", "");
+                user = new User(email, newPassword, "", "", 0);
                 if (saveUsersPassword(user)) {
                     return "correct";
                 } else {

@@ -15,7 +15,8 @@
             <div><input type="password" class="input-field center-horizontal" name="password2" placeholder="Confirm password"/></div>
             <div><input type="text" class="input-field center-horizontal" name="name" placeholder="Name"/></div>
             <div><input type="text" class="input-field center-horizontal" name="surname" placeholder="Surname"/></div>
-            <button type="submit" class="btn-login btn-basic center-horizontal">EDIT INFORMATION</button>
+            <div><input type="number" class="input-field center-horizontal" name="hourlyRate" placeholder="Hourly rate"/></div>
+            <button type="submit" class="btn-login btn-basic center-horizontal">REGISTER</button>
         </form>
 
         <section class="login-info">
@@ -27,6 +28,12 @@
             </div>
             <div th:if="${error}=='passwordError'">
                 Passwords aren't identical!
+            </div>
+            <div th:if="${error}=='hourlyRateError'">
+                Enter positive number!
+            </div>
+            <div th:if="${error}=='databaseError'">
+                Try again!
             </div>
         </section>
     </section>

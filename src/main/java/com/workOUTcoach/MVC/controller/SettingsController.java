@@ -47,10 +47,11 @@ public class SettingsController {
     public ModelAndView postEditUser(@RequestParam("name") String name,
                                      @RequestParam("surname") String surname,
                                      @RequestParam("hiddenEmail") String hiddenEmail,
+                                     @RequestParam("hourlyRate") int hourlyRate,
                                      ModelAndView modelAndView,
                                      RedirectAttributes redirectAttributes) {
 
-        String result = userModel.editUser(hiddenEmail, name, surname);
+        String result = userModel.editUser(hiddenEmail, name, surname, hourlyRate);
 
         if (result.equals("correct")) {
             redirectAttributes.addFlashAttribute("userEdited", true);

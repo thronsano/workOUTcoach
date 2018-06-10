@@ -42,7 +42,7 @@ public class RegistrationControllerTest {
 
     @Test
     public void createAccount() {
-        modelAndView = registrationController.createAccount("testaccount@test.pl", "password", "password", "Name", "Surname", modelAndView, redirectAttributes);
+        modelAndView = registrationController.createAccount("testaccount@test.pl", "password", "password", "Name", "Surname", 50, modelAndView, redirectAttributes);
         String query = "from User u where u.email = 'testaccount@test.pl'";
         Session session = sessionFactory.openSession();
         User user = (User)session.createQuery(query).uniqueResult();

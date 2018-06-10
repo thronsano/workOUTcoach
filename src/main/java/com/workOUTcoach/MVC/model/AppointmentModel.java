@@ -15,7 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,6 +38,9 @@ public class AppointmentModel {
     private PaymentModel paymentModel;
 
     @Autowired
+    private UserModel userModel;
+
+    @Autowired
     Environment env;
 
     public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
@@ -52,11 +58,12 @@ public class AppointmentModel {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        System.out.println("----------------------------------------------TEST1");
         List<Payment> payments = new LinkedList<>();
         try {
+
+            float amount = calculateAmount(startDate, endDate);
+
             for (int i = 0; i < repeatAmount; i++) {
-                System.out.println("----------------------------------------------TEST "+i);
 
                 LocalDateTime newStartDate = startDate.plusWeeks(i);
                 LocalDateTime newEndDate = endDate.plusWeeks(i);
@@ -74,7 +81,7 @@ public class AppointmentModel {
                 } else {
                     appointment = new Appointment(newStartDate, newEndDate, client);
                 }
-                Payment payment = new Payment(appointment, 100);
+                Payment payment = new Payment(appointment, amount);
                 appointment.setPayment(payment);
                 session.save(appointment);
 
@@ -145,5 +152,12 @@ public class AppointmentModel {
     }
     public LocalDateTime setEndingDate(int offset){
         return LocalDateTime.now().plusWeeks(offset+1);
+    }
+
+    private float calculateAmount(LocalDateTime start, LocalDateTime end){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        float hourlyRate = userModel.getUserByEmail(auth.getName()).getHourlyRate();
+        float duration = (float)start.until(end, ChronoUnit.MINUTES)/60;
+        return duration*hourlyRate;
     }
 }

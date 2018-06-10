@@ -19,12 +19,6 @@ public class PaymentController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getPayments(ModelAndView modelAndView, Model model){
-
-        for (Payment p : paymentModel.getPaymentsByUser()) {
-            System.out.println("------------------------------------" + p.getId());
-            
-        }
-
         model.addAttribute("payments", paymentModel.getPaymentsByUser());
 
         modelAndView.setViewName("payments");

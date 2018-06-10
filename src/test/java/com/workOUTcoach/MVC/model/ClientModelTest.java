@@ -25,7 +25,7 @@ public class ClientModelTest {
 
     @Test
     public void saveNewClientTest() {
-        User user = new User("test@test.com", "TestPassword", "TestCoachName", "TestCoachSurname");
+        User user = new User("test@test.com", "TestPassword", "TestCoachName", "TestCoachSurname", 50);
         Client client = new Client("TestName", "TestSurname", user.getEmail(), "Cracow Gym", "strength", "healthy", true, "696-969-696");
 
         Session session = sessionFactory.openSession();
