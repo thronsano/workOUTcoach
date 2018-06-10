@@ -34,7 +34,7 @@ public class ClientModelTest {
         session.save(user);
         session.getTransaction().commit();
 
-        boolean isCorrect = clientModel.saveNewClient(client);
+        clientModel.saveNewClient(client);
 
         session.beginTransaction();
         Query query = session.createQuery("from Client where coachEmail =:email");
@@ -55,8 +55,6 @@ public class ClientModelTest {
         assertNotNull(savedClient.getSurname());
         assertNotSame("", savedClient.getName());
         assertNotSame("", savedClient.getSurname());
-
-        assertTrue(isCorrect);
 
         session.beginTransaction();
         session.delete(savedClient);

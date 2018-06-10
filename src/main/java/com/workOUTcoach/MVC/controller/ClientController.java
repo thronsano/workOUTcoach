@@ -144,17 +144,18 @@ public class ClientController {
                                    @RequestParam(value = "clientID") String id,
                                    RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.setActiveById(Integer.parseInt(id));
 
-        if (result) {
+        try {
+            clientModel.setActiveById(Integer.parseInt(id));
+
             redirectAttributes.addFlashAttribute("activationSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        } else {
+        } catch (Exception ex) {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
             modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", "Error during activation.");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
         }
 
@@ -164,17 +165,17 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/deleteClient", method = RequestMethod.POST)
     public ModelAndView deleteClient(ModelAndView modelAndView, @RequestParam(value = "clientID2") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.deleteById(Integer.parseInt(id));
 
-        if (result) {
+        try {
+            clientModel.deleteById(Integer.parseInt(id));
             redirectAttributes.addFlashAttribute("deleteSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientList");
-        } else {
+        } catch (Exception ex) {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
             modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", "Error when deleting client.");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
         }
 
@@ -184,17 +185,18 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/makeArchived", method = RequestMethod.POST)
     public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.archiveById(Integer.parseInt(id));
 
-        if (result) {
+        try {
+            clientModel.archiveById(Integer.parseInt(id));
+
             redirectAttributes.addFlashAttribute("archivingSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        } else {
+        } catch (Exception ex) {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
             modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", "Error during archiving the client.");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
         }
 
@@ -229,9 +231,9 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile/editCycle", method = RequestMethod.POST)
     public ModelAndView addSchemeToCycle(@RequestParam("id") String id,
-                                       @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
-                                       ModelAndView modelAndView,
-                                       RedirectAttributes redirectAttributes) {
+                                         @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
+                                         ModelAndView modelAndView,
+                                         RedirectAttributes redirectAttributes) {
         try {
             schemeModel.addSchemeToCycle(Integer.parseInt(id), schemeId);
             redirectAttributes.addFlashAttribute("schemeAdded", "successful");
@@ -247,9 +249,9 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile/removeFromCycle", method = RequestMethod.POST)
     public ModelAndView removeSchemeFromCycle(@RequestParam("id") String id,
-                                       @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
-                                       ModelAndView modelAndView,
-                                       RedirectAttributes redirectAttributes) {
+                                              @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
+                                              ModelAndView modelAndView,
+                                              RedirectAttributes redirectAttributes) {
         try {
             schemeModel.setSchemeCycleToNull(Integer.parseInt(id), schemeId);
             redirectAttributes.addFlashAttribute("schemeRemoved", "successful");

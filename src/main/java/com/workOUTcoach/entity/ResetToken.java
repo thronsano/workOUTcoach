@@ -26,12 +26,13 @@ public class ResetToken {
     @Column
     private LocalDateTime date;
 
-    public ResetToken(){}
+    public ResetToken() {
+    }
 
     public ResetToken(@NotBlank @Size(max = 100) @Email String email, String resetToken) {
         this.email = email;
         this.date = LocalDateTime.now();
-        this.resetToken=resetToken;
+        this.resetToken = resetToken;
     }
 
     public String getEmail() {
