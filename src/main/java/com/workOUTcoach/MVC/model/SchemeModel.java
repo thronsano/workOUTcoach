@@ -118,7 +118,7 @@ public class SchemeModel {
         session.beginTransaction();
 
         try {
-            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence is not 0");
+            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence is not 0 order by sequence");
             query.setParameter("currentClient", client);
 
             schemes = query.list();
@@ -166,11 +166,6 @@ public class SchemeModel {
             session.close();
         }
         List<Scheme> schemesList = getSchemeListBySequenceBiggerThan(clientId, numberOfSequence);
-        System.out.println("Przed zmiana");
-        for (Scheme s : schemesList) {
-            System.out.println("liiiiiiiista             "+s.getSequence());
-        }
-        System.out.println("Po zmianie");
 
         for (Scheme s : schemesList) {
             changeSequenceByOneBackwards(s);
@@ -202,13 +197,12 @@ public class SchemeModel {
             query.setParameter("biggerSequence", numberOfSequence);
             schemes = query.list();
         } catch (Exception e) {
-            Logger.logError("Exception during acces to list of schemes");
+            Logger.logError("Exception during access to list of schemes");
         } finally {
             session.getTransaction().commit();
             session.close();
         }
         return schemes;
     }
-
 
 }
