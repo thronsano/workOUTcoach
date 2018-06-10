@@ -2,6 +2,7 @@ package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.entity.Payment;
 import com.workOUTcoach.entity.Scheme;
 import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
@@ -14,7 +15,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -30,6 +35,12 @@ public class AppointmentModel {
     private ClientModel clientModel;
 
     @Autowired
+    private PaymentModel paymentModel;
+
+    @Autowired
+    private UserModel userModel;
+
+    @Autowired
     Environment env;
 
     public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
@@ -39,7 +50,7 @@ public class AppointmentModel {
         if (cyclic && repeatAmount <= 0)
             throw new Exception("Incorrect repetition amount!");
 
-        if (!partOfCycle && schemeId == -1)
+        if(!partOfCycle && schemeId == -1)
             throw new Exception("Scheme hasn't been chosen!");
 
         int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
@@ -47,8 +58,13 @@ public class AppointmentModel {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
+        List<Payment> payments = new LinkedList<>();
         try {
+
+            float amount = calculateAmount(startDate, endDate);
+
             for (int i = 0; i < repeatAmount; i++) {
+
                 LocalDateTime newStartDate = startDate.plusWeeks(i);
                 LocalDateTime newEndDate = endDate.plusWeeks(i);
 
@@ -59,15 +75,17 @@ public class AppointmentModel {
                 }
 
                 Appointment appointment;
-
-                if (!partOfCycle) {
+                if(!partOfCycle) {
                     Scheme scheme = schemeModel.getSchemeById(schemeId);
                     appointment = new Appointment(newStartDate, newEndDate, client, scheme);
                 } else {
                     appointment = new Appointment(newStartDate, newEndDate, client);
                 }
-
+                Payment payment = new Payment(appointment, amount);
+                appointment.setPayment(payment);
                 session.save(appointment);
+
+                payments.add(payment);
 
                 if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
                     session.flush();
@@ -77,6 +95,10 @@ public class AppointmentModel {
         } finally {
             session.getTransaction().commit();
             session.close();
+        }
+
+        for (Payment p : payments) {
+            paymentModel.setNewPayment(p);
         }
     }
 
@@ -142,5 +164,19 @@ public class AppointmentModel {
             session.getTransaction().commit();
             session.close();
         }
+    }
+
+    public LocalDateTime setBegginingDate(int offset){
+        return LocalDateTime.now().plusWeeks(offset);
+    }
+    public LocalDateTime setEndingDate(int offset){
+        return LocalDateTime.now().plusWeeks(offset+1);
+    }
+
+    private float calculateAmount(LocalDateTime start, LocalDateTime end){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        float hourlyRate = userModel.getUserByEmail(auth.getName()).getHourlyRate();
+        float duration = (float)start.until(end, ChronoUnit.MINUTES)/60;
+        return duration*hourlyRate;
     }
 }

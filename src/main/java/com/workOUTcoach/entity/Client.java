@@ -47,12 +47,6 @@ public class Client {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.EAGER)
     private Cycle cycle;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Payment> paymentList = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Scheme> schemeList = new ArrayList<>();
-
     public Client() {
     }
 
@@ -165,21 +159,5 @@ public class Client {
 
     public void setCycle(Cycle cycle) {
         this.cycle = cycle;
-    }
-
-    public List<Payment> getPaymentList() {
-        return paymentList;
-    }
-
-    public void setPaymentList(List<Payment> paymentList) {
-        this.paymentList = paymentList;
-    }
-
-    public List<Scheme> getSchemeList() {
-        return schemeList;
-    }
-
-    public void setSchemeList(List<Scheme> schemeList) {
-        this.schemeList = schemeList;
     }
 }

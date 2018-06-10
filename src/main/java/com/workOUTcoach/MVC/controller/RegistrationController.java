@@ -32,10 +32,11 @@ public class RegistrationController {
             @RequestParam("password2") String password2,
             @RequestParam("name") String name,
             @RequestParam("surname") String surname,
+            @RequestParam("hourlyRate") int hourlyRate,
             ModelAndView modelAndView,
             RedirectAttributes redirectAttributes) {
 
-        String result = userModel.createUser(email, password, password2, name, surname, passwordEncoder);
+        String result = userModel.createUser(email, password, password2, name, surname, hourlyRate, passwordEncoder);
 
         if (result.equals("correct")) {
             redirectAttributes.addFlashAttribute("userCreated", true);
