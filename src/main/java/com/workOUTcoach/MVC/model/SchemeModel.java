@@ -90,7 +90,7 @@ public class SchemeModel {
 
         try {
             session.beginTransaction();
-            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence=0");
+            Query query = session.createQuery("from Scheme as s where s.cycle.client=:currentClient AND sequence=0");
             query.setParameter("currentClient", client);
 
             schemes = query.list();
@@ -111,7 +111,7 @@ public class SchemeModel {
 
         try {
             session.beginTransaction();
-            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence != 0 order by sequence");
+            Query query = session.createQuery("from Scheme as s where s.cycle.client=:currentClient AND sequence != 0 order by sequence");
             query.setParameter("currentClient", client);
 
             schemes = query.list();
@@ -186,7 +186,7 @@ public class SchemeModel {
 
         try {
             session.beginTransaction();
-            Query query = session.createQuery("from Scheme where client=:currentClient AND sequence>:biggerSequence");
+            Query query = session.createQuery("from Scheme as s where s.cycle.client=:currentClient AND sequence>:biggerSequence");
             query.setParameter("currentClient", client);
             query.setParameter("biggerSequence", numberOfSequence);
 

@@ -24,10 +24,6 @@ public class Scheme {
     @JoinColumn(name = "cycleID")
     private Cycle cycle;
 
-    @ManyToOne
-    @JoinColumn(name = "clientID")
-    private Client client;
-
     @OneToMany(mappedBy = "scheme", fetch = FetchType.EAGER)
     private List<Exercise> exerciseList;
 
@@ -39,16 +35,7 @@ public class Scheme {
         this.sequence = sequence;
     }
 
-    public Scheme() {
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
+    public Scheme() {}
 
     public int getId() {
         return id;
