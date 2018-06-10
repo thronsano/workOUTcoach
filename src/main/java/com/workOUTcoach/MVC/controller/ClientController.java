@@ -35,7 +35,8 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
-        modelAndView.addObject("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
+        modelAndView.addObject("usedSchemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
+        modelAndView.addObject("unusedSchemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
 
         try {
             Client client = clientModel.getClientById(Integer.parseInt(id));
@@ -227,18 +228,36 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/clientProfile/editCycle", method = RequestMethod.POST)
-    public ModelAndView setAppointment(@RequestParam("id") String id,
+    public ModelAndView addSchemeToCycle(@RequestParam("id") String id,
                                        @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
                                        ModelAndView modelAndView,
                                        RedirectAttributes redirectAttributes) {
         try {
-            schemeModel.addCycleToScheme(Integer.parseInt(id), schemeId);
-            redirectAttributes.addFlashAttribute("status", "successful");
-            redirectAttributes.addFlashAttribute("schemeList", schemeModel.schemeList());
+            schemeModel.addSchemeToCycle(Integer.parseInt(id), schemeId);
+            redirectAttributes.addFlashAttribute("schemeAdded", "successful");
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("status", "failed");
+            redirectAttributes.addFlashAttribute("schemeAdded", "failed");
             redirectAttributes.addFlashAttribute("reason", ex.getMessage());
-            redirectAttributes.addFlashAttribute("schemeList", schemeModel.schemeList());
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
+        }
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/removeFromCycle", method = RequestMethod.POST)
+    public ModelAndView removeSchemeFromCycle(@RequestParam("id") String id,
+                                       @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
+                                       ModelAndView modelAndView,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            schemeModel.setSchemeCycleToNull(Integer.parseInt(id), schemeId);
+            redirectAttributes.addFlashAttribute("schemeRemoved", "successful");
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("schemeRemoved", "failed");
+            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
         }
         modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;

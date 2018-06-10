@@ -28,11 +28,11 @@ public class Cycle {
         this.title = title;
     }
 
-    public Cycle() {
+    public Cycle(Client client) {
+        this.client = client;
     }
 
-    public Cycle(Client client){
-        this.client=client;
+    public Cycle() {
     }
 
     public int getId() {

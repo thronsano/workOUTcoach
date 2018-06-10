@@ -1,5 +1,7 @@
 package com.workOUTcoach.entity;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -19,12 +21,12 @@ public class Scheme {
     private int sequence;
 
     @ManyToOne
-    @JoinColumn(name = "clientID")
-    private Client client;
-
-    @ManyToOne
     @JoinColumn(name = "cycleID")
     private Cycle cycle;
+
+    @ManyToOne
+    @JoinColumn(name = "clientID")
+    private Client client;
 
     @OneToMany(mappedBy = "scheme", fetch = FetchType.EAGER)
     private List<Exercise> exerciseList;
@@ -32,10 +34,12 @@ public class Scheme {
     @OneToOne
     private Appointment appointment;
 
+    @Column
+    private boolean isUsed;
+
     public Scheme(String title, int sequence, Client client) {
         this.title = title;
         this.sequence = sequence;
-        this.client=client;
     }
 
     public Scheme() {
@@ -47,6 +51,14 @@ public class Scheme {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public boolean isUsed() {
+        return isUsed;
+    }
+
+    public void setIsUsed(boolean used) {
+        isUsed = used;
     }
 
     public int getId() {

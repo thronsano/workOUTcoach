@@ -79,14 +79,6 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Scheme> getSchemeList() {
-        return schemeList;
-    }
-
-    public void setSchemeList(List<Scheme> schemeList) {
-        this.schemeList = schemeList;
-    }
-
     public int getId() {
         return id;
     }
@@ -181,5 +173,13 @@ public class Client {
 
     public void setPaymentList(List<Payment> paymentList) {
         this.paymentList = paymentList;
+    }
+
+    public List<Scheme> getSchemeList() {
+        return schemeList;
+    }
+
+    public void setSchemeList(List<Scheme> schemeList) {
+        this.schemeList = schemeList;
     }
 }

@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -42,22 +41,24 @@ public class SchemeModel {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Scheme scheme;
+        Scheme scheme = null;
+        try {
+            Query query = session.createQuery("from Scheme where id=:schemeID");
 
-        Query query = session.createQuery("from Scheme where id=:schemeID");
+            query.setParameter("schemeID", id);
+            scheme = (Scheme) query.uniqueResult();
+        } catch (Exception e) {
+            Logger.logError("Exception during access to scheme");
+            session.getTransaction().commit();
+            session.close();
 
-        query.setParameter("schemeID", id);
-        scheme = (Scheme) query.uniqueResult();
-
-        session.getTransaction().commit();
-        session.close();
-
-        if (scheme == null)
-            throw new NotFoundException("Scheme not found!");
+            if (scheme == null)
+                throw new NotFoundException("Scheme not found!");
+        }
         return scheme;
     }
 
-    public boolean addCycleToScheme(int clientId, int schemeId) throws Exception {
+    public boolean addSchemeToCycle(int clientId, int schemeId) throws Exception {
         Cycle cycle = cycleModel.getCycleByClientId(clientId);
         Session session = sessionFactory.openSession();
         if (schemeId == -1)
@@ -67,6 +68,7 @@ public class SchemeModel {
             session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, schemeId);
             scheme.setCycle(cycle);
+            scheme.setIsUsed(true);
 
         } catch (Exception e) {
             Logger.logError("Exception during adding new scheme into cycle");
@@ -84,17 +86,15 @@ public class SchemeModel {
         session.beginTransaction();
         List<Scheme> schemes = null;
         try {
-            Query query = session.createQuery("from Scheme where clientID=:clientId AND cycleID=null");
+            Query query = session.createQuery("from Scheme where clientID=:clientId AND isUsed=0");
             query.setParameter("clientId", clientId);
             schemes = query.list();
 
         } catch (Exception e) {
             Logger.logError("Exception during access to cycle");
-
+        } finally {
             session.getTransaction().commit();
             session.close();
-
-
         }
         return schemes;
     }
@@ -107,18 +107,16 @@ public class SchemeModel {
         try {
             cycle = cycleModel.getCycleByClientId(clientId);
             int cycleId = cycle.getId();
-            Query query = session.createQuery("from Scheme where clientID=:clientId AND cycleID=:cycleId");
+            Query query = session.createQuery("from Scheme where clientID=:clientId AND isUsed=1");
             query.setParameter("clientId", clientId);
-            query.setParameter("cycleId", cycleId);
+            //query.setParameter("cycleId", cycleId);
             schemes = query.list();
 
         } catch (Exception e) {
             Logger.logError("Exception during access to cycle");
-
+        } finally {
             session.getTransaction().commit();
             session.close();
-
-
         }
         return schemes;
     }
@@ -148,4 +146,17 @@ public class SchemeModel {
         }
     }
 
+    public void setSchemeCycleToNull(int i, int schemeId) {
+
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            Scheme scheme = session.get(Scheme.class, schemeId);
+            scheme.setIsUsed(false);
+            Logger.logError("Exception during deleting scheme from database");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
 }
