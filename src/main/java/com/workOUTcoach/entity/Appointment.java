@@ -18,6 +18,9 @@ public class Appointment {
     @Column
     private LocalDateTime endDate;
 
+    @Column
+    private boolean isCancelled;
+
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
     private Payment payment;
 
@@ -28,7 +31,6 @@ public class Appointment {
     @OneToOne
     @JoinColumn(name = "schemeID")
     private Scheme scheme;
-
 
     public Appointment() {
     }
@@ -68,6 +70,14 @@ public class Appointment {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean getIsCancelled() {
+        return isCancelled;
+    }
+
+    public void setIsCancelled(boolean cancelled) {
+        isCancelled = cancelled;
     }
 
     public Payment getPayment() {

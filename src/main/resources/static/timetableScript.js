@@ -3,9 +3,9 @@ function buttonClicked(value) {
     if (offset == null)
         offset = value;
     else
-        offset = parseInt(offset)+ parseInt(value);
+        offset = parseInt(offset) + parseInt(value);
 
-    document.location.href = "/home?offset=" + offset;
+    document.location.href = updateURLparameters("home", "offset", offset);
 }
 
 function getURLParameter(sParam) {
@@ -18,4 +18,44 @@ function getURLParameter(sParam) {
         }
     }
     return null;
+}
+
+function updateURLparameters(page, key, value) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.length === 0 ? "" : sPageURL.split('&&');
+    var updatedVariables = "/" + page + "?";
+    var variableAlreadyExists = false;
+
+    for (var i = 0; i < sURLVariables.length; i++) {
+        var sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] == key) {
+            sParameterName[1] = value;
+            variableAlreadyExists = true;
+        }
+        updatedVariables += sParameterName[0] + "=" + sParameterName[1];
+        if (i + 1 < sURLVariables.length)
+            updatedVariables += "&&"
+    }
+
+    if (!variableAlreadyExists) {
+        if(sURLVariables.length > 0)
+            updatedVariables += "&&"
+        updatedVariables += key + "=" + value;
+    }
+
+    return updatedVariables;
+}
+
+function rowClicked(value) {
+    location.href = "/appointmentPage?id=" + value;
+}
+
+function toggleDisplayArchived() {
+    var currentShowCancelled = getURLParameter("showCancelled");
+
+    if(currentShowCancelled == null || currentShowCancelled == "false")
+        document.location.href = updateURLparameters("home", "showCancelled", true);
+    else
+        document.location.href = updateURLparameters("home", "showCancelled", false);
 }

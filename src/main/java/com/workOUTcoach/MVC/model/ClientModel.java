@@ -1,5 +1,7 @@
 package com.workOUTcoach.MVC.model;
 
+import com.workOUTcoach.entity.Cycle;
+import com.workOUTcoach.entity.Scheme;
 import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,6 +20,9 @@ public class ClientModel {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private CycleModel cycleModel;
 
     @SuppressWarnings("unchecked")
     public List<Client> getArchivedUserClients() {
@@ -53,85 +58,75 @@ public class ClientModel {
     }
 
 
-    public boolean saveNewClient(Client client) {
+    public void saveNewClient(Client client) {
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
 
         try {
-            session.beginTransaction();
             session.save(client);
-        } catch (Exception e) {
-            Logger.logError("Exception during saving new client into database");
-            return false;
         } finally {
             session.getTransaction().commit();
             session.close();
         }
-
-        return true;
     }
 
-    public Client getClientById(int id) throws NullPointerException, NumberFormatException {
+    public Client getClientById(int id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Client client;
+        try {
+            Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
+            query.setParameter("email", auth.getName());
+            query.setParameter("clientID", id);
 
-        Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
-
-        query.setParameter("email", auth.getName());
-        query.setParameter("clientID", id);
-        client = (Client) query.uniqueResult();
-
-        session.getTransaction().commit();
-        session.close();
-
-        if (client == null)
-            throw new NullPointerException("Client not found!");
-
-        return client;
+            return (Client) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
     public void editClientDetails(int clientID, String newValueOfElement, String elementToChange) throws Exception {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Query query = session.createQuery("from Client where id=:clientID");
-        query.setParameter("clientID", clientID);
+        try {
+            Query query = session.createQuery("from Client where id=:clientID");
+            query.setParameter("clientID", clientID);
 
-        Client client = (Client) query.uniqueResult();
+            Client client = (Client) query.uniqueResult();
 
-        session.getTransaction().commit();
+            session.getTransaction().commit();
 
-        switch (elementToChange) {
-            case "goal":
-                client.setGoal(newValueOfElement);
-                break;
-            case "health":
-                client.setHealthCondition(newValueOfElement);
-                break;
-            case "phone":
-                client.setPhoneNumber(newValueOfElement);
-                break;
-            case "gym":
-                client.setGymName(newValueOfElement);
-                break;
-            default:
-                throw new Exception("Chosen incorrect parameter to edit");
+            switch (elementToChange) {
+                case "goal":
+                    client.setGoal(newValueOfElement);
+                    break;
+                case "health":
+                    client.setHealthCondition(newValueOfElement);
+                    break;
+                case "phone":
+                    client.setPhoneNumber(newValueOfElement);
+                    break;
+                case "gym":
+                    client.setGymName(newValueOfElement);
+                    break;
+                default:
+                    throw new Exception("Chosen an incorrect parameter to edit!");
+            }
+
+            session.beginTransaction();
+            session.update(client);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
-
-        session.beginTransaction();
-        session.update(client);
-        session.getTransaction().commit();
-        session.close();
-
-        if (client == null)
-            throw new NullPointerException("Client not found!");
     }
 
 
-    public boolean deleteById(int id) throws NullPointerException, NumberFormatException {
-        Client client = getClientById(id);
+    public void deleteById(int clientId) {
+        Client client = getClientById(clientId);
 
         if (client == null)
             throw new NullPointerException("Client not found!");
@@ -141,94 +136,72 @@ public class ClientModel {
 
         try {
             session.delete(client);
-        } catch (Exception e) {
-            Logger.logError("Exception during deleting client from database");
-            return false;
         } finally {
             session.getTransaction().commit();
             session.close();
         }
-
-        return true;
     }
 
 
-    public boolean isActiveById(int id) throws NullPointerException, NumberFormatException {
+    public boolean isActiveById(int clientId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Client client;
-        Boolean isActive = false;
+        try {
+            Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
+            query.setParameter("email", auth.getName());
+            query.setParameter("clientID", clientId);
+            Client client = (Client) query.uniqueResult();
 
-        Query query = session.createQuery("from Client where coachEmail =:email AND id=:clientID");
-        query.setParameter("email", auth.getName());
-        query.setParameter("clientID", id);
-        client = (Client) query.uniqueResult();
-
-        isActive = client.isActive();
-
-        session.getTransaction().commit();
-        session.close();
-
-        if (client == null)
-            throw new NullPointerException("Client not found!");
-
-        return isActive;
+            return client.isActive();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
-    public boolean setActiveById(int id) throws NullPointerException, NumberFormatException {
+    public void setActiveById(int clientId) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-
-            Client client;
-
             Query query = session.createQuery("from Client where id=:clientID");
-            query.setParameter("clientID", id);
-            client = (Client) query.uniqueResult();
+            query.setParameter("clientID", clientId);
+            Client client = (Client) query.uniqueResult();
 
             client.setActive(true);
-
+        } finally {
             session.getTransaction().commit();
             session.close();
-        } catch (Exception e) {
-            Logger.logError("Exception during saving user into database");
-            return false;
         }
-
-        return true;
     }
 
-    public boolean archiveById(int id) throws NullPointerException, NumberFormatException {
+    public void archiveById(int id) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         try {
-            Session session = sessionFactory.openSession();
-            Client client;
-
-            session.beginTransaction();
-
             Query query = session.createQuery("from Client where id=:clientID");
             query.setParameter("clientID", id);
-            client = (Client) query.uniqueResult();
+            Client client = (Client) query.uniqueResult();
 
             client.setActive(false);
-
+        } finally {
             session.getTransaction().commit();
             session.close();
-        } catch (Exception e) {
-            Logger.logError("Exception during saving user into database");
-            return false;
         }
-
-        return true;
     }
 
     public void createClient(String name, String surname, String coachEmail, String gymName, String goal, String condition, String phoneNumber) throws Exception {
         if (validateString(name) && validateString(surname) && validateString(coachEmail)) {
             Client client = new Client(name, surname, coachEmail, gymName, goal, condition, true, phoneNumber);
 
-            if (!saveNewClient(client))
-                throw new Exception("Error occurred during creating new client! Try again.");
+            saveNewClient(client);
+            Cycle cycle = new Cycle(client);
+
+            cycleModel.saveNewCycle(cycle);
         } else {
             throw new Exception("You have to fill name and surname field!");
         }

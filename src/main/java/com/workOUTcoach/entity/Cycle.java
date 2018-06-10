@@ -28,6 +28,10 @@ public class Cycle {
         this.title = title;
     }
 
+    public Cycle(Client client) {
+        this.client = client;
+    }
+
     public Cycle() {
     }
 

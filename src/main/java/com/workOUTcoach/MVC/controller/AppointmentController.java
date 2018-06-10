@@ -6,7 +6,6 @@ import com.workOUTcoach.MVC.model.SchemeModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 @Controller
 public class AppointmentController {
@@ -60,13 +58,42 @@ public class AppointmentController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public ModelAndView listAppointments(@RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
-                                         Model model, ModelAndView modelAndView) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        model.addAttribute("appointments", appointmentModel.listAppointments(offset));
-        model.addAttribute("startingDate", (appointmentModel.setBegginingDate(offset).format(dateFormatter)));
-        model.addAttribute("endingDate", (appointmentModel.setEndingDate(offset)).format(dateFormatter));
+    @RequestMapping(value = "/appointmentPage", method = RequestMethod.GET)
+    public ModelAndView getAppointment(@RequestParam(value = "id") String id, ModelAndView modelAndView) {
+        try {
+            modelAndView.addObject("appointments", appointmentModel.getAppointment(Integer.parseInt(id)));
+            modelAndView.addObject("exercises", schemeModel.listExercise(Integer.parseInt(id)));
+        } catch (NullPointerException ex) {
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Appointment not found!");
+            modelAndView.setViewName("appointmentPage");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/appointmentPage/cancel", method = RequestMethod.POST)
+    public ModelAndView cancelAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView) {
+        try {
+            appointmentModel.setCancelledValue(true, Integer.parseInt(id));
+            modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
+        }catch (NullPointerException ex){
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Appointment not found!");
+            modelAndView.setViewName("appointmentPage");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/appointmentPage/active", method = RequestMethod.POST)
+    public ModelAndView activeAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView) {
+        try {
+            appointmentModel.setCancelledValue(false, Integer.parseInt(id));
+            modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
+        }catch (NullPointerException ex){
+            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("reason", "Appointment not found!");
+            modelAndView.setViewName("appointmentPage");
+        }
         return modelAndView;
     }
 }

@@ -1,6 +1,7 @@
 package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.ClientModel;
+import com.workOUTcoach.MVC.model.SchemeModel;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.Client;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ClientController {
     @Autowired
     UserModel userModel;
 
+    @Autowired
+    private SchemeModel schemeModel;
+
     @RequestMapping(value = "/clientList", method = RequestMethod.GET)
     public ModelAndView ListClients(Model model, ModelAndView modelAndView) {
         model.addAttribute("clients", clientModel.getActiveUserClients());
@@ -31,6 +35,9 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile", method = RequestMethod.GET)
     public ModelAndView getClient(@RequestParam(value = "id") String id, Model model, ModelAndView modelAndView) {
+        modelAndView.addObject("usedSchemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
+        modelAndView.addObject("unusedSchemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
+
         try {
             Client client = clientModel.getClientById(Integer.parseInt(id));
             model.addAttribute("client", client);
@@ -137,17 +144,18 @@ public class ClientController {
                                    @RequestParam(value = "clientID") String id,
                                    RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.setActiveById(Integer.parseInt(id));
 
-        if (result) {
+        try {
+            clientModel.setActiveById(Integer.parseInt(id));
+
             redirectAttributes.addFlashAttribute("activationSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        } else {
+        } catch (Exception ex) {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
             modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", "Error during activation.");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
         }
 
@@ -157,17 +165,17 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/deleteClient", method = RequestMethod.POST)
     public ModelAndView deleteClient(ModelAndView modelAndView, @RequestParam(value = "clientID2") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.deleteById(Integer.parseInt(id));
 
-        if (result) {
+        try {
+            clientModel.deleteById(Integer.parseInt(id));
             redirectAttributes.addFlashAttribute("deleteSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientList");
-        } else {
+        } catch (Exception ex) {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
             modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", "Error when deleting client.");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
         }
 
@@ -177,17 +185,18 @@ public class ClientController {
     @RequestMapping(value = "/clientProfile/makeArchived", method = RequestMethod.POST)
     public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = clientModel.archiveById(Integer.parseInt(id));
 
-        if (result) {
+        try {
+            clientModel.archiveById(Integer.parseInt(id));
+
             redirectAttributes.addFlashAttribute("archivingSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        } else {
+        } catch (Exception ex) {
             modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.addObject("id", id);
             modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", "Error during archiving the client.");
+            modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
         }
 
@@ -217,6 +226,42 @@ public class ClientController {
             modelAndView.setViewName("addClient");
         }
 
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/editCycle", method = RequestMethod.POST)
+    public ModelAndView addSchemeToCycle(@RequestParam("id") String id,
+                                         @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
+                                         ModelAndView modelAndView,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            schemeModel.addSchemeToCycle(Integer.parseInt(id), schemeId);
+            redirectAttributes.addFlashAttribute("schemeAdded", "successful");
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("schemeAdded", "failed");
+            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
+        }
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/removeFromCycle", method = RequestMethod.POST)
+    public ModelAndView removeSchemeFromCycle(@RequestParam("id") String id,
+                                              @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
+                                              ModelAndView modelAndView,
+                                              RedirectAttributes redirectAttributes) {
+        try {
+            schemeModel.setSchemeCycleToNull(Integer.parseInt(id), schemeId);
+            redirectAttributes.addFlashAttribute("schemeRemoved", "successful");
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("schemeRemoved", "failed");
+            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
+            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
+        }
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;
     }
 }
