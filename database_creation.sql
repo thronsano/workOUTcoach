@@ -92,11 +92,9 @@ CREATE TABLE appointments (
 CREATE TABLE payments (
   id            INT PRIMARY KEY AUTO_INCREMENT,
   paymentDate   DATETIME,
-  clientID      INT,
   appointmentID INT,
   isPaid        BIT(1),
   amount        FLOAT,
-  CONSTRAINT fk_payments_clients FOREIGN KEY (clientID) REFERENCES clients (id),
   CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
 );
 

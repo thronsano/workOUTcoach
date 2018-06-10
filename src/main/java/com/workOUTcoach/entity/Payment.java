@@ -28,10 +28,6 @@ public class Payment {
     @JoinColumn(name = "appointmentID")
     private Appointment appointment;
 
-    @ManyToOne
-    @JoinColumn(name = "clientID")
-    private Client client;
-
     public Payment(@NotBlank LocalDate paymentDate, boolean isPaid, float amount) {
         this.paymentDate = paymentDate;
         this.isPaid = isPaid;
@@ -84,13 +80,5 @@ public class Payment {
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 }
