@@ -29,7 +29,6 @@ public class TimetableController {
         model.addAttribute("startingDate", (timetableModel.setBeginningDate(offset).format(dateFormatter)));
         model.addAttribute("endingDate", (timetableModel.setEndingDate(offset)).format(dateFormatter));
         model.addAttribute("showCancelled", showCancelled);
-        Logger.log(showCancelled + "");
         return modelAndView;
     }
 

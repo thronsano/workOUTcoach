@@ -80,14 +80,14 @@ CREATE TABLE schemes (
   CONSTRAINT fk_schemes_cycles FOREIGN KEY (cycleID) REFERENCES cycles (id)
 );
 
-INSERT INTO schemes (title, cycleID, sequence,clientID,isUsed) VALUES ('Nogi dla leniwych', 1, 3,1,1);
-INSERT INTO schemes (title, cycleID, sequence,clientID,isUsed) VALUES ('Nogi dla zaawansowanych', 1, 3,1,1);
-INSERT INTO schemes (title, sequence,clientID,isUsed) VALUES ('Rece dla zaawansowanych', 3,1,0);
-INSERT INTO schemes (title, sequence,clientID,isUsed) VALUES ('Brzuch dla leniwych', 3,1,0);
-INSERT INTO schemes (title, cycleID, sequence,clientID,isUsed) VALUES ('Nogi dla leniwych', 2, 3,2,1);
-INSERT INTO schemes (title, cycleID, sequence,clientID,isUsed) VALUES ('Rece dla zaawansowanych', 2, 3,2,1);
-INSERT INTO schemes (title, sequence,clientID,isUsed) VALUES ('Brzuch dla leniwych', 3,2,0);
-INSERT INTO schemes (title, cycleID, sequence,clientID,isUsed) VALUES ('Rece dla zaawansowanych', 3, 3,3,0);
+INSERT INTO schemes (title, cycleID, sequence, clientID, isUsed) VALUES ('Nogi dla leniwych', 1, 3, 1, 1);
+INSERT INTO schemes (title, cycleID, sequence, clientID, isUsed) VALUES ('Nogi dla zaawansowanych', 1, 3, 1, 1);
+INSERT INTO schemes (title, sequence, clientID, isUsed) VALUES ('Rece dla zaawansowanych', 3, 1, 0);
+INSERT INTO schemes (title, sequence, clientID, isUsed) VALUES ('Brzuch dla leniwych', 3, 1, 0);
+INSERT INTO schemes (title, cycleID, sequence, clientID, isUsed) VALUES ('Nogi dla leniwych', 2, 3, 2, 1);
+INSERT INTO schemes (title, cycleID, sequence, clientID, isUsed) VALUES ('Rece dla zaawansowanych', 2, 3, 2, 1);
+INSERT INTO schemes (title, sequence, clientID, isUsed) VALUES ('Brzuch dla leniwych', 3, 2, 0);
+INSERT INTO schemes (title, cycleID, sequence, clientID, isUsed) VALUES ('Rece dla zaawansowanych', 3, 3, 3, 0);
 
 CREATE TABLE appointments (
   id          INT PRIMARY KEY AUTO_INCREMENT,
