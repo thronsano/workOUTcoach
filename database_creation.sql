@@ -115,8 +115,8 @@ CREATE TABLE payments (
   CONSTRAINT fk_payments_appointments FOREIGN KEY (appointmentID) REFERENCES appointments (id)
 );
 
-INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (2, 1, 0, 50);
-INSERT INTO payments (clientID, appointmentID, isPaid, amount) VALUES (1, 2, 0, 25);
+INSERT INTO payments (appointmentID, isPaid, amount) VALUES (1, 0, 50);
+INSERT INTO payments (appointmentID, isPaid, amount) VALUES (2, 0, 25);
 
 CREATE TABLE exercises (
   id          int PRIMARY KEY AUTO_INCREMENT,

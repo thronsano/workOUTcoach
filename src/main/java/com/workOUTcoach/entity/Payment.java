@@ -58,11 +58,11 @@ public class Payment {
         this.paymentDate = paymentDate;
     }
 
-    public boolean getIsPaid() {
+    public boolean isPaid() {
         return isPaid;
     }
 
-    public void setIsPaid(boolean paid) {
+    public void setPaid(boolean paid) {
         isPaid = paid;
     }
 
