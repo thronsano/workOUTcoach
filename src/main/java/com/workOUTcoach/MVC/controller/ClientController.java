@@ -253,7 +253,7 @@ public class ClientController {
                                               ModelAndView modelAndView,
                                               RedirectAttributes redirectAttributes) {
         try {
-            schemeModel.setSchemeCycleToNull(Integer.parseInt(id), schemeId);
+            schemeModel.removeSchemeFromCycle(Integer.parseInt(id), schemeId);
             redirectAttributes.addFlashAttribute("schemeRemoved", "successful");
             redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
         } catch (Exception ex) {

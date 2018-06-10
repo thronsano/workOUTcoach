@@ -34,9 +34,6 @@ public class Scheme {
     @OneToOne
     private Appointment appointment;
 
-    @Column
-    private boolean isUsed;
-
     public Scheme(String title, int sequence, Client client) {
         this.title = title;
         this.sequence = sequence;
@@ -51,14 +48,6 @@ public class Scheme {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public boolean isUsed() {
-        return isUsed;
-    }
-
-    public void setIsUsed(boolean used) {
-        isUsed = used;
     }
 
     public int getId() {
