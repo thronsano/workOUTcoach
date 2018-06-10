@@ -1,9 +1,6 @@
 package com.workOUTcoach.MVC.model;
 
-import com.workOUTcoach.entity.Cycle;
-import com.workOUTcoach.entity.Appointment;
-import com.workOUTcoach.entity.Exercise;
-import com.workOUTcoach.entity.Scheme;
+import com.workOUTcoach.entity.*;
 import com.workOUTcoach.utility.Logger;
 import javassist.NotFoundException;
 import org.hibernate.Session;
@@ -20,6 +17,9 @@ import java.util.List;
 public class SchemeModel {
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private ClientModel clientModel;
 
     @Autowired
     private CycleModel cycleModel;
@@ -59,17 +59,17 @@ public class SchemeModel {
     }
 
     public boolean addSchemeToCycle(int clientId, int schemeId) throws Exception {
-        Cycle cycle = cycleModel.getCycleByClientId(clientId);
-        Session session = sessionFactory.openSession();
         if (schemeId == -1)
             throw new Exception("Scheme hasn't been chosen!");
 
+        Cycle cycle = cycleModel.getCycleByClientId(clientId);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         try {
-            session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, schemeId);
             scheme.setCycle(cycle);
             scheme.setIsUsed(true);
-
         } catch (Exception e) {
             Logger.logError("Exception during adding new scheme into cycle");
             return false;
@@ -82,16 +82,19 @@ public class SchemeModel {
     }
 
     public List<Scheme> getUnusedSchemeListByClient(int clientId) {
+        List<Scheme> schemes = null;
+        Client client = clientModel.getClientById(clientId);
+
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        List<Scheme> schemes = null;
-        try {
-            Query query = session.createQuery("from Scheme where clientID=:clientId AND isUsed=0");
-            query.setParameter("clientId", clientId);
-            schemes = query.list();
 
+        try {
+            Query query = session.createQuery("from Scheme where client=:currentClient AND isUsed=false");
+            query.setParameter("currentClient", client);
+
+            schemes = query.list();
         } catch (Exception e) {
-            Logger.logError("Exception during access to cycle");
+            Logger.logError("Exception during an access to cycle");
         } finally {
             session.getTransaction().commit();
             session.close();
@@ -100,18 +103,17 @@ public class SchemeModel {
     }
 
     public List<Scheme> getUsedSchemeListByClient(int clientId) {
+        List<Scheme> schemes = null;
+        Client client = clientModel.getClientById(clientId);
+
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        Cycle cycle;
-        List<Scheme> schemes = null;
-        try {
-            cycle = cycleModel.getCycleByClientId(clientId);
-            int cycleId = cycle.getId();
-            Query query = session.createQuery("from Scheme where clientID=:clientId AND isUsed=1");
-            query.setParameter("clientId", clientId);
-            //query.setParameter("cycleId", cycleId);
-            schemes = query.list();
 
+        try {
+            Query query = session.createQuery("from Scheme where client=:currentClient AND isUsed=true");
+            query.setParameter("currentClient", client);
+
+            schemes = query.list();
         } catch (Exception e) {
             Logger.logError("Exception during access to cycle");
         } finally {
@@ -130,14 +132,11 @@ public class SchemeModel {
         session.beginTransaction();
 
         try {
-            //Query query = session.createQuery("select (select exerciseList from Scheme ) from Appointment as app where app.id =:appID AND app.client.coachEmail =:coachEmail");
             Query query = session.createQuery("from Appointment as app where app.id =:appID AND app.client.coachEmail =:coachEmail");
             query.setParameter("appID", appointmentID);
             query.setParameter("coachEmail", auth.getName());
 
             Appointment appointment = (Appointment) query.uniqueResult();
-
-            //Logger.log(query.list().size()+"");
 
             return appointment.getScheme().getExerciseList();
         } finally {
@@ -147,10 +146,10 @@ public class SchemeModel {
     }
 
     public void setSchemeCycleToNull(int i, int schemeId) {
-
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         try {
-            session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, schemeId);
             scheme.setIsUsed(false);
             Logger.logError("Exception during deleting scheme from database");
