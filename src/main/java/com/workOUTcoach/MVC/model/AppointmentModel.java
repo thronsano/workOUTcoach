@@ -4,6 +4,7 @@ import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Payment;
 import com.workOUTcoach.entity.Scheme;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -40,39 +41,40 @@ public class AppointmentModel {
     @Autowired
     Environment env;
 
-    public void setAppointment(int id, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
+    public void setAppointment(int clientId, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
         if (endDate.isBefore(startDate))
             throw new Exception("Appointment ends before it starts!");
 
         if (cyclic && repeatAmount <= 0)
             throw new Exception("Incorrect repetition amount!");
 
-        if(!partOfCycle && schemeId == -1)
+        if (!partOfCycle && schemeId == -1)
             throw new Exception("Scheme hasn't been chosen!");
 
         int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
-        Client client = clientModel.getClientById(id);
+        Client client = clientModel.getClientById(clientId);
+
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         List<Payment> payments = new LinkedList<>();
-        try {
 
+        try {
             float amount = calculateAmount(startDate, endDate);
 
             for (int i = 0; i < repeatAmount; i++) {
-
                 LocalDateTime newStartDate = startDate.plusWeeks(i);
                 LocalDateTime newEndDate = endDate.plusWeeks(i);
 
-                if (!timelineClear(newStartDate, newEndDate)) {
+                if (!timelineClear(newStartDate, newEndDate, -1)) {
                     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
                     throw new Exception("Appointment from " + newStartDate.format(dateFormatter) + " to " + newEndDate.format(timeFormatter) + " overlaps another one!");
                 }
 
                 Appointment appointment;
-                if(!partOfCycle) {
+
+                if (!partOfCycle) {
                     Scheme scheme = schemeModel.getSchemeById(schemeId);
                     appointment = new Appointment(newStartDate, newEndDate, client, scheme);
                 } else {
@@ -97,8 +99,42 @@ public class AppointmentModel {
         }
     }
 
+    public void updateAppointment(int appointmentId, LocalDateTime startDate, LocalDateTime endDate, int schemeId) throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Appointment appointment;
 
-    private boolean timelineClear(LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd) {
+        Session session = sessionFactory.openSession();
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Appointment as app where app.id =:id AND app.client.coachEmail =:email");
+            query.setParameter("email", auth.getName());
+            query.setParameter("id", appointmentId);
+            appointment = (Appointment) query.uniqueResult();
+
+            if (!appointment.getStartDate().isEqual(startDate) || !appointment.getEndDate().isEqual(endDate)) {
+                if (startDate.isBefore(endDate)) {
+                    if (timelineClear(startDate, endDate, appointmentId)) {
+                        appointment.setStartDate(startDate);
+                        appointment.setEndDate(endDate);
+                    } else {
+                        throw new Exception("Appointment overlaps another one!");
+                    }
+                } else {
+                    throw new Exception("Appointment ends before it starts!");
+                }
+            }
+
+            if (appointment.getScheme().getId() != schemeId)
+                appointment.setScheme(schemeModel.getSchemeById(schemeId));
+
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    private boolean timelineClear(LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd, int excludedAppointment) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         long count;
@@ -108,11 +144,15 @@ public class AppointmentModel {
                     "(app.startDate <=:newStartDate AND app.endDate >=:newStartDate) OR " +
                     "(app.startDate >=:newStartDate AND app.endDate <=:newEndDate) OR " +
                     "(app.startDate <=:newEndDate AND app.endDate >=:newEndDate)" +
-                    ") AND app.client.coachEmail =:userEmail AND app.isCancelled = false");
+                    ") AND app.client.coachEmail =:userEmail AND app.isCancelled = false" +
+                    (excludedAppointment != -1 ? " AND app.id !=:excludedApp" : ""));
 
             query.setParameter("newStartDate", localDateTimeStart);
             query.setParameter("newEndDate", localDateTimeEnd);
             query.setParameter("userEmail", SecurityContextHolder.getContext().getAuthentication().getName());
+
+            if (excludedAppointment != -1)
+                query.setParameter("excludedApp", excludedAppointment);
 
             count = (long) query.uniqueResult();
         } finally {
@@ -159,17 +199,35 @@ public class AppointmentModel {
         }
     }
 
-    public LocalDateTime setBegginingDate(int offset){
-        return LocalDateTime.now().plusWeeks(offset);
-    }
-    public LocalDateTime setEndingDate(int offset){
-        return LocalDateTime.now().plusWeeks(offset+1);
+    public void deleteAppointment(int appointmentID) throws Exception {
+        Appointment appointment = getAppointment(appointmentID);
+        if (appointment == null)
+            throw new NullPointerException("Appointment not found!");
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            session.delete(appointment);
+        } catch (Exception ex) {
+            throw new Exception("Exception during deleting appointment from database");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
-    private float calculateAmount(LocalDateTime start, LocalDateTime end){
+    public LocalDateTime setBegginingDate(int offset) {
+        return LocalDateTime.now().plusWeeks(offset);
+    }
+
+    public LocalDateTime setEndingDate(int offset) {
+        return LocalDateTime.now().plusWeeks(offset + 1);
+    }
+
+    private float calculateAmount(LocalDateTime start, LocalDateTime end) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         float hourlyRate = userModel.getUserByEmail(auth.getName()).getHourlyRate();
-        float duration = (float)start.until(end, ChronoUnit.MINUTES)/60;
-        return duration*hourlyRate;
+        float duration = (float) start.until(end, ChronoUnit.MINUTES) / 60;
+        return duration * hourlyRate;
     }
 }

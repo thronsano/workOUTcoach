@@ -121,14 +121,13 @@
 
     </div>
 
-    <div th:if="${isActive}==false">
-        <br/>
-        <form th:action="@{/clientProfile/makeActive}" method="post">
-            <input type="hidden" name="clientID" id="clientID">
-            <script>document.getElementById('clientID').value = window.GetURLParameter('id');</script>
-            <button type="submit" th:href="@{/makeActive}" class="btn-basic">MAKE ACTIVE</button>
-
-        </form>
+        <div th:if="${isActive}==false">
+            <br/>
+            <form th:action="@{/clientProfile/makeActive}" method="post">
+                <input type="hidden" name="clientID" id="clientID">
+                <script>document.getElementById('clientID').value = window.GetURLParameter('id');</script>
+                <button type="submit" th:href="@{/makeActive}" class="btn-basic">MAKE ACTIVE</button>
+            </form>
 
         <br/>
         <form th:action="@{/clientProfile/deleteClient}" method="post">

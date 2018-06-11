@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,10 @@ public class SchemeModel {
 
     @Autowired
     private CycleModel cycleModel;
+
+    @Autowired
+    @Lazy
+    private AppointmentModel appointmentModel;
 
     public List<Scheme> schemeList() {
         Session session = sessionFactory.openSession();
@@ -201,4 +206,22 @@ public class SchemeModel {
         return schemes;
     }
 
+    public List<Scheme> listSchemeByAppointmentId(int appointmentID) {
+        Appointment appointment= appointmentModel.getAppointment(appointmentID);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            Query query = session.createQuery("from Scheme as scheme where scheme.cycle.client.id =:clientID AND scheme.cycle.client.coachEmail =:email");
+            query.setParameter("clientID", appointment.getClient().getId());
+            query.setParameter("email", auth.getName());
+
+            return query.list();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
 }
