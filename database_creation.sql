@@ -103,6 +103,7 @@ INSERT INTO authorities (email, authority) VALUES ('wiktoria.malawska@wp.pl', 'R
 INSERT INTO authorities (email, authority) VALUES ('tomaszewski-eryk@wp.pl', 'ROLE_USER');
 INSERT INTO authorities (email, authority) VALUES ('wiktoria.malawska@test.pl', 'ROLE_USER');
 
+
 INSERT INTO clients (name, surname, coachEmail, gymName, goal, healthCondition, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', 'Jatomi', 'Muscle gain', 'Healthy', true);
 INSERT INTO clients (name, surname, coachEmail, gymName, goal, healthCondition, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', 'Platinium', 'To be fit!', 'healthy', true);
 INSERT INTO clients (name, surname, coachEmail, isActive) VALUES ('Paul', 'Old', 'sdoe@gmail.com', false);

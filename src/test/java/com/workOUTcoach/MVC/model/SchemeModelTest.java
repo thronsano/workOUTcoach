@@ -1,14 +1,22 @@
 package com.workOUTcoach.MVC.model;
 
+import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Cycle;
 import com.workOUTcoach.entity.Scheme;
-import com.workOUTcoach.utility.Logger;
+import com.workOUTcoach.entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -25,32 +33,130 @@ public class SchemeModelTest {
     @Autowired
     SchemeModel schemeModel;
 
-    @Test
-    public void getSchemesListTest() {
+    @Autowired
+    ClientModel clientModel;
 
-        List<Scheme> schemeList;
-        Cycle cycle = new Cycle(1, "Rzezba");
-        Cycle cycle2 = new Cycle(2, "Rzezba Lekka");
-        Scheme testScheme = new Scheme("Nogi dla leniwych", cycle, 1);
-        Scheme testScheme2 = new Scheme("Nogi dla zaawasowanych", cycle, 2);
-        Scheme testScheme3 = new Scheme("Rece dla leniwych", cycle2, 1);
+    @Autowired
+    UserModel userModel;
 
-        schemeList = schemeModel.schemeList();
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-        int size = schemeList.size();
+    @Mock
+    Authentication authentication;
 
-        Session session = sessionFactory.openSession();
+    Session session;
+    User user;
+    Client client;
+    Cycle cycle;
+    Scheme testScheme;
+
+    @Before
+    public void createObject() {
+
+        user = new User("wikatest@gmail.com", "pass", "Aaa", "Bbb", 3);
+
+        session = sessionFactory.openSession();
         try {
             session.beginTransaction();
-            session.save(testScheme);
-            session.save(testScheme2);
-            session.save(testScheme3);
+            session.save(user);
         } finally {
             session.getTransaction().commit();
             session.close();
         }
-        schemeList = schemeModel.schemeList();
-        size = schemeList.size() - size;
-        assertEquals(size, 3);
+
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from User where email =:email");
+            query.setParameter("email", "wikatest@gmail.com");
+            user = (User) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+
+        client = new Client("Wika", "Malawska", "wikatest@gmail.com");
+
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.save(client);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Client where coachEmail =:email and name=:name");
+            query.setParameter("email", "wikatest@gmail.com");
+            query.setParameter("name", "Wika");
+            client = (Client) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+
+        cycle = new Cycle("Dobry Cykl", client);
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.save(cycle);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Cycle as c where c.client.coachEmail ='wikatest@gmail.com' and c.client.name=:name");
+            query.setParameter("name", "Wika");
+            cycle = (Cycle) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+
+        testScheme = new Scheme("Nogi dla leniwych", cycle, 1);
+
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.save(testScheme);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    @Test
+    public void getSchemesListTest() {
+        List<Scheme> schemeList;
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //Authentication auth = new UsernamePasswordAuthenticationToken("user", "pass", AuthorityUtils.createAuthorityList("ROLE_USER"));
+        //SecurityContextHolder.getContext().setAuthentication(auth);
+
+        schemeList = schemeModel.getSchemeListByClientId(client.getId());
+        int size = schemeList.size();
+        assertTrue(size >= 0);
+    }
+
+    @After
+    public void removeAll() {
+        session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.remove(testScheme);
+            session.remove(cycle);
+            session.remove(client);
+            session.remove(user);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 }
