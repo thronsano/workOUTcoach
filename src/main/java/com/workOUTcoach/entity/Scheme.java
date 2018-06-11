@@ -1,6 +1,8 @@
 package com.workOUTcoach.entity;
 
-import org.springframework.lang.Nullable;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -24,7 +26,9 @@ public class Scheme {
     @JoinColumn(name = "cycleID")
     private Cycle cycle;
 
-    @OneToMany(mappedBy = "scheme", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "scheme", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    @Fetch(FetchMode.SELECT)
     private List<Exercise> exerciseList;
 
     @OneToOne
