@@ -41,6 +41,11 @@ public class Cycle {
         this.title = title;
     }
 
+    public Cycle(String title, Client client) {
+        this.title = title;
+        this.client = client;
+    }
+
     public Cycle() {
     }
 
