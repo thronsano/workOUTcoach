@@ -74,7 +74,7 @@ public class ExerciseModel {
     public void addNewExercise(int schemeID, String name, int repetitions) throws Exception {
 
         Scheme scheme = schemeModel.getSchemeById(schemeID);
-        if ((name != null && name.length() > 0) && repetitions > 0) {
+        if ((name != null && name.length() > 0) && repetitions >= 0) {
             Exercise exercise = new Exercise(name, repetitions, scheme);
             saveExercise(exercise);
         } else {
@@ -100,7 +100,7 @@ public class ExerciseModel {
 
         Exercise exercise = getExerciseById(exerciseID);
         if (exercise != null) {
-            if ((name != null && name.length() > 0) && repetitions > 0) {
+            if ((name != null && name.length() > 0) && repetitions >= 0) {
                 exercise.setName(name);
                 exercise.setRepetitions(repetitions);
                 editExercise(exercise);
