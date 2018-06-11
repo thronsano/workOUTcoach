@@ -24,23 +24,28 @@
 
         <table>
             <thead>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Amount</th>
-                <th>Paid</th>
-                <th>Payment Date</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Amount</th>
+            <th>Appointment Date</th>
+            <th>Paid</th>
+            <th>Payment Date</th>
             </thead>
 
             <tbody>
-                <tr th:each="payment : ${payments}">
-                    <td th:text="${payment.appointment.client.name}"></td>
-                    <td th:text="${payment.appointment.client.surname}"></td>
-                    <td th:text="${payment.amount}"></td>
-                    <td th:if="${payment.getIsPaid()}==true"><input type="checkbox" th:checked="true" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
-                    <td th:if="${payment.getIsPaid()}==false"><input type="checkbox" th:checked="false" name="paid" th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
-                    <td th:text="${payment.paymentDate}"></td>
+            <tr th:each="payment : ${payments}"
+                th:onclick="'javascript:rowClicked(\'' + ${payment.appointment.id} + '\');'">
+                <td th:text="${payment.appointment.client.name}"></td>
+                <td th:text="${payment.appointment.client.surname}"></td>
+                <td th:text="${payment.amount}"></td>
+                <td th:text="${#temporals.format(payment.appointment.startDate, 'yyyy-MM-dd')}"></td>
+                <td th:if="${payment.getIsPaid()}==true"><input type="checkbox" th:checked="true" name="paid"
+                                                                th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                <td th:if="${payment.getIsPaid()}==false"><input type="checkbox" th:checked="false" name="paid"
+                                                                 th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                <td th:text="${payment.paymentDate}"></td>
 
-                </tr>
+            </tr>
             </tbody>
             <form th:method="post" id="myForm" th:action="@{/payments/changePaidValue}">
                 <input type="hidden" name="paymentID" id="paymentID">
