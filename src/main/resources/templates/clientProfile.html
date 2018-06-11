@@ -50,7 +50,7 @@
                     </tbody>
                 </table>
 
-                <br>
+                <br><br>
                 <button type="button" id="editButton" th:onclick="'javascript:buttonClicked()'" class="btn-basic">EDIT
                     CLIENT DETAILS
                 </button>
@@ -83,7 +83,7 @@
                         </tbody>
                     </table>
 
-                    <br>
+                    <br><br>
                     <input type="hidden" name="clientID" th:value="${param.id}">
                     <button type="submit" th:href="@{/clientProfile/edit}" id="submitButton" class="btn-basic"> SUBMIT
                     </button>
@@ -93,7 +93,7 @@
 
         <br>
 
-        <button type="button" class="btn-login btn-basic" th:onclick="'javascript:toggleDisplayTrainingSettings(' + ${client.id} + ');'">TRAINING OPTIONS</button>
+        <button type="button" class="btn-basic" th:onclick="'javascript:toggleDisplayTrainingSettings(' + ${client.id} + ');'">TRAINING OPTIONS</button>
 
         <div th:if="${isActive}==true">
             <br>
@@ -124,53 +124,6 @@
                 <button type="submit" th:href="@{/deleteClient}" class="btn-basic">DELETE</button>
             </form>
         </div>
-        <br>
-
-        <form th:action="@{/clientProfile/removeFromCycle}" method="POST">
-            <input type="hidden" name="id" th:value="${param.id}"/>
-
-            <div><h1>Current Scheme:</h1>
-                <select name="schemeId" class="input-field">
-                    <option th:each="scheme : ${usedSchemeList}" th:value="${scheme.getId()}"
-                            th:text="${scheme.getTitle()}"></option>
-                </select>
-            </div>
-
-            <button type="submit" th:href="@{/editCycle}" class="btn-login btn-basic">REMOVE SCHEME FROM CYCLE</button>
-
-            <section class="login-info">
-                <div th:if="${schemeRemoved}=='successful'">
-                    Scheme from Cycle has been removed correctly!
-                </div>
-                <div th:if="${schemeRemoved}=='failed'">
-                    <div th:text="${reason}"></div>
-                </div>
-            </section>
-        </form>
-
-        <form th:action="@{/clientProfile/editCycle}" method="POST">
-            <input type="hidden" name="id" th:value="${param.id}"/>
-
-            <div>
-                <h1>You can add these scheme:</h1>
-                <select name="schemeId" class="input-field">
-                    <option th:each="scheme : ${unusedSchemeList}" th:value="${scheme.getId()}"
-                            th:text="${scheme.getTitle()}">
-                    </option>
-                </select>
-            </div>
-
-            <button type="submit" th:href="@{/editCycle}" class="btn-login btn-basic">ADD SCHEME TO CYCLE</button>
-
-            <section class="login-info">
-                <div th:if="${schemeAdded}=='successful'">
-                    Scheme has been set correctly!
-                </div>
-                <div th:if="${schemeAdded}=='failed'">
-                    <div th:text="${reason}"></div>
-                </div>
-            </section>
-        </form>
         <br>
 
         <div th:if="${activationSuccess}==true">
