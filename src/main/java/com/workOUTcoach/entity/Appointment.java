@@ -25,6 +25,9 @@ public class Appointment {
     @Column
     private boolean isCancelled;
 
+    @Column
+    private boolean partOfCycle;
+
     @OneToOne(mappedBy = "appointment", orphanRemoval = true, fetch = FetchType.EAGER)
     @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     @Fetch(FetchMode.SELECT)
@@ -41,17 +44,19 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.client = client;
-    }
-
     public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client, Scheme scheme) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.client = client;
         this.scheme = scheme;
+    }
+
+    public Appointment(LocalDateTime startDate, LocalDateTime endDate, Client client, Scheme scheme, boolean partOfCycle) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.client = client;
+        this.scheme = scheme;
+        this.partOfCycle = partOfCycle;
     }
 
     public int getId() {
@@ -108,5 +113,13 @@ public class Appointment {
 
     public void setScheme(Scheme scheme) {
         this.scheme = scheme;
+    }
+
+    public boolean isPartOfCycle() {
+        return partOfCycle;
+    }
+
+    public void setPartOfCycle(boolean partOfCycle) {
+        this.partOfCycle = partOfCycle;
     }
 }

@@ -2,7 +2,6 @@ package com.workOUTcoach.MVC.controller;
 
 import com.workOUTcoach.MVC.model.ExerciseModel;
 import com.workOUTcoach.MVC.model.SchemeModel;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,7 @@ public class SchemeController {
                                     @RequestParam("id") int clientID) {
         modelAndView.addObject("usedSchemeList", schemeModel.getUsedSchemeListByClient(clientID));
         modelAndView.addObject("unusedSchemeList", schemeModel.getUnusedSchemeListByClient(clientID));
-        modelAndView.addObject("schemes", schemeModel.getSchemeListByClient(clientID));
+        modelAndView.addObject("schemes", schemeModel.getSchemeListByClientId(clientID));
 
 
         modelAndView.setViewName("schemeList");

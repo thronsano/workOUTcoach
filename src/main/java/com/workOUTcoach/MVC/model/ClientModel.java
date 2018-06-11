@@ -58,7 +58,6 @@ public class ClientModel {
         }
     }
 
-
     public void saveNewClient(Client client) {
         Session session = sessionFactory.openSession();
 
@@ -110,24 +109,21 @@ public class ClientModel {
         }
     }
 
-
     public void deleteById(int clientId) {
-        Client client = getClientById(clientId);
-
-        if (client == null)
-            throw new NullPointerException("Client not found!");
-
+        Client client;
         Session session = sessionFactory.openSession();
 
         try {
             session.beginTransaction();
-            session.delete(client.getAppointmentList());
+            client = session.load(Client.class, clientId);
+            session.delete(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         } finally {
             session.getTransaction().commit();
             session.close();
         }
     }
-
 
     public boolean isActiveById(int clientId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

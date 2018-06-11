@@ -19,7 +19,7 @@ public class Cycle {
     @Column
     private String title;
 
-    @OneToMany(mappedBy = "cycle", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cycle", orphanRemoval = true, fetch = FetchType.EAGER)
     @Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     @Fetch(FetchMode.SELECT)
     private List<Scheme> schemeList;
@@ -34,6 +34,11 @@ public class Cycle {
 
     public Cycle(Client client) {
         this.client = client;
+    }
+
+    public Cycle(int id, String title) {
+        this.id = id;
+        this.title = title;
     }
 
     public Cycle() {
