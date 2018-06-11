@@ -256,9 +256,7 @@ public class SchemeModel {
             session.beginTransaction();
             Scheme scheme = session.get(Scheme.class, schemeID);
             scheme.setTitle(title);
-            System.out.println("-------------------------------------" + scheme.getTitle());
         } catch (Exception e) {
-            System.out.println("-----------------------------------------------" + e.getMessage());
             throw new Exception("Couldn't change title!");
         } finally {
             session.getTransaction().commit();
@@ -316,7 +314,11 @@ public class SchemeModel {
     public void deleteSchemeById(int schemeId) throws Exception {
         Scheme scheme = getSchemeById(schemeId);
         if (scheme != null) {
+            List<Scheme> schemes = getSchemeListBySequenceBiggerThan(scheme.getCycle().getClient().getId(), scheme.getSequence());
             deleteScheme(scheme);
+            for (Scheme s : schemes) {
+                changeSequenceByOneBackwards(s);
+            }
         } else {
             throw new Exception("Couldn't find scheme to delete!");
         }

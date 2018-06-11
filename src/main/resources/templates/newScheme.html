@@ -25,7 +25,6 @@
     <form th:action="@{/clientProfile/training/newScheme}" method="post">
         Name:
         <div><input type="text" class="input-field" name="name" placeholder="Name" required/></div>
-        >
         <div><input type="hidden" class="input-field" name="clientID" th:value="${cycle.client.id}"/></div>
         <button type="submit" class="btn-login btn-basic">CREATE</button>
     </form>
