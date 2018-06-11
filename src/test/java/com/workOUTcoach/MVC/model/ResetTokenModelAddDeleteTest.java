@@ -24,7 +24,6 @@ public class ResetTokenModelAddDeleteTest {
     public void createResetToken() {
         resetToken = new ResetToken("wiktoria.malawska@test.pl", "123");
         assertTrue(resetTokenModel.addResetToken(resetToken));
-        assertTrue(resetTokenModel.addResetToken(resetToken));
     }
 
     @Test

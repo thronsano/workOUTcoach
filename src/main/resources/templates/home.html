@@ -69,6 +69,12 @@
             </tr>
             </tbody>
         </table>
+
+        <div th:if="${deleteSuccess}==true">
+            <br>
+            Appointment deleted!
+            <br><br>
+        </div>
     </section>
     <script src="built/bundle.js"></script>
 </body>

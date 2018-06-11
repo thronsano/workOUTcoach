@@ -19,58 +19,121 @@
         </form>
     </nav>
 
-    <section class="content" th:action="@{/appointmentPage/?id=${param.id}}" method="GET">
-        <div th:if="${status}=='failed'">
-            <div th:text="${reason}"></div>
-        </div>
-    </section>
-    <div th:if="${appointments!=null}">
-        <section class="content" th:method="GET">
-            <h1>Appointment</h1>
-            <table>
-                <thead>
-                <th>StartDate</th>
-                <th>EndDate</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Gym name</th>
-                <th>Scheme</th>
-                <th>Is Paid</th>
-                <th>Is Cancelled</th>
-                </thead>
+    <div class="content" th:if="${status}=='failed'">
+        <div th:text="${reason}"></div>
+    </div>
 
-                <tbody>
-                <tr th:each="appointment : ${appointments}">
-                    <td th:text="${#temporals.format(appointment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td th:text="${#temporals.format(appointment.endDate, 'dd-MM-yyyy HH:mm')}"></td>
+    <div th:if="${appointment!=null}">
+        <section class="content" th:method="GET">
+            <div th:if="${error}=='true'">
+                <div th:text="${reason}"></div>
+            </div>
+
+            <h1>Appointment</h1>
+            <div th:if="${param.edit}==null or ${param.edit[0]}=='false'">
+                <table>
+                    <thead>
+                    <th>Date</th>
+                    <th>Starting time</th>
+                    <th>Ending time</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Gym name</th>
+                    <th>Scheme</th>
+                    <th>Paid</th>
+                    <th>Cancelled</th>
+                    </thead>
+                    <tbody>
+                    <td th:text="${#temporals.format(appointment.startDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${#temporals.format(appointment.startDate, 'HH:mm')}"></td>
+                    <td th:text="${#temporals.format(appointment.endDate, 'HH:mm')}"></td>
                     <td th:text="${appointment.client.name}"></td>
                     <td th:text="${appointment.client.surname}"></td>
                     <td th:text="${appointment.client.gymName}"></td>
                     <td th:text="${appointment.scheme.title}"></td>
                     <td th:text="${appointment.payment.isPaid}"></td>
                     <td th:text="${appointment.isCancelled}"></td>
-                </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${param.edit}!=null and ${param.edit[0]}=='true'">
+                <form th:action="@{/appointmentPage/edit}" method="post">
+                    <table>
+                        <thead>
+                        <th>Date</th>
+                        <th>Starting time</th>
+                        <th>Ending time</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Gym name</th>
+                        <th>Scheme</th>
+                        <th>Paid</th>
+                        <th>Cancelled</th>
+                        </thead>
+                        <tbody>
+                        <td><input type="date" name="date" id="date"
+                                   th:value="${#temporals.format(appointment.startDate, 'yyyy-MM-dd')}"></td>
+                        <td><input type="time" name="startTime" id="startingTime"
+                                   th:value="${#temporals.format(appointment.startDate, 'HH:mm')}"></td>
+                        <td><input type="time" name="endTime" id="endingTime"
+                                   th:value="${#temporals.format(appointment.endDate, 'HH:mm')}"></td>
+                        <td th:text="${appointment.client.name}"></td>
+                        <td th:text="${appointment.client.surname}"></td>
+                        <td th:text="${appointment.client.gymName}"></td>
+                        <td><select name="schemeId" class="input-field">\n' +
+                            '
+                            <option th:each="scheme : ${schemeList}" th:value="${scheme.getId()}"
+                                    th:text="${scheme.getTitle()}">
+                            </option>
+                            \</select></td>
+                        <td th:text="${appointment.payment.isPaid}"></td>
+                        <td th:text="${appointment.isCancelled}"></td>
+                        </tbody>
+                    </table>
+                    <br>
+                    <input type="hidden" name="appointmentID" id="appointmentID4">
+                    <script>document.getElementById('appointmentID4').value = window.getURLParameter('id');</script>
+                    <button type="submit" th:href="@{/appointmentPage/edit}" id="submitButton" class="btn-basic">
+                        SUBMIT
+                    </button>
+                </form>
+            </div>
+            <div th:if="${param.edit}==null or ${param.edit[0]}=='false'">
+                <div th:if="${!appointment.isCancelled}">
+                    <form th:action="@{/appointmentPage/cancel}" method="post">
+                        <input type="hidden" name="appointmentID" id="appointmentID">
+                        <script>document.getElementById('appointmentID').value = window.getURLParameter('id');</script>
+                        <button type="submit" th:href="@{/cancel}" id="cancelButton" class="btn-basic">CANCEL
+                            APPOINTMENT
+                        </button>
+                    </form>
+                </div>
 
-            <div th:if="${!appointments.isCancelled}">
-                <form th:action="@{/appointmentPage/cancel}" method="post">
-                    <input type="hidden" name="appointmentID" id="appointmentID">
-                    <script>document.getElementById('appointmentID').value = window.getURLParameter('id');</script>
-                    <button type="submit" th:href="@{/cancel}" id="cancelButton" class="btn-basic">CANCEL APPOINTMENT
+                <div th:if="${appointment.isCancelled}">
+                    <form th:action="@{/appointmentPage/active}" method="post">
+                        <input type="hidden" name="appointmentID" id="appointmentID2">
+                        <script>document.getElementById('appointmentID2').value = window.getURLParameter('id');</script>
+                        <button type="submit" th:href="@{/active}" id="activeButton" class="btn-basic">ACTIVATE
+                            APPOINTMENT
+                        </button>
+                    </form>
+                </div>
+                <br>
+                <form th:action="@{/appointmentPage/delete}" method="post">
+                    <input type="hidden" name="appointmentID" id="appointmentID3">
+                    <script>document.getElementById('appointmentID3').value = window.getURLParameter('id');</script>
+                    <button type="submit" th:href="@{/delete}" id="deleteButton" class="btn-basic">DELETE APPOINTMENT
+                    </button>
+                </form>
+                <br>
+                <form>
+                    <button type="button"
+                            th:onclick="'javascript:buttonClicked()'"
+                            id="editButton" class="btn-basic">EDIT APPOINTMENT
                     </button>
                 </form>
             </div>
 
-            <div th:if="${appointments.isCancelled}">
-                <form th:action="@{/appointmentPage/active}" method="post">
-                    <input type="hidden" name="appointmentID" id="appointmentID2">
-                    <script>document.getElementById('appointmentID2').value = window.getURLParameter('id');</script>
-                    <button type="submit" th:href="@{/cancel}" id="activeButton" class="btn-basic">ACTIVATE
-                        APPOINTMENT
-                    </button>
-                </form>
-            </div>
             <h1>Scheme</h1>
             <table>
                 <thead>
