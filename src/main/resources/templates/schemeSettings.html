@@ -90,6 +90,7 @@
     <button type="button" class="btn-login btn-basic"
             th:onclick="'javascript:toggleDisplayNewExercise(' + ${scheme.id} + ');'">ADD NEW EXERCISE
     </button>
+        <button type="button" class="btn-login btn-basic" th:onclick="'javascript:toggleDisplayNewExercise(' + ${scheme.id} + ');'">ADD NEW EXERCISE</button>
 
     <br><br>
     <form th:action="@{/clientProfile/training/scheme/deleteExercise}" method="POST">

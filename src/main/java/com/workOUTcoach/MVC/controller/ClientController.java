@@ -76,60 +76,6 @@ public class ClientController {
         return modelAndView;
     }
 
-    /**
-     * @RequestMapping(value = "/clientProfile/goal", method = RequestMethod.GET)
-     * public ModelAndView editGoal(@RequestParam(value = "clientID") String id,
-     * @RequestParam(value = "goal", required = false) String goal,
-     * ModelAndView modelAndView) {
-     * try {
-     * clientModel.editClientDetails(Integer.parseInt(id), goal, "goal");
-     * } catch (Exception ex) {
-     * ex.getMessage();
-     * }
-     * <p>
-     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-     * return modelAndView;
-     * }
-     * @RequestMapping(value = "/clientProfile/health", method = RequestMethod.GET)
-     * public ModelAndView editHealth(@RequestParam(value = "clientID") String id,
-     * @RequestParam(value = "health", required = false) String health,
-     * ModelAndView modelAndView) {
-     * try {
-     * clientModel.editClientDetails(Integer.parseInt(id), health, "health");
-     * } catch (Exception ex) {
-     * ex.getMessage();
-     * }
-     * <p>
-     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-     * return modelAndView;
-     * }
-     * @RequestMapping(value = "/clientProfile/gym", method = RequestMethod.GET)
-     * public ModelAndView editGym(@RequestParam(value = "clientID") String id,
-     * @RequestParam(value = "gym", required = false) String gym,
-     * ModelAndView modelAndView) {
-     * try {
-     * clientModel.editClientDetails(Integer.parseInt(id), gym, "gym");
-     * } catch (Exception ex) {
-     * ex.getMessage();
-     * }
-     * <p>
-     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-     * return modelAndView;
-     * }
-     * @RequestMapping(value = "/clientProfile/phone", method = RequestMethod.GET)
-     * public ModelAndView editPhone(@RequestParam(value = "clientID") String id,
-     * @RequestParam(value = "phone", required = false) String phone,
-     * ModelAndView modelAndView) {
-     * try {
-     * clientModel.editClientDetails(Integer.parseInt(id), phone, "phone");
-     * } catch (Exception ex) {
-     * ex.getMessage();
-     * }
-     * <p>
-     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-     * return modelAndView;
-     * }
-     **/
 
     @RequestMapping(value = "/clientProfile/edit", method = RequestMethod.POST)
     public ModelAndView editClient(@RequestParam("clientID") String id,
@@ -152,7 +98,8 @@ public class ClientController {
 
 
     @RequestMapping(value = "/clientList/archived", method = RequestMethod.GET)
-    public ModelAndView showArchivedClients(ModelAndView modelAndView, Model model) {
+    public ModelAndView showArchivedClients(ModelAndView modelAndView,
+                                            Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
@@ -186,7 +133,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/clientProfile/deleteClient", method = RequestMethod.POST)
-    public ModelAndView deleteClient(ModelAndView modelAndView, @RequestParam(value = "clientID2") String id, RedirectAttributes redirectAttributes) {
+    public ModelAndView deleteClient(ModelAndView modelAndView,
+                                     @RequestParam(value = "clientID") String id,
+                                     RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         try {
@@ -206,7 +155,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/clientProfile/makeArchived", method = RequestMethod.POST)
-    public ModelAndView makeArchived(ModelAndView modelAndView, @RequestParam(value = "clientID") String id, RedirectAttributes redirectAttributes) {
+    public ModelAndView makeArchived(ModelAndView modelAndView,
+                                     @RequestParam(value = "clientID") String id,
+                                     RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         try {
@@ -214,11 +165,11 @@ public class ClientController {
 
             redirectAttributes.addFlashAttribute("archivingSuccess", true);
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
-            modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
 
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;
     }
 
@@ -250,7 +201,7 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile/progress", method = RequestMethod.POST)
     public ModelAndView editProgress(@RequestParam("clientID") String id,
-                                     @RequestParam("goalValue") int goalValue,
+                                     @RequestParam(value = "goalValue", defaultValue = "0") int goalValue,
                                      ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
         try {
             clientModel.editProgress(Integer.parseInt(id), goalValue);
