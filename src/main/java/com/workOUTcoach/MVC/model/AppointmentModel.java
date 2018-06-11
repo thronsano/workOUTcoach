@@ -125,6 +125,7 @@ public class AppointmentModel {
                     if (timelineClear(startDate, endDate, appointmentId)) {
                         appointment.setStartDate(startDate);
                         appointment.setEndDate(endDate);
+                        appointment.getPayment().setAmount(calculateChargeForAppointment(startDate, endDate));
                     } else {
                         throw new Exception("Appointment overlaps another one!");
                     }

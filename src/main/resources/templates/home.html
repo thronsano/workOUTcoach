@@ -30,46 +30,48 @@
             <a th:text="${endingDate}"></a>
         </h1>
 
-        <div th:if="${showCancelled} == false">Show cancelled
-            <input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:toggleDisplayArchived()'"/>
+        <div th:if="${showCancelled} == false"><h3>Show cancelled</h3>
+            <input type="checkbox" class="input-field" name="repeat"
+                   th:onchange="'javascript:toggleDisplayArchived()'"/>
         </div>
 
-        <div th:if="${showCancelled} == true">Show cancelled
-            <input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:toggleDisplayArchived()'" checked/>
+        <div th:if="${showCancelled} == true"><h3>Show cancelled</h3>
+            <input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:toggleDisplayArchived()'"
+                   checked/>
         </div>
 
-        <form method="get">
-            <button type="button" class="btn-basic"
-                    th:onclick="'java:buttonClicked(-1);'">SHOW PREVIOUS WEEK
-            </button>
+        <form class="home-table">
+            <form method="get">
+                <button type="button" class="btn-basic previous-week"
+                        th:onclick="'java:buttonClicked(-1);'">SHOW PREVIOUS WEEK
+                </button>
+                <button type="button" class="btn-basic next-week"
+                        th:onclick="'java:buttonClicked(1);'">SHOW NEXT WEEK
+                </button>
+            </form>
             <br>
-            <button type="button" class="btn-basic"
-                    th:onclick="'java:buttonClicked(1);'">SHOW NEXT WEEK
-            </button>
-            <br>
+
+            <table>
+                <thead>
+                <th>Starting date</th>
+                <th>End date</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Gym name</th>
+                </thead>
+
+                <tbody>
+                <tr th:each="appointment : ${timetable}"
+                    th:onclick="'javascript:rowClicked(\'' + ${appointment.id} + '\');'">
+                    <td th:text="${#temporals.format(appointment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(appointment.endDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${appointment.client.name}"></td>
+                    <td th:text="${appointment.client.surname}"></td>
+                    <td th:text="${appointment.client.gymName}"></td>
+                </tr>
+                </tbody>
+            </table>
         </form>
-
-        <table>
-            <thead>
-            <th>Starting date</th>
-            <th>End date</th>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Gym name</th>
-            </thead>
-
-            <tbody>
-            <tr th:each="appointment : ${timetable}"
-                th:onclick="'javascript:rowClicked(\'' + ${appointment.id} + '\');'">
-                <td th:text="${#temporals.format(appointment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
-                <td th:text="${#temporals.format(appointment.endDate, 'dd-MM-yyyy HH:mm')}"></td>
-                <td th:text="${appointment.client.name}"></td>
-                <td th:text="${appointment.client.surname}"></td>
-                <td th:text="${appointment.client.gymName}"></td>
-            </tr>
-            </tbody>
-        </table>
-
         <div th:if="${deleteSuccess}==true">
             <br>
             Appointment deleted!

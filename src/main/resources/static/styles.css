@@ -106,7 +106,6 @@ body {
     width: 250px;
 }
 
-
 .btn-basic:hover {
     background-color: #fb9b00;
 }
@@ -200,3 +199,15 @@ tbody tr:hover {
     background-color: #fb9b00;
     transition: 0.25s;
 }
+
+.home-table{
+}
+
+.previous-week {
+    display: inline-block;
+}
+
+.next-week {
+    display: inline-block;
+}
+
