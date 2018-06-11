@@ -133,14 +133,14 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile/edit", method = RequestMethod.POST)
     public ModelAndView editClient(@RequestParam("clientID") String id,
-                                        @RequestParam("goal") String goal,
-                                        @RequestParam("healthCondition") String healthCondition,
-                                        @RequestParam("phoneNumber") String phoneNumber,
-                                        @RequestParam("gymName") String gymName,
-                                        ModelAndView modelAndView) {
+                                   @RequestParam("goal") String goal,
+                                   @RequestParam("healthCondition") String healthCondition,
+                                   @RequestParam("phoneNumber") String phoneNumber,
+                                   @RequestParam("gymName") String gymName,
+                                   ModelAndView modelAndView) {
         try {
             clientModel.editClientDetails(Integer.parseInt(id), goal, healthCondition, phoneNumber, gymName);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             modelAndView.addObject("error", "failed");
             modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
@@ -245,6 +245,20 @@ public class ClientController {
             modelAndView.setViewName("addClient");
         }
 
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/clientProfile/progress", method = RequestMethod.POST)
+    public ModelAndView editProgress(@RequestParam("clientID") String id,
+                                     @RequestParam("goalValue") int goalValue,
+                                     ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
+        try {
+            clientModel.editProgress(Integer.parseInt(id), goalValue);
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("schemeRemoved", "failed");
+            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
+        }
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;
     }
 }

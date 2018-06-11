@@ -35,6 +35,7 @@
                     <th>Name</th>
                     <th>Surname</th>
                     <th>Goal</th>
+                    <th>Goal value</th>
                     <th>Health condition</th>
                     <th>Phone number</th>
                     <th>Gym name</th>
@@ -44,6 +45,7 @@
                     <td style="text-align: center" th:text="${client.name}"></td>
                     <td style="text-align: center" th:text="${client.surname}"></td>
                     <td style="text-align: center" th:text="${client.goal}"></td>
+                    <td style="text-align: center" th:text="${client.goalValue}"></td>
                     <td style="text-align: center" th:text="${client.healthCondition}"></td>
                     <td style="text-align: center" th:text="${client.phoneNumber}"></td>
                     <td style="text-align: center" th:text="${client.gymName}"></td>
@@ -63,6 +65,7 @@
                         <th>Name</th>
                         <th>Surname</th>
                         <th>Goal</th>
+                        <th>Goal value</th>
                         <th>Health condition</th>
                         <th>Phone number</th>
                         <th>Gym name</th>
@@ -73,6 +76,7 @@
                         <td th:text="${client.surname}"></td>
                         <td><input type="text" name="goal" id="goal" class="input-field-small"
                                    th:value="${client.goal}"></td>
+                        <td style="text-align: center" th:text="${client.goal}"></td>
                         <td><input type="text" name="healthCondition" id="healthCondition" class="input-field-small"
                                    th:value="${client.healthCondition}"></td>
                         <td><input type="text" name="phoneNumber" id="phoneNumber" class="input-field-small"
@@ -93,7 +97,9 @@
 
         <br>
 
-        <button type="button" class="btn-basic" th:onclick="'javascript:toggleDisplayTrainingSettings(' + ${client.id} + ');'">TRAINING OPTIONS</button>
+        <button type="button" class="btn-basic"
+                th:onclick="'javascript:toggleDisplayTrainingSettings(' + ${client.id} + ');'">TRAINING OPTIONS
+        </button>
 
         <div th:if="${isActive}==true">
             <br>
@@ -124,7 +130,6 @@
                 <button type="submit" th:href="@{/deleteClient}" class="btn-basic">DELETE</button>
             </form>
         </div>
-        <br>
 
         <div th:if="${activationSuccess}==true">
             <br>Client activated!<br><br>
@@ -133,6 +138,40 @@
         <div th:if="${archivingSuccess}==true">
             <br>Client archived!<br><br>
         </div>
+
+        <h2>Client goal progress</h2>
+        <input th:type="hidden" th:value="${client.goalValue}" id="hiddenProgress">
+        <div id="myProgress" style="text-align: center">
+            <div id="myBar"></div>
+        </div>
+        <br>
+
+        <script>
+            function move() {
+                var maxVal = parseInt(document.getElementById("hiddenProgress").value);
+                var elem = document.getElementById("myBar");
+                var width = -1;
+                var id = setInterval(frame, 10);
+
+                function frame() {
+                    if (width >= maxVal) {
+                        clearInterval(id);
+                    } else {
+                        width++;
+                        elem.style.width = width + '%';
+                    }
+                }
+            }
+            move();
+        </script>
+
+        <form th:action="@{/clientProfile/progress}" method="post">
+            <input th:type="number" name="goalValue" id="goalValue" class="input-field-xs" placeholder="Insert value">
+            <input type="hidden" name="clientID" id="clientID3">
+            <script>document.getElementById('clientID3').value = window.getURLParameter('id');</script>
+            <button type="submit" th:href="@{/progress}" class="btn-basic">MOVE</button>
+        </form>
+
     </section>
 </body>
 </html>
