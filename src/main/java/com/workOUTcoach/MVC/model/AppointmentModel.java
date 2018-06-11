@@ -4,14 +4,12 @@ import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Payment;
 import com.workOUTcoach.entity.Scheme;
-import com.workOUTcoach.utility.Logger;
 import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -94,7 +92,7 @@ public class AppointmentModel {
         try {
             int currentSchemeSeq = schemeModel.getPriorScheme(newStartDate, client.getId()).getSequence();
             int cycleLength = client.getCycle().getSchemeList().size();
-            int nextSchemeSeq = (currentSchemeSeq + 1) % cycleLength;
+            int nextSchemeSeq = (currentSchemeSeq % cycleLength) + 1;
 
             scheme = schemeModel.getSchemeBySequence(nextSchemeSeq, client.getId());
         } catch (NotFoundException ex) {
@@ -225,15 +223,47 @@ public class AppointmentModel {
 
     public void deleteAppointment(int appointmentID) throws Exception {
         Appointment appointment = getAppointmentById(appointmentID);
+
         if (appointment == null)
             throw new NullPointerException("Appointment not found!");
 
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+        Session session = null;
+
         try {
+            if (appointment.isPartOfCycle())
+                reassignCycleForFollowingAppointments(appointment);
+
+            session = sessionFactory.openSession();
+            session.beginTransaction();
             session.delete(appointment);
         } catch (Exception ex) {
             throw new Exception("Exception during deleting appointment from database");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    private void reassignCycleForFollowingAppointments(Appointment appointment) throws Exception {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            Query query = session.createQuery("from  Appointment as app where app.client=:currentClient and app.startDate >=:currentEndDate and app.partOfCycle = true");
+            query.setParameter("currentEndDate", appointment.getEndDate());
+            query.setParameter("currentClient", appointment.getClient());
+
+            List<Appointment> appointmentList = query.list();
+
+            int clientId = appointment.getClient().getId();
+            int schemeSeq = appointment.getScheme().getSequence();
+            int cycleLength = appointment.getClient().getCycle().getSchemeList().size();
+
+            for (Appointment app : appointmentList) {
+                app.setScheme(schemeModel.getSchemeBySequence(schemeSeq, clientId));
+                schemeSeq = (schemeSeq + 1) % cycleLength;
+                session.update(app);
+            }
         } finally {
             session.getTransaction().commit();
             session.close();
