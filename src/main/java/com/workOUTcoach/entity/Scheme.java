@@ -39,13 +39,14 @@ public class Scheme {
         this.sequence = sequence;
     }
 
-    public Scheme(String title,Cycle cycle, int sequence){
-        this.title=title;
-        this.cycle=cycle;
-        this.sequence=sequence;
+    public Scheme(String title, Cycle cycle, int sequence) {
+        this.title = title;
+        this.cycle = cycle;
+        this.sequence = sequence;
     }
 
-    public Scheme() {}
+    public Scheme() {
+    }
 
     public int getId() {
         return id;

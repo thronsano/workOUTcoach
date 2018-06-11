@@ -2,6 +2,7 @@ package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Cycle;
 import com.workOUTcoach.entity.Scheme;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -25,13 +26,18 @@ public class SchemeModelTest {
     SchemeModel schemeModel;
 
     @Test
-    public void getSchemesList() {
+    public void getSchemesListTest() {
+
         List<Scheme> schemeList;
         Cycle cycle = new Cycle(1, "Rzezba");
         Cycle cycle2 = new Cycle(2, "Rzezba Lekka");
         Scheme testScheme = new Scheme("Nogi dla leniwych", cycle, 1);
         Scheme testScheme2 = new Scheme("Nogi dla zaawasowanych", cycle, 2);
         Scheme testScheme3 = new Scheme("Rece dla leniwych", cycle2, 1);
+
+        schemeList = schemeModel.schemeList();
+
+        int size = schemeList.size();
 
         Session session = sessionFactory.openSession();
         try {
@@ -44,6 +50,7 @@ public class SchemeModelTest {
             session.close();
         }
         schemeList = schemeModel.schemeList();
-        assertTrue(schemeList.size() >= 3);
+        size = schemeList.size() - size;
+        assertEquals(size, 3);
     }
 }
