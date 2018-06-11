@@ -121,9 +121,8 @@ public class AppointmentController {
 
             appointmentModel.updateAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, schemeId);
         } catch (Exception ex) {
-            modelAndView.addObject("error", "true");
+            modelAndView.addObject("status", "failed");
             modelAndView.addObject("reason", ex.getMessage());
-            modelAndView.setViewName("appointmentPage");
         }
 
         modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
