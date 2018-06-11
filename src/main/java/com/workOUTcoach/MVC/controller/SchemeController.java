@@ -35,9 +35,11 @@ public class SchemeController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/scheme")
     public ModelAndView getScheme(ModelAndView modelAndView,
-                                  @RequestParam("schemeId") int schemeID) {
+                                  @RequestParam("schemeId") int schemeID,
+                                  @RequestParam(value = "edit", required = false, defaultValue = "0") boolean edit) {
 
         modelAndView.addObject("scheme", schemeModel.getSchemeById(schemeID));
+        modelAndView.addObject("edit", edit);
         modelAndView.addObject("exercises", exerciseModel.getExerciseListBySchemeId(schemeID));
         modelAndView.setViewName("schemeSettings");
         return modelAndView;
@@ -60,6 +62,20 @@ public class SchemeController {
         }
 
         modelAndView.setViewName("redirect:/clientProfile/training/scheme?schemeId="+schemeID);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/scheme/edit", method = RequestMethod.POST)
+    public ModelAndView editTitle(@RequestParam(value = "schemeID") int schemeID,
+                                  @RequestParam(value = "title", required = false) String title,
+                                  ModelAndView modelAndView) {
+        try {
+            schemeModel.editTitleById(schemeID, title);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+        modelAndView.setViewName("redirect:/clientProfile/training/scheme?schemeId=" + schemeID);
         return modelAndView;
     }
 }

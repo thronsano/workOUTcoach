@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <script type="text/javascript" src="schemeScript.js"></script>
+    <script type="text/javascript" src="/schemeScript.js"></script>
     <title>Scheme Settings</title>
 </head>
 <body>
@@ -22,7 +22,43 @@
 <section class="content" th:method="GET">
     <h2>This is [[${scheme.cycle.client.name}]] [[${scheme.cycle.client.surname}]]'s scheme</h2>
         <br>
-        <a>Title: <b>[[${scheme.title}]]</b></a>
+
+    <section th:if="${scheme}!=null">
+        <h2>Client profile</h2>
+        <div th:if="${param.edit}==null">
+            <table>
+                <thead>
+                <th>Title</th>
+                </thead>
+
+                <tbody>
+                <td style="text-align: center" th:text="${scheme.title}"></td>
+                </tbody>
+            </table>
+
+            <br><br>
+            <button type="button" id="editButton" th:onclick="'javascript:buttonClicked()'" class="btn-basic">EDIT TITLE</button>
+        </div>
+
+        <div th:if="${param.edit}!=null">
+            <form th:action="@{/clientProfile/training/scheme/edit}" method="POST">
+                <table>
+                    <thead>
+                        <th>Name</th>
+                    </thead>
+
+                    <tbody>
+                        <td><input type="text" name="title" id="title" class="input-field-small" th:value="${scheme.title}"></td>
+                    </tbody>
+                </table>
+
+                <br><br>
+                <input type="hidden" name="schemeID" th:value="${scheme.id}">
+                <button type="submit" th:href="@{/clientProfile/training/scheme/edit}" id="submitButton" class="btn-basic"> SUBMIT
+                </button>
+            </form>
+        </div>
+    </section>
         <br>
         <br>
 

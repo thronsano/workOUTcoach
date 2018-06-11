@@ -244,4 +244,20 @@ public class SchemeModel {
             session.close();
         }
     }
+
+    public void editTitleById(int schemeID, String title) throws Exception {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            Scheme scheme = session.get(Scheme.class, schemeID);
+            scheme.setTitle(title);
+            System.out.println("-------------------------------------" + scheme.getTitle());
+        }catch (Exception e){
+            System.out.println("-----------------------------------------------"+e.getMessage());
+            throw new Exception("Couldn't change title!");
+        }finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
 }
