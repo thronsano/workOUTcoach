@@ -61,6 +61,18 @@ body {
     transition: 0.2s;
 }
 
+.input-field-small {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 5px;
+    background-color: white;
+    border: 2px solid transparent;
+    display: block;
+    width: 150px;
+    transition: 0.2s;
+}
+
 .input-field:focus {
     border: 2px #fb9b00 solid;
 }
@@ -93,6 +105,7 @@ body {
     margin-top: 30px;
     width: 250px;
 }
+
 
 .btn-basic:hover {
     background-color: #fb9b00;
