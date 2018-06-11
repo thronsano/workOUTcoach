@@ -34,9 +34,15 @@ public class Scheme {
     @OneToOne
     private Appointment appointment;
 
-    public Scheme(String title, int sequence, Client client) {
+    public Scheme(String title, int sequence) {
         this.title = title;
         this.sequence = sequence;
+    }
+
+    public Scheme(String title,Cycle cycle, int sequence){
+        this.title=title;
+        this.cycle=cycle;
+        this.sequence=sequence;
     }
 
     public Scheme() {}

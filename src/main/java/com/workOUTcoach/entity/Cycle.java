@@ -36,6 +36,11 @@ public class Cycle {
         this.client = client;
     }
 
+    public Cycle(int id, String title){
+        this.id=id;
+        this.title=title;
+    }
+
     public Cycle() {
     }
 
