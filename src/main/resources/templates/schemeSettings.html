@@ -74,17 +74,13 @@
             </tbody>
         </table>
 
-        <br>
-        <br>
-        <h2> Exercise options</h2>
-
         <button type="button" class="btn-login btn-basic" th:onclick="'javascript:toggleDisplayNewExercise(' + ${scheme.id} + ');'">ADD NEW EXERCISE</button>
 
-        <br><br>
+        <br>
         <form th:action="@{/clientProfile/training/scheme/deleteExercise}" method="POST">
             <input type="hidden" name="id" th:value="${param.schemeId}"/>
 
-            <div>Exercise: <select name="exerciseId">
+            <div><h1>Exercise: </h1><select name="exerciseId" class="input-field">
                 <option th:each="exercise : ${exercises}" th:value="${exercise.getId()}" th:text="${exercise.getName()}"></option>
             </select></div>
 
@@ -99,7 +95,7 @@
                 </div>
             </section>
         </form>
-
+<br>
     </section>
 </body>
 <script>

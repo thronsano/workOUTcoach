@@ -124,6 +124,10 @@ body {
     width: 250px;
 }
 
+.btn-remove {
+    display: inline;
+}
+
 .btn-basic:hover {
     background-color: #fb9b00;
 }

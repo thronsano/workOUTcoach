@@ -25,12 +25,19 @@
 
             <div>Date<input type="date" class="input-field" name="date" required/></div>
             <div>Starting time<input type="time" class="input-field" name="startTime" value="10:00" required/></div>
-            <div>Ending time<input type="time" class="input-field" name="endTime" value="11:00"required/></div>
-            <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat"
-                                      th:onchange="'javascript:toggleRepeatAmountField()'"/></div>
+            <div>Ending time<input type="time" class="input-field" name="endTime" value="11:00" required/></div>
+
+
+            <div><span style="font-size: medium; "><b>Repeat weekly:</b></span>
+                <input type="checkbox" class="next-week" name="repeat"
+                       th:onchange="'javascript:toggleRepeatAmountField()'"/>
+            </div>
             <div id="hiddenRepeatAmount"></div>
 
-            <div>Is a part of a cycle:<input type="checkbox" class="input-field" name="cycle"/></div>
+            <br>
+            <div><span style="font-size: medium; "><b>Is a part of a cycle:</b></span>
+                <input type="checkbox" class="next-week" name="cycle"/></div>
+            <br>
             <div>Scheme: <select name="schemeId" class="input-field">
                 <option th:each="scheme : ${schemeList}" th:value="${scheme.getId()}"
                         th:text="${scheme.getTitle()}"></option>
