@@ -38,15 +38,14 @@ public class ExerciseModel {
         return exercises;
     }
 
-    public void deleteExercise(int exerciseID) {
+    public void deleteExercise(int exerciseID)throws Exception{
         Session session = sessionFactory.openSession();
         Exercise exercise = getExerciseById(exerciseID);
         try {
             session.beginTransaction();
             session.delete(exercise);
-
         } catch (Exception e) {
-            Logger.logError("Exception during deleting exercise");
+            throw new Exception("No exercise to delete!");
         } finally {
             session.getTransaction().commit();
             session.close();

@@ -45,7 +45,7 @@ public class SchemeController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/scheme/deleteExercise")
     public ModelAndView postDeleteExercise(ModelAndView modelAndView,
-                                           @RequestParam("exerciseId") int exerciseID,
+                                           @RequestParam(value = "exerciseId", required = false, defaultValue = "-1") int exerciseID,
                                            @RequestParam("id") int schemeID,
                                            RedirectAttributes redirectAttributes) {
 
