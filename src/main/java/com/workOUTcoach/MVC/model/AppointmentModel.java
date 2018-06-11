@@ -36,9 +36,6 @@ public class AppointmentModel {
     @Autowired
     private UserModel userModel;
 
-    @Autowired
-    Environment env;
-
     public void setAppointment(int clientId, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
         if (endDate.isBefore(startDate))
             throw new Exception("Appointment ends before it starts!");
@@ -49,7 +46,6 @@ public class AppointmentModel {
         if (!partOfCycle && schemeId == -1)
             throw new Exception("Scheme hasn't been chosen!");
 
-        int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
         Client client = clientModel.getClientById(clientId);
 
         Session session = sessionFactory.openSession();
@@ -59,6 +55,7 @@ public class AppointmentModel {
             for (int i = 0; i < repeatAmount; i++) {
                 LocalDateTime newStartDate = startDate.plusWeeks(i);
                 LocalDateTime newEndDate = endDate.plusWeeks(i);
+                Appointment appointment;
 
                 if (!timelineClear(newStartDate, newEndDate, -1)) {
                     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -66,17 +63,11 @@ public class AppointmentModel {
                     throw new Exception("Appointment from " + newStartDate.format(dateFormatter) + " to " + newEndDate.format(timeFormatter) + " overlaps another one!");
                 }
 
-                Appointment appointment = null;
-
                 if (!partOfCycle) {
                     Scheme scheme = schemeModel.getSchemeById(schemeId);
-
                     appointment = new Appointment(newStartDate, newEndDate, client, scheme);
-
-                } else {
+                } else
                     appointment = setupCyclicAppointment(newStartDate, newEndDate, client);
-                }
-
 
                 Payment payment = new Payment(appointment, amount);
                 appointment.setPayment(payment);
@@ -85,11 +76,6 @@ public class AppointmentModel {
                     session.beginTransaction();
 
                 session.save(appointment);
-
-                if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
-                    session.flush();
-                    session.clear();
-                }
 
                 if (session.getTransaction().getStatus().equals(TransactionStatus.ACTIVE))
                     session.getTransaction().commit();

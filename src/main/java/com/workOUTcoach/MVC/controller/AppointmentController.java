@@ -28,7 +28,7 @@ public class AppointmentController {
     public ModelAndView getAppointmentPage(@RequestParam("id") String id,
                                            ModelAndView modelAndView) {
         modelAndView.setViewName("addAppointment");
-        modelAndView.addObject("schemeList", schemeModel.listSchemesByClientId(Integer.parseInt(id)));
+        modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         return modelAndView;
     }
 
@@ -49,11 +49,11 @@ public class AppointmentController {
             appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, cyclic, repeatAmount, partOfCycle, schemeId);
 
             modelAndView.addObject("status", "successful");
-            modelAndView.addObject("schemeList", schemeModel.listSchemesByClientId(Integer.parseInt(id)));
+            modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         } catch (Exception ex) {
             modelAndView.addObject("status", "failed");
             modelAndView.addObject("reason", ex.getMessage());
-            modelAndView.addObject("schemeList", schemeModel.listSchemesByClientId(Integer.parseInt(id)));
+            modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         }
 
         return modelAndView;
@@ -63,7 +63,7 @@ public class AppointmentController {
     public ModelAndView getAppointment(@RequestParam(value = "id") String id, ModelAndView modelAndView) {
         try {
             modelAndView.addObject("appointment", appointmentModel.getAppointmentById(Integer.parseInt(id)));
-            modelAndView.addObject("exercises", schemeModel.listExercises(Integer.parseInt(id)));
+            modelAndView.addObject("exercises", schemeModel.getExerciseList(Integer.parseInt(id)));
             modelAndView.addObject("schemeList", schemeModel.listSchemesByAppointmentId(Integer.parseInt(id)));
         } catch (NullPointerException ex) {
             appointmentNotFound(modelAndView);

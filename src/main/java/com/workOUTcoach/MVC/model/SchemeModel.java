@@ -32,20 +32,6 @@ public class SchemeModel {
     @Lazy
     private AppointmentModel appointmentModel;
 
-    public List<Scheme> listSchemesByClientId(int clientId) {
-        Session session = sessionFactory.openSession();
-
-        try {
-            session.beginTransaction();
-            Query query = session.createQuery("from Scheme where cycle.client.id=:clientId");
-            query.setParameter("clientId", clientId);
-            return query.list();
-        } finally {
-            session.getTransaction().commit();
-            session.close();
-        }
-    }
-
     public Scheme getSchemeById(int id) {
         Session session = sessionFactory.openSession();
 
@@ -137,7 +123,7 @@ public class SchemeModel {
 
 
     @SuppressWarnings("unchecked")
-    public List<Exercise> listExercises(int appointmentID) {
+    public List<Exercise> getExerciseList(int appointmentID) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
 
@@ -228,8 +214,7 @@ public class SchemeModel {
         return schemes;
     }
 
-    public List<Scheme> getSchemeListByClient(int clientId) {
-        List<Scheme> schemes = null;
+    public List<Scheme> getSchemeListByClientId(int clientId) {
         Client client = clientModel.getClientById(clientId);
         Session session = sessionFactory.openSession();
 
@@ -238,16 +223,13 @@ public class SchemeModel {
             Query query = session.createQuery("from Scheme as s where s.cycle.client=:currentClient order by sequence");
             query.setParameter("currentClient", client);
 
-            schemes = query.list();
-        } catch (Exception e) {
-            Logger.logError("Exception during access to list of schemes");
+            return query.list();
         } finally {
             session.getTransaction().commit();
             session.close();
         }
-
-        return schemes;
     }
+
 
     public List<Scheme> listSchemesByAppointmentId(int appointmentID) {
         Appointment appointment = appointmentModel.getAppointmentById(appointmentID);
