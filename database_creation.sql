@@ -104,8 +104,8 @@ INSERT INTO authorities (email, authority) VALUES ('wiktoria.malawska@wp.pl', 'R
 INSERT INTO authorities (email, authority) VALUES ('tomaszewski-eryk@wp.pl', 'ROLE_USER');
 INSERT INTO authorities (email, authority) VALUES ('wiktoria.malawska@test.pl', 'ROLE_USER');
 
-INSERT INTO clients (name, surname, coachEmail, gymName, goal, goalValue, healthCondition, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', 'Jatomi', 'Muscle gain', 0, 'Healthy', true);
-INSERT INTO clients (name, surname, coachEmail, gymName, goal, goalValue, healthCondition, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', 'Platinium', 'To be fit!', 0, 'healthy', true);
+INSERT INTO clients (name, surname, coachEmail, gymName, goal, goalValue, healthCondition, isActive) VALUES ('Steve', 'Stevinsky', 'sdoe@gmail.com', 'Jatomi', 'Muscle gain', 23, 'Healthy', true);
+INSERT INTO clients (name, surname, coachEmail, gymName, goal, goalValue, healthCondition, isActive) VALUES ('Kate', 'Rabbit', 'sdoe@gmail.com', 'Platinium', 'To be fit!', 87, 'healthy', true);
 INSERT INTO clients (name, surname, coachEmail, goalValue, isActive) VALUES ('Paul', 'Old', 'sdoe@gmail.com', '0', false);
 INSERT INTO clients (name, surname, coachEmail, goalValue, isActive) VALUES ('William', 'McDonald', 'wiktoria.malawska@wp.pl', '0', true);
 INSERT INTO clients (name, surname, coachEmail, goalValue, isActive) VALUES ('Ann', 'McDonald2', 'wiktoria.malawska@wp.pl', '0', true);
