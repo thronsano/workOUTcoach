@@ -39,9 +39,14 @@ public class ExerciseController {
                                         @RequestParam(value = "name", required = false, defaultValue = "") String name,
                                         @RequestParam(value = "repetitions", required = false, defaultValue = "0") int repetitions,
                                         RedirectAttributes redirectAttributes) {
-        exerciseModel.addNewExercise(schemeID, name, repetitions);
+        try {
+            exerciseModel.addNewExercise(schemeID, name, repetitions);
+            modelAndView.setViewName("redirect:/clientProfile/training/scheme?schemeId=" + schemeID);
+        }catch (Exception e){
+            modelAndView.setViewName("redirect:/clientProfile/training/scheme/newExercise?schemeId=" + schemeID);
+            redirectAttributes.addFlashAttribute("dataError", true);
+        }
         redirectAttributes.addFlashAttribute("scheme", schemeModel.getSchemeById(schemeID));
-        modelAndView.setViewName("redirect:/clientProfile/training/scheme?schemeId=" + schemeID);
         return modelAndView;
     }
 }

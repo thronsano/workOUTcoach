@@ -25,13 +25,17 @@
         <br>
         <form th:action="@{/clientProfile/training/scheme/newExercise}" method="post">
             Name:
-            <div><input type="text" class="input-field" name="name" placeholder="Name"/></div>
+            <div><input type="text" class="input-field" name="name" placeholder="Name" required/></div>
             Repetitions:
-            <div><input type="number" class="input-field" name="repetitions" placeholder="Repetitions"/></div>
+            <div><input type="number" class="input-field" name="repetitions" placeholder="Repetitions" min="0"/></div>
             <br>
             <div><input type="hidden" class="input-field" name="schemeID" th:value="${scheme.id}"/></div>
             <button type="submit" class="btn-login btn-basic">CREATE</button>
         </form>
+
+        <div th:if="${dataError}">
+            DON'T CHANGE CODE YOU ****!
+        </div>
     </section>
     <section class="content" th:if="${scheme}==null">
         <h2>LOST TRACK TO SCHEME</h2>
