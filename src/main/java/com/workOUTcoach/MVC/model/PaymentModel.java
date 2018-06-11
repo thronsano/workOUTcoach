@@ -18,18 +18,6 @@ public class PaymentModel {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void setNewPayment(Payment payment) {
-        Session session = sessionFactory.openSession();
-
-        try {
-            session.beginTransaction();
-            session.save(payment);
-        } finally {
-            session.getTransaction().commit();
-            session.close();
-        }
-    }
-
     public List<Payment> getPaymentsByUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();

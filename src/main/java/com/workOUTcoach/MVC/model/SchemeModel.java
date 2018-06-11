@@ -12,7 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class SchemeModel {
@@ -29,11 +32,13 @@ public class SchemeModel {
     @Lazy
     private AppointmentModel appointmentModel;
 
-    public List<Scheme> schemeList() {
+    public List<Scheme> listSchemesByClientId(int clientId) {
         Session session = sessionFactory.openSession();
+
         try {
             session.beginTransaction();
-            Query query = session.createQuery("from Scheme");
+            Query query = session.createQuery("from Scheme where cycle.client.id=:clientId");
+            query.setParameter("clientId", clientId);
             return query.list();
         } finally {
             session.getTransaction().commit();
@@ -132,7 +137,7 @@ public class SchemeModel {
 
 
     @SuppressWarnings("unchecked")
-    public List<Exercise> listExercise(int appointmentID) {
+    public List<Exercise> listExercises(int appointmentID) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
 
@@ -184,6 +189,23 @@ public class SchemeModel {
         }
     }
 
+    public Scheme getSchemeBySequence(int sequence, int clientId) {
+        Session session = sessionFactory.openSession();
+        Client client = clientModel.getClientById(clientId);
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Scheme as schm where schm.sequence=:seq and schm.cycle.client=:client");
+            query.setParameter("seq", sequence);
+            query.setParameter("client", client);
+
+            return (Scheme) query.uniqueResult();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
     public List<Scheme> getSchemeListBySequenceBiggerThan(int clientId, int numberOfSequence) {
         List<Scheme> schemes = null;
         Client client = clientModel.getClientById(clientId);
@@ -206,8 +228,8 @@ public class SchemeModel {
         return schemes;
     }
 
-    public List<Scheme> listSchemeByAppointmentId(int appointmentID) {
-        Appointment appointment= appointmentModel.getAppointment(appointmentID);
+    public List<Scheme> listSchemesByAppointmentId(int appointmentID) {
+        Appointment appointment = appointmentModel.getAppointmentById(appointmentID);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
@@ -222,6 +244,32 @@ public class SchemeModel {
         } finally {
             session.getTransaction().commit();
             session.close();
+        }
+    }
+
+    public Scheme getPriorScheme(LocalDateTime newAppointmentDate, int clientId) throws NotFoundException {
+        List<Appointment> appointments = appointmentModel.getAppointmentListByClientId(clientId).stream().filter(a -> !a.getIsCancelled() && a.isPartOfCycle()).collect(Collectors.toList());
+        Appointment closestApp = null;
+
+        if (appointments.size() > 0) {
+            appointments.sort(Comparator.comparing(Appointment::getStartDate));
+
+            if (appointments.get(0).getStartDate().isBefore(newAppointmentDate)) {
+                closestApp = appointments.get(0);
+
+                for (int i = 1; i < appointments.size(); i++) {
+                    if (appointments.get(i).getStartDate().isBefore(newAppointmentDate))
+                        closestApp = appointments.get(i);
+                    else
+                        break;
+                }
+            }
+        }
+
+        if (closestApp == null) {
+            throw new NotFoundException("No previous closest appointment!");
+        } else {
+            return closestApp.getScheme();
         }
     }
 }
