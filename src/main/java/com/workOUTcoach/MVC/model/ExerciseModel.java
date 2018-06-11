@@ -85,7 +85,7 @@ public class ExerciseModel {
         try{
             session.save(exercise);
         }catch (Exception e){
-            e.getMessage();
+            Logger.logError("Exception during adding new exercise");
         }finally {
             session.getTransaction().commit();
             session.close();

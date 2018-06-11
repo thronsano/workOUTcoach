@@ -29,6 +29,10 @@ function toggleDisplayNewExercise(value) {
     document.location.href = updateURLparameters("clientProfile/training/scheme/newExercise", "schemeId", value);
 }
 
+function toggleDisplayNewScheme() {
+    document.location.href = updateURLparameters("clientProfile/training/newScheme", "schemeId", getURLParameter('id'));
+}
+
 function buttonClicked(value) {
     var offset = getURLParameter('edit');
     if (offset == null)

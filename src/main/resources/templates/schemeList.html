@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script type="text/javascript" src="/schemeScript.js"></script>
     <title>Schemes</title>
 </head>
 <body>
@@ -41,7 +42,7 @@
         <form th:action="@{/clientProfile/training/removeFromCycle}" method="POST">
             <input type="hidden" name="id" th:value="${param.id}"/>
 
-            <div><h1>Current Schemes:</h1>
+            <div><h1>Current schemes in cycle:</h1>
                 <select name="schemeId" class="input-field">
                     <option th:each="scheme : ${usedSchemeList}" th:value="${scheme.getId()}"
                             th:text="${scheme.getTitle()}"></option>
@@ -52,7 +53,7 @@
 
             <section class="login-info">
                 <div th:if="${schemeRemoved}=='successful'">
-                    Scheme from Cycle has been removed correctly!
+                    Scheme has been removed correctly from Cycle!
                 </div>
                 <div th:if="${schemeRemoved}=='failed'">
                     <div th:text="${reason}"></div>
@@ -84,7 +85,32 @@
                 </div>
             </section>
         </form>
+
+        <button type="submit" class="btn-login btn-basic btn-basic" th:onclick="'javascript:toggleDisplayNewScheme();'">CREATE NEW SCHEME</button>
+
+        <form th:action="@{/clientProfile/training/deleteScheme}" method="POST">
+            <input type="hidden" name="id" th:value="${param.id}"/>
+
+            <div><h1>Delete schemes:</h1>
+                <select name="schemeId" class="input-field">
+                    <option th:each="scheme : ${allSchemes}" th:value="${scheme.getId()}"
+                            th:text="${scheme.getTitle()}"></option>
+                </select>
+            </div>
+
+            <button type="submit" th:href="@{/deleteScheme}" class="btn-login btn-basic">DELETE SCHEME</button>
+
+            <section class="login-info">
+                <div th:if="${schemeDeleted}=='successful'">
+                    Scheme has been deleted!
+                </div>
+                <div th:if="${schemeDeleted}=='failed'">
+                    <div th:text="${reason}"></div>
+                </div>
+            </section>
+        </form>
         <br>
+
     </section>
 </body>
 <script>

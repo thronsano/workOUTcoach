@@ -257,10 +257,10 @@ public class SchemeModel {
             Scheme scheme = session.get(Scheme.class, schemeID);
             scheme.setTitle(title);
             System.out.println("-------------------------------------" + scheme.getTitle());
-        }catch (Exception e){
-            System.out.println("-----------------------------------------------"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("-----------------------------------------------" + e.getMessage());
             throw new Exception("Couldn't change title!");
-        }finally {
+        } finally {
             session.getTransaction().commit();
             session.close();
         }
@@ -289,6 +289,49 @@ public class SchemeModel {
             throw new NotFoundException("No previous closest appointment!");
         } else {
             return closestApp.getScheme();
+        }
+    }
+
+    public void addNewScheme(String title, int clientID) {
+
+        Cycle cycle = cycleModel.getCycleByClientId(clientID);
+        Scheme scheme = new Scheme(title, cycle);
+        saveScheme(scheme);
+    }
+
+    private void saveScheme(Scheme scheme) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            session.save(scheme);
+        } catch (Exception e) {
+            Logger.logError("Exception during saving new scheme");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    public void deleteSchemeById(int schemeId) throws Exception {
+        Scheme scheme = getSchemeById(schemeId);
+        if (scheme != null) {
+            deleteScheme(scheme);
+        } else {
+            throw new Exception("Couldn't find scheme to delete!");
+        }
+    }
+
+    private void deleteScheme(Scheme scheme) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            session.delete(scheme);
+        } catch (Exception e) {
+            Logger.logError("Exception during deleting scheme");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
     }
 }

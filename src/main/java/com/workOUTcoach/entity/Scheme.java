@@ -48,6 +48,12 @@ public class Scheme {
     public Scheme() {
     }
 
+    public Scheme(String title, Cycle cycle) {
+        this.title = title;
+        this.cycle = cycle;
+        this.sequence = 0;
+    }
+
     public int getId() {
         return id;
     }
