@@ -159,5 +159,6 @@ public class SchemeModelTest {
             session.getTransaction().commit();
             session.close();
         }
+
     }
 }

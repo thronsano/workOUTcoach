@@ -133,14 +133,14 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile/edit", method = RequestMethod.POST)
     public ModelAndView editClient(@RequestParam("clientID") String id,
-                                        @RequestParam("goal") String goal,
-                                        @RequestParam("healthCondition") String healthCondition,
-                                        @RequestParam("phoneNumber") String phoneNumber,
-                                        @RequestParam("gymName") String gymName,
-                                        ModelAndView modelAndView) {
+                                   @RequestParam("goal") String goal,
+                                   @RequestParam("healthCondition") String healthCondition,
+                                   @RequestParam("phoneNumber") String phoneNumber,
+                                   @RequestParam("gymName") String gymName,
+                                   ModelAndView modelAndView) {
         try {
             clientModel.editClientDetails(Integer.parseInt(id), goal, healthCondition, phoneNumber, gymName);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             modelAndView.addObject("error", "failed");
             modelAndView.addObject("reason", ex.getMessage());
             modelAndView.setViewName("clientProfile");
@@ -248,39 +248,17 @@ public class ClientController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/clientProfile/training/editCycle", method = RequestMethod.POST)
-    public ModelAndView addSchemeToCycle(@RequestParam("id") String id,
-                                         @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
-                                         ModelAndView modelAndView,
-                                         RedirectAttributes redirectAttributes) {
+    @RequestMapping(value = "/clientProfile/progress", method = RequestMethod.POST)
+    public ModelAndView editProgress(@RequestParam("clientID") String id,
+                                     @RequestParam("goalValue") int goalValue,
+                                     ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
         try {
-            schemeModel.addSchemeToCycle(Integer.parseInt(id), schemeId);
-            redirectAttributes.addFlashAttribute("schemeAdded", "successful");
-            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
-        } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("schemeAdded", "failed");
-            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
-            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
-        }
-        modelAndView.setViewName("redirect:/clientProfile/training?id=" + id);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/clientProfile/training/removeFromCycle", method = RequestMethod.POST)
-    public ModelAndView removeSchemeFromCycle(@RequestParam("id") String id,
-                                              @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
-                                              ModelAndView modelAndView,
-                                              RedirectAttributes redirectAttributes) {
-        try {
-            schemeModel.removeSchemeFromCycle(Integer.parseInt(id), schemeId);
-            redirectAttributes.addFlashAttribute("schemeRemoved", "successful");
-            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
+            clientModel.editProgress(Integer.parseInt(id), goalValue);
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("schemeRemoved", "failed");
             redirectAttributes.addFlashAttribute("reason", ex.getMessage());
-            redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
         }
-        modelAndView.setViewName("redirect:/clientProfile/training?id=" + id);
+        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         return modelAndView;
     }
 }

@@ -250,6 +250,20 @@ public class SchemeModel {
         }
     }
 
+    public void editTitleById(int schemeID, String title) throws Exception {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            Scheme scheme = session.get(Scheme.class, schemeID);
+            scheme.setTitle(title);
+        } catch (Exception e) {
+            throw new Exception("Couldn't change title!");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
     public Scheme getPriorScheme(LocalDateTime newAppointmentDate, int clientId) throws NotFoundException {
         List<Appointment> appointments = appointmentModel.getAppointmentListByClientId(clientId).stream().filter(a -> !a.getIsCancelled() && a.isPartOfCycle()).collect(Collectors.toList());
         Appointment closestApp = null;
@@ -273,6 +287,53 @@ public class SchemeModel {
             throw new NotFoundException("No previous closest appointment!");
         } else {
             return closestApp.getScheme();
+        }
+    }
+
+    public void addNewScheme(String title, int clientID) {
+
+        Cycle cycle = cycleModel.getCycleByClientId(clientID);
+        Scheme scheme = new Scheme(title, cycle);
+        saveScheme(scheme);
+    }
+
+    private void saveScheme(Scheme scheme) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            session.save(scheme);
+        } catch (Exception e) {
+            Logger.logError("Exception during saving new scheme");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    public void deleteSchemeById(int schemeId) throws Exception {
+        Scheme scheme = getSchemeById(schemeId);
+        if (scheme != null) {
+            List<Scheme> schemes = getSchemeListBySequenceBiggerThan(scheme.getCycle().getClient().getId(), scheme.getSequence());
+            deleteScheme(scheme);
+            for (Scheme s : schemes) {
+                changeSequenceByOneBackwards(s);
+            }
+        } else {
+            throw new Exception("Couldn't find scheme to delete!");
+        }
+    }
+
+    private void deleteScheme(Scheme scheme) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            session.delete(scheme);
+        } catch (Exception e) {
+            Logger.logError("Exception during deleting scheme");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
         }
     }
 }

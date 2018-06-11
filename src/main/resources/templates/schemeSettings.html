@@ -21,7 +21,42 @@
     <section class="content" th:method="GET">
         <h2>This is [[${scheme.cycle.client.name}]] [[${scheme.cycle.client.surname}]]'s scheme</h2>
         <br>
-        <a>Title: <b>[[${scheme.title}]]</b></a>
+
+    <section th:if="${scheme}!=null">
+        <div th:if="${param.edit}==null">
+            <table>
+                <thead>
+                <th>Scheme title</th>
+                </thead>
+
+                <tbody>
+                <td style="text-align: center" th:text="${scheme.title}"></td>
+                </tbody>
+            </table>
+
+            <br><br>
+            <button type="button" id="editButton" th:onclick="'javascript:buttonClicked()'" class="btn-basic">EDIT TITLE</button>
+        </div>
+
+        <div th:if="${param.edit}!=null">
+            <form th:action="@{/clientProfile/training/scheme/edit}" method="POST">
+                <table>
+                    <thead>
+                        <th>Name</th>
+                    </thead>
+
+                    <tbody>
+                        <td><input type="text" name="title" id="title" class="input-field-small" th:value="${scheme.title}"></td>
+                    </tbody>
+                </table>
+
+                <br><br>
+                <input type="hidden" name="schemeID" th:value="${scheme.id}">
+                <button type="submit" th:href="@{/clientProfile/training/scheme/edit}" id="submitButton" class="btn-basic"> SUBMIT
+                </button>
+            </form>
+        </div>
+    </section>
         <br>
         <br>
 
@@ -39,17 +74,13 @@
             </tbody>
         </table>
 
-        <br>
-        <br>
-        <h2> Exercise options</h2>
-
         <button type="button" class="btn-login btn-basic" th:onclick="'javascript:toggleDisplayNewExercise(' + ${scheme.id} + ');'">ADD NEW EXERCISE</button>
 
-        <br><br>
+        <br>
         <form th:action="@{/clientProfile/training/scheme/deleteExercise}" method="POST">
             <input type="hidden" name="id" th:value="${param.schemeId}"/>
 
-            <div>Exercise: <select name="exerciseId">
+            <div><h1>Exercise: </h1><select name="exerciseId" class="input-field">
                 <option th:each="exercise : ${exercises}" th:value="${exercise.getId()}" th:text="${exercise.getName()}"></option>
             </select></div>
 
@@ -64,7 +95,7 @@
                 </div>
             </section>
         </form>
-
+<br>
     </section>
 </body>
 <script>

@@ -21,6 +21,14 @@ public class Exercise {
     @JoinColumn(name = "schemeID")
     private Scheme scheme;
 
+    public Exercise() {}
+
+    public Exercise(String name, int repetitions, Scheme scheme) {
+        this.name = name;
+        this.repetitions = repetitions;
+        this.scheme = scheme;
+    }
+
     public String getName() {
         return name;
     }

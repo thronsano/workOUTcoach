@@ -6,6 +6,7 @@ import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,8 @@ public class ClientModel {
 
             return query.list();
         } finally {
-            session.getTransaction().commit();
+            if (session.getTransaction().getStatus().equals(TransactionStatus.ACTIVE))
+                session.getTransaction().commit();
             session.close();
         }
     }
@@ -96,10 +98,10 @@ public class ClientModel {
             query.setParameter("clientId", clientId);
             Client client = (Client) query.uniqueResult();
 
-                client.setGoal(goal);
-                client.setHealthCondition(healthCondition);
-                client.setPhoneNumber(phoneNumber);
-                client.setGymName(gymName);
+            client.setGoal(goal);
+            client.setHealthCondition(healthCondition);
+            client.setPhoneNumber(phoneNumber);
+            client.setGymName(gymName);
 
             session.beginTransaction();
             session.update(client);
@@ -211,5 +213,28 @@ public class ClientModel {
 
     private boolean validateString(String text) {
         return text != null && !text.isEmpty();
+    }
+
+    public void editProgress(int clientId, int goalValue) throws Exception {
+        Session session = sessionFactory.openSession();
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Client where id=:clientId");
+            query.setParameter("clientId", clientId);
+            Client client = (Client) query.uniqueResult();
+
+            if (goalValue > 100)
+                goalValue = 100;
+            else if (goalValue < 0)
+                goalValue = 0;
+
+            client.setGoalValue(goalValue);
+
+            session.update(client);
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 }

@@ -37,6 +37,9 @@ public class Client {
     private String goal;
 
     @Column
+    private int goalValue;
+
+    @Column
     private String healthCondition;
 
     @Column
@@ -127,6 +130,14 @@ public class Client {
 
     public void setGoal(String goal) {
         this.goal = goal;
+    }
+
+    public int getGoalValue() {
+        return goalValue;
+    }
+
+    public void setGoalValue(int goalValue) {
+        this.goalValue = goalValue;
     }
 
     public String getHealthCondition() {

@@ -30,15 +30,18 @@
             <a th:text="${endingDate}"></a>
         </h1>
 
-        <div th:if="${showCancelled} == false"><h3>Show cancelled</h3>
-            <input type="checkbox" class="input-field" name="repeat"
+        <div th:if="${showCancelled} == false">
+            <span style="font-size: medium; "><b>Show cancelled</b></span>
+            <input type="checkbox" class="next-week" name="repeat"
                    th:onchange="'javascript:toggleDisplayArchived()'"/>
         </div>
 
-        <div th:if="${showCancelled} == true"><h3>Show cancelled</h3>
-            <input type="checkbox" class="input-field" name="repeat" th:onchange="'javascript:toggleDisplayArchived()'"
+        <div th:if="${showCancelled} == true">
+            <span style="font-size: medium; "><b>Show cancelled</b></span>
+            <input type="checkbox" class="next-week" name="repeat" th:onchange="'javascript:toggleDisplayArchived()'"
                    checked/>
         </div>
+        <br>
 
         <form class="home-table">
             <form method="get">

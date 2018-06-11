@@ -1,6 +1,7 @@
 package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Exercise;
+import com.workOUTcoach.entity.Scheme;
 import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -68,5 +69,26 @@ public class ExerciseModel {
             session.close();
         }
         return null;
+    }
+
+    public void addNewExercise(int schemeID, String name, int repetitions) {
+
+        Scheme scheme = schemeModel.getSchemeById(schemeID);
+        Exercise exercise = new Exercise(name, repetitions, scheme);
+        saveExercise(exercise);
+    }
+
+    private void saveExercise(Exercise exercise) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try{
+            session.save(exercise);
+        }catch (Exception e){
+            Logger.logError("Exception during adding new exercise");
+        }finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 }
