@@ -6,6 +6,7 @@ import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,8 @@ public class ClientModel {
 
             return query.list();
         } finally {
-            session.getTransaction().commit();
+            if (session.getTransaction().getStatus().equals(TransactionStatus.ACTIVE))
+                session.getTransaction().commit();
             session.close();
         }
     }
