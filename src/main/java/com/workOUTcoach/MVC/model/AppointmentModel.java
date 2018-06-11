@@ -4,12 +4,12 @@ import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Client;
 import com.workOUTcoach.entity.Payment;
 import com.workOUTcoach.entity.Scheme;
-import com.workOUTcoach.utility.Logger;
+import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -33,13 +32,7 @@ public class AppointmentModel {
     private ClientModel clientModel;
 
     @Autowired
-    private PaymentModel paymentModel;
-
-    @Autowired
     private UserModel userModel;
-
-    @Autowired
-    Environment env;
 
     public void setAppointment(int clientId, LocalDateTime startDate, LocalDateTime endDate, boolean cyclic, int repeatAmount, boolean partOfCycle, int schemeId) throws Exception {
         if (endDate.isBefore(startDate))
@@ -51,20 +44,16 @@ public class AppointmentModel {
         if (!partOfCycle && schemeId == -1)
             throw new Exception("Scheme hasn't been chosen!");
 
-        int batch_size = Integer.parseInt(env.getProperty("hibernate.jdbc.batch_size"));
         Client client = clientModel.getClientById(clientId);
 
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        List<Payment> payments = new LinkedList<>();
-
         try {
-            float amount = calculateAmount(startDate, endDate);
+            float amount = calculateChargeForAppointment(startDate, endDate);
 
             for (int i = 0; i < repeatAmount; i++) {
                 LocalDateTime newStartDate = startDate.plusWeeks(i);
                 LocalDateTime newEndDate = endDate.plusWeeks(i);
+                Appointment appointment;
 
                 if (!timelineClear(newStartDate, newEndDate, -1)) {
                     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -72,31 +61,48 @@ public class AppointmentModel {
                     throw new Exception("Appointment from " + newStartDate.format(dateFormatter) + " to " + newEndDate.format(timeFormatter) + " overlaps another one!");
                 }
 
-                Appointment appointment;
-
                 if (!partOfCycle) {
                     Scheme scheme = schemeModel.getSchemeById(schemeId);
                     appointment = new Appointment(newStartDate, newEndDate, client, scheme);
-                } else {
-                    appointment = new Appointment(newStartDate, newEndDate, client);
-                }
+                } else
+                    appointment = setupCyclicAppointment(newStartDate, newEndDate, client);
 
                 Payment payment = new Payment(appointment, amount);
-
                 appointment.setPayment(payment);
+
+                if (!session.getTransaction().getStatus().equals(TransactionStatus.ACTIVE))
+                    session.beginTransaction();
+
                 session.save(appointment);
 
-                payments.add(payment);
-
-                if (i % batch_size == 0) { //Flushes the hibernate session to prevent running out of memory
-                    session.flush();
-                    session.clear();
-                }
+                if (session.getTransaction().getStatus().equals(TransactionStatus.ACTIVE))
+                    session.getTransaction().commit();
             }
         } finally {
-            session.getTransaction().commit();
+            if (session.getTransaction().getStatus().equals(TransactionStatus.ACTIVE))
+                session.getTransaction().commit();
+
             session.close();
         }
+    }
+
+    private Appointment setupCyclicAppointment(LocalDateTime newStartDate, LocalDateTime newEndDate, Client client) throws Exception {
+        Scheme scheme;
+
+        try {
+            int currentSchemeSeq = schemeModel.getPriorScheme(newStartDate, client.getId()).getSequence();
+            int cycleLength = client.getCycle().getSchemeList().size();
+            int nextSchemeSeq = (currentSchemeSeq % cycleLength) + 1;
+
+            scheme = schemeModel.getSchemeBySequence(nextSchemeSeq, client.getId());
+        } catch (NotFoundException ex) {
+            scheme = client.getCycle().getSchemeList().get(0);
+        }
+
+        if (scheme == null)
+            throw new Exception("No schemes defined for the client's cycle!");
+
+        return new Appointment(newStartDate, newEndDate, client, scheme, true);
     }
 
     public void updateAppointment(int appointmentId, LocalDateTime startDate, LocalDateTime endDate, int schemeId) throws Exception {
@@ -117,6 +123,7 @@ public class AppointmentModel {
                     if (timelineClear(startDate, endDate, appointmentId)) {
                         appointment.setStartDate(startDate);
                         appointment.setEndDate(endDate);
+                        appointment.getPayment().setAmount(calculateChargeForAppointment(startDate, endDate));
                     } else {
                         throw new Exception("Appointment overlaps another one!");
                     }
@@ -163,7 +170,7 @@ public class AppointmentModel {
         return count == 0;
     }
 
-    public Appointment getAppointment(int id) {
+    public Appointment getAppointmentById(int id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -179,7 +186,22 @@ public class AppointmentModel {
         }
     }
 
-    public void setCancelledValue(boolean value, int appointmentID) {
+    public List<Appointment> getAppointmentListByClientId(int clientId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            Query query = session.createQuery("from Appointment as app where app.client.coachEmail =:email");
+            query.setParameter("email", auth.getName());
+            return query.list();
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    public void setAppointmentIsCancelled(boolean value, int appointmentID) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -200,13 +222,19 @@ public class AppointmentModel {
     }
 
     public void deleteAppointment(int appointmentID) throws Exception {
-        Appointment appointment = getAppointment(appointmentID);
+        Appointment appointment = getAppointmentById(appointmentID);
+
         if (appointment == null)
             throw new NullPointerException("Appointment not found!");
 
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+        Session session = null;
+
         try {
+            if (appointment.isPartOfCycle())
+                reassignCycleForFollowingAppointments(appointment);
+
+            session = sessionFactory.openSession();
+            session.beginTransaction();
             session.delete(appointment);
         } catch (Exception ex) {
             throw new Exception("Exception during deleting appointment from database");
@@ -216,18 +244,38 @@ public class AppointmentModel {
         }
     }
 
-    public LocalDateTime setBegginingDate(int offset) {
-        return LocalDateTime.now().plusWeeks(offset);
+    private void reassignCycleForFollowingAppointments(Appointment appointment) throws Exception {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            Query query = session.createQuery("from  Appointment as app where app.client=:currentClient and app.startDate >=:currentEndDate and app.partOfCycle = true");
+            query.setParameter("currentEndDate", appointment.getEndDate());
+            query.setParameter("currentClient", appointment.getClient());
+
+            List<Appointment> appointmentList = query.list();
+
+            int clientId = appointment.getClient().getId();
+            int schemeSeq = appointment.getScheme().getSequence();
+            int cycleLength = appointment.getClient().getCycle().getSchemeList().size();
+
+            for (Appointment app : appointmentList) {
+                app.setScheme(schemeModel.getSchemeBySequence(schemeSeq, clientId));
+                schemeSeq = (schemeSeq + 1) % cycleLength;
+                session.update(app);
+            }
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
-    public LocalDateTime setEndingDate(int offset) {
-        return LocalDateTime.now().plusWeeks(offset + 1);
-    }
-
-    private float calculateAmount(LocalDateTime start, LocalDateTime end) {
+    private float calculateChargeForAppointment(LocalDateTime start, LocalDateTime end) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         float hourlyRate = userModel.getUserByEmail(auth.getName()).getHourlyRate();
         float duration = (float) start.until(end, ChronoUnit.MINUTES) / 60;
+
         return duration * hourlyRate;
     }
 }

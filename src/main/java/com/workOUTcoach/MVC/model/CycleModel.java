@@ -32,7 +32,6 @@ public class CycleModel {
             session.getTransaction().commit();
             session.close();
         }
-
     }
 
     public Cycle getCycleByClientId(int clientId) {

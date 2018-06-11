@@ -1,10 +1,7 @@
 package com.workOUTcoach.MVC.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.workOUTcoach.MVC.model.AppointmentModel;
 import com.workOUTcoach.MVC.model.SchemeModel;
-import com.workOUTcoach.entity.Appointment;
-import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -28,9 +25,10 @@ public class AppointmentController {
     private SchemeModel schemeModel;
 
     @RequestMapping(value = "/addAppointment", method = RequestMethod.GET)
-    public ModelAndView getAppointmentPage(ModelAndView modelAndView) {
+    public ModelAndView getAppointmentPage(@RequestParam("id") String id,
+                                           ModelAndView modelAndView) {
         modelAndView.setViewName("addAppointment");
-        modelAndView.addObject("schemeList", schemeModel.schemeList());
+        modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         return modelAndView;
     }
 
@@ -51,11 +49,11 @@ public class AppointmentController {
             appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, cyclic, repeatAmount, partOfCycle, schemeId);
 
             modelAndView.addObject("status", "successful");
-            modelAndView.addObject("schemeList", schemeModel.schemeList());
+            modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         } catch (Exception ex) {
             modelAndView.addObject("status", "failed");
             modelAndView.addObject("reason", ex.getMessage());
-            modelAndView.addObject("schemeList", schemeModel.schemeList());
+            modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         }
 
         return modelAndView;
@@ -64,9 +62,9 @@ public class AppointmentController {
     @RequestMapping(value = "/appointmentPage", method = RequestMethod.GET)
     public ModelAndView getAppointment(@RequestParam(value = "id") String id, ModelAndView modelAndView) {
         try {
-            modelAndView.addObject("appointment", appointmentModel.getAppointment(Integer.parseInt(id)));
-            modelAndView.addObject("exercises", schemeModel.listExercise(Integer.parseInt(id)));
-            modelAndView.addObject("schemeList", schemeModel.listSchemeByAppointmentId(Integer.parseInt(id)));
+            modelAndView.addObject("appointment", appointmentModel.getAppointmentById(Integer.parseInt(id)));
+            modelAndView.addObject("exercises", schemeModel.getExerciseList(Integer.parseInt(id)));
+            modelAndView.addObject("schemeList", schemeModel.listSchemesByAppointmentId(Integer.parseInt(id)));
         } catch (NullPointerException ex) {
             appointmentNotFound(modelAndView);
         }
@@ -76,7 +74,7 @@ public class AppointmentController {
     @RequestMapping(value = "/appointmentPage/cancel", method = RequestMethod.POST)
     public ModelAndView cancelAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView) {
         try {
-            appointmentModel.setCancelledValue(true, Integer.parseInt(id));
+            appointmentModel.setAppointmentIsCancelled(true, Integer.parseInt(id));
             modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
         } catch (NullPointerException ex) {
             appointmentNotFound(modelAndView);
@@ -87,7 +85,7 @@ public class AppointmentController {
     @RequestMapping(value = "/appointmentPage/active", method = RequestMethod.POST)
     public ModelAndView activeAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView) {
         try {
-            appointmentModel.setCancelledValue(false, Integer.parseInt(id));
+            appointmentModel.setAppointmentIsCancelled(false, Integer.parseInt(id));
             modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
         } catch (NullPointerException ex) {
             appointmentNotFound(modelAndView);
@@ -121,9 +119,8 @@ public class AppointmentController {
 
             appointmentModel.updateAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, schemeId);
         } catch (Exception ex) {
-            modelAndView.addObject("error", "true");
+            modelAndView.addObject("status", "failed");
             modelAndView.addObject("reason", ex.getMessage());
-            modelAndView.setViewName("appointmentPage");
         }
 
         modelAndView.setViewName("redirect:/appointmentPage?id=" + id);

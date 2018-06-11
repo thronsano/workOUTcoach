@@ -4,7 +4,9 @@ import com.workOUTcoach.MVC.model.ClientModel;
 import com.workOUTcoach.MVC.model.SchemeModel;
 import com.workOUTcoach.MVC.model.UserModel;
 import com.workOUTcoach.entity.Client;
+import com.workOUTcoach.utility.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Controller
 public class ClientController {
@@ -71,56 +76,74 @@ public class ClientController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/clientProfile/goal", method = RequestMethod.GET)
-    public ModelAndView editGoal(@RequestParam(value = "clientID") String id,
-                                 @RequestParam(value = "goal", required = false) String goal,
-                                 ModelAndView modelAndView) {
+    /**
+     * @RequestMapping(value = "/clientProfile/goal", method = RequestMethod.GET)
+     * public ModelAndView editGoal(@RequestParam(value = "clientID") String id,
+     * @RequestParam(value = "goal", required = false) String goal,
+     * ModelAndView modelAndView) {
+     * try {
+     * clientModel.editClientDetails(Integer.parseInt(id), goal, "goal");
+     * } catch (Exception ex) {
+     * ex.getMessage();
+     * }
+     * <p>
+     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+     * return modelAndView;
+     * }
+     * @RequestMapping(value = "/clientProfile/health", method = RequestMethod.GET)
+     * public ModelAndView editHealth(@RequestParam(value = "clientID") String id,
+     * @RequestParam(value = "health", required = false) String health,
+     * ModelAndView modelAndView) {
+     * try {
+     * clientModel.editClientDetails(Integer.parseInt(id), health, "health");
+     * } catch (Exception ex) {
+     * ex.getMessage();
+     * }
+     * <p>
+     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+     * return modelAndView;
+     * }
+     * @RequestMapping(value = "/clientProfile/gym", method = RequestMethod.GET)
+     * public ModelAndView editGym(@RequestParam(value = "clientID") String id,
+     * @RequestParam(value = "gym", required = false) String gym,
+     * ModelAndView modelAndView) {
+     * try {
+     * clientModel.editClientDetails(Integer.parseInt(id), gym, "gym");
+     * } catch (Exception ex) {
+     * ex.getMessage();
+     * }
+     * <p>
+     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+     * return modelAndView;
+     * }
+     * @RequestMapping(value = "/clientProfile/phone", method = RequestMethod.GET)
+     * public ModelAndView editPhone(@RequestParam(value = "clientID") String id,
+     * @RequestParam(value = "phone", required = false) String phone,
+     * ModelAndView modelAndView) {
+     * try {
+     * clientModel.editClientDetails(Integer.parseInt(id), phone, "phone");
+     * } catch (Exception ex) {
+     * ex.getMessage();
+     * }
+     * <p>
+     * modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+     * return modelAndView;
+     * }
+     **/
+
+    @RequestMapping(value = "/clientProfile/edit", method = RequestMethod.POST)
+    public ModelAndView editClient(@RequestParam("clientID") String id,
+                                        @RequestParam("goal") String goal,
+                                        @RequestParam("healthCondition") String healthCondition,
+                                        @RequestParam("phoneNumber") String phoneNumber,
+                                        @RequestParam("gymName") String gymName,
+                                        ModelAndView modelAndView) {
         try {
-            clientModel.editClientDetails(Integer.parseInt(id), goal, "goal");
-        } catch (Exception ex) {
-            ex.getMessage();
-        }
-
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/clientProfile/health", method = RequestMethod.GET)
-    public ModelAndView editHealth(@RequestParam(value = "clientID") String id,
-                                   @RequestParam(value = "health", required = false) String health,
-                                   ModelAndView modelAndView) {
-        try {
-            clientModel.editClientDetails(Integer.parseInt(id), health, "health");
-        } catch (Exception ex) {
-            ex.getMessage();
-        }
-
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/clientProfile/gym", method = RequestMethod.GET)
-    public ModelAndView editGym(@RequestParam(value = "clientID") String id,
-                                @RequestParam(value = "gym", required = false) String gym,
-                                ModelAndView modelAndView) {
-        try {
-            clientModel.editClientDetails(Integer.parseInt(id), gym, "gym");
-        } catch (Exception ex) {
-            ex.getMessage();
-        }
-
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/clientProfile/phone", method = RequestMethod.GET)
-    public ModelAndView editPhone(@RequestParam(value = "clientID") String id,
-                                  @RequestParam(value = "phone", required = false) String phone,
-                                  ModelAndView modelAndView) {
-        try {
-            clientModel.editClientDetails(Integer.parseInt(id), phone, "phone");
-        } catch (Exception ex) {
-            ex.getMessage();
+            clientModel.editClientDetails(Integer.parseInt(id), goal, healthCondition, phoneNumber, gymName);
+        }catch (Exception ex){
+            modelAndView.addObject("error", "failed");
+            modelAndView.addObject("reason", ex.getMessage());
+            modelAndView.setViewName("clientProfile");
         }
 
         modelAndView.setViewName("redirect:/clientProfile?id=" + id);
@@ -193,11 +216,7 @@ public class ClientController {
             redirectAttributes.addFlashAttribute("user", userModel.getUserByEmail(auth.getName()));
             modelAndView.setViewName("redirect:/clientProfile?id=" + id);
         } catch (Exception ex) {
-            modelAndView.addObject("user", userModel.getUserByEmail(auth.getName()));
-            modelAndView.addObject("id", id);
-            modelAndView.addObject("status", "failed");
-            modelAndView.addObject("reason", ex.getMessage());
-            modelAndView.setViewName("clientProfile");
+
         }
 
         return modelAndView;
@@ -229,7 +248,7 @@ public class ClientController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/clientProfile/editCycle", method = RequestMethod.POST)
+    @RequestMapping(value = "/clientProfile/training/editCycle", method = RequestMethod.POST)
     public ModelAndView addSchemeToCycle(@RequestParam("id") String id,
                                          @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
                                          ModelAndView modelAndView,
@@ -243,11 +262,11 @@ public class ClientController {
             redirectAttributes.addFlashAttribute("reason", ex.getMessage());
             redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
         }
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        modelAndView.setViewName("redirect:/clientProfile/training?id=" + id);
         return modelAndView;
     }
 
-    @RequestMapping(value = "/clientProfile/removeFromCycle", method = RequestMethod.POST)
+    @RequestMapping(value = "/clientProfile/training/removeFromCycle", method = RequestMethod.POST)
     public ModelAndView removeSchemeFromCycle(@RequestParam("id") String id,
                                               @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
                                               ModelAndView modelAndView,
@@ -261,7 +280,7 @@ public class ClientController {
             redirectAttributes.addFlashAttribute("reason", ex.getMessage());
             redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
         }
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        modelAndView.setViewName("redirect:/clientProfile/training?id=" + id);
         return modelAndView;
     }
 }

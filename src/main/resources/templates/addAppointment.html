@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <script type="text/javascript" src="appointmentScript.js"></script>
+    <script type="text/javascript" src="/appointmentScript.js"></script>
     <title>Add appointment</title>
 </head>
 <body>
@@ -24,8 +24,8 @@
             <input type="hidden" name="id" th:value="${param.id}"/>
 
             <div>Date<input type="date" class="input-field" name="date" required/></div>
-            <div>Starting time<input type="time" class="input-field" name="startTime" required/></div>
-            <div>Ending time<input type="time" class="input-field" name="endTime" required/></div>
+            <div>Starting time<input type="time" class="input-field" name="startTime" value="10:00" required/></div>
+            <div>Ending time<input type="time" class="input-field" name="endTime" value="11:00"required/></div>
             <div>Repeat weekly:<input type="checkbox" class="input-field" name="repeat"
                                       th:onchange="'javascript:toggleRepeatAmountField()'"/></div>
             <div id="hiddenRepeatAmount"></div>

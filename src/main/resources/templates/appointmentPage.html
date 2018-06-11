@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <script type="text/javascript" src="appointmentScript.js"></script>
+    <script type="text/javascript" src="/appointmentScript.js"></script>
     <title>Workout coach</title>
 </head>
 <body>
@@ -60,35 +60,42 @@
                 <form th:action="@{/appointmentPage/edit}" method="post">
                     <table>
                         <thead>
-                        <th>Date</th>
-                        <th>Starting time</th>
-                        <th>Ending time</th>
                         <th>Name</th>
                         <th>Surname</th>
                         <th>Gym name</th>
-                        <th>Scheme</th>
                         <th>Paid</th>
                         <th>Cancelled</th>
                         </thead>
                         <tbody>
-                        <td><input type="date" name="date" id="date"
+                        <td style="text-align: center" th:text="${appointment.client.name}"></td>
+                        <td style="text-align: center" th:text="${appointment.client.surname}"></td>
+                        <td style="text-align: center" th:text="${appointment.client.gymName}"></td>
+                        <td style="text-align: center" th:text="${appointment.payment.isPaid}"></td>
+                        <td style="text-align: center" th:text="${appointment.isCancelled}"></td>
+                        </tbody>
+
+                        <thead>
+                        <th>Date</th>
+                        <th>Starting time</th>
+                        <th>Ending time</th>
+                        <th>Scheme</th>
+                        </thead>
+
+                        <tbody>
+                        <td><input type="date" name="date" id="date" class="input-field-small"
                                    th:value="${#temporals.format(appointment.startDate, 'yyyy-MM-dd')}"></td>
-                        <td><input type="time" name="startTime" id="startingTime"
+                        <td><input type="time" name="startTime" id="startingTime" class="input-field-small"
                                    th:value="${#temporals.format(appointment.startDate, 'HH:mm')}"></td>
-                        <td><input type="time" name="endTime" id="endingTime"
+                        <td><input type="time" name="endTime" id="endingTime" class="input-field-small"
                                    th:value="${#temporals.format(appointment.endDate, 'HH:mm')}"></td>
-                        <td th:text="${appointment.client.name}"></td>
-                        <td th:text="${appointment.client.surname}"></td>
-                        <td th:text="${appointment.client.gymName}"></td>
                         <td><select name="schemeId" class="input-field">\n' +
                             '
                             <option th:each="scheme : ${schemeList}" th:value="${scheme.getId()}"
                                     th:text="${scheme.getTitle()}">
                             </option>
                             \</select></td>
-                        <td th:text="${appointment.payment.isPaid}"></td>
-                        <td th:text="${appointment.isCancelled}"></td>
                         </tbody>
+
                     </table>
                     <br>
                     <input type="hidden" name="appointmentID" id="appointmentID4">
@@ -100,6 +107,7 @@
             </div>
             <div th:if="${param.edit}==null or ${param.edit[0]}=='false'">
                 <div th:if="${!appointment.isCancelled}">
+                    <br>
                     <form th:action="@{/appointmentPage/cancel}" method="post">
                         <input type="hidden" name="appointmentID" id="appointmentID">
                         <script>document.getElementById('appointmentID').value = window.getURLParameter('id');</script>
@@ -110,6 +118,7 @@
                 </div>
 
                 <div th:if="${appointment.isCancelled}">
+                    <br>
                     <form th:action="@{/appointmentPage/active}" method="post">
                         <input type="hidden" name="appointmentID" id="appointmentID2">
                         <script>document.getElementById('appointmentID2').value = window.getURLParameter('id');</script>

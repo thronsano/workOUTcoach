@@ -2,6 +2,7 @@ package com.workOUTcoach.MVC.model;
 
 import com.workOUTcoach.entity.Appointment;
 import com.workOUTcoach.entity.Cycle;
+import com.workOUTcoach.utility.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -57,7 +58,6 @@ public class ClientModel {
         }
     }
 
-
     public void saveNewClient(Client client) {
         Session session = sessionFactory.openSession();
 
@@ -87,7 +87,7 @@ public class ClientModel {
         }
     }
 
-    public void editClientDetails(int clientId, String newValueOfElement, String elementToChange) throws Exception {
+    public void editClientDetails(int clientId, String goal, String healthCondition, String phoneNumber, String gymName) throws Exception {
         Session session = sessionFactory.openSession();
 
         try {
@@ -95,24 +95,11 @@ public class ClientModel {
             Query query = session.createQuery("from Client where id=:clientId");
             query.setParameter("clientId", clientId);
             Client client = (Client) query.uniqueResult();
-            session.getTransaction().commit();
 
-            switch (elementToChange) {
-                case "goal":
-                    client.setGoal(newValueOfElement);
-                    break;
-                case "health":
-                    client.setHealthCondition(newValueOfElement);
-                    break;
-                case "phone":
-                    client.setPhoneNumber(newValueOfElement);
-                    break;
-                case "gym":
-                    client.setGymName(newValueOfElement);
-                    break;
-                default:
-                    throw new Exception("Chosen an incorrect parameter to edit!");
-            }
+                client.setGoal(goal);
+                client.setHealthCondition(healthCondition);
+                client.setPhoneNumber(phoneNumber);
+                client.setGymName(gymName);
 
             session.beginTransaction();
             session.update(client);
@@ -122,24 +109,21 @@ public class ClientModel {
         }
     }
 
-
     public void deleteById(int clientId) {
-        Client client = getClientById(clientId);
-
-        if (client == null)
-            throw new NullPointerException("Client not found!");
-
+        Client client;
         Session session = sessionFactory.openSession();
 
         try {
             session.beginTransaction();
-            session.delete(client.getAppointmentList());
+            client = session.load(Client.class, clientId);
+            session.delete(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         } finally {
             session.getTransaction().commit();
             session.close();
         }
     }
-
 
     public boolean isActiveById(int clientId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
