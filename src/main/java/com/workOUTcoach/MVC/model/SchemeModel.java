@@ -41,7 +41,7 @@ public class SchemeModel {
         }
     }
 
-    public Scheme getSchemeById(int id) throws NotFoundException {
+    public Scheme getSchemeById(int id) {
         Session session = sessionFactory.openSession();
 
         try {
@@ -206,6 +206,26 @@ public class SchemeModel {
         return schemes;
     }
 
+    public List<Scheme> getSchemeListByClient(int clientId) {
+        List<Scheme> schemes = null;
+        Client client = clientModel.getClientById(clientId);
+        Session session = sessionFactory.openSession();
+
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Scheme as s where s.cycle.client=:currentClient order by sequence");
+            query.setParameter("currentClient", client);
+
+            schemes = query.list();
+        } catch (Exception e) {
+            Logger.logError("Exception during access to list of schemes");
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+
+        return schemes;
+    }
     public List<Scheme> listSchemeByAppointmentId(int appointmentID) {
         Appointment appointment= appointmentModel.getAppointment(appointmentID);
 

@@ -248,7 +248,7 @@ public class ClientController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/clientProfile/editCycle", method = RequestMethod.POST)
+    @RequestMapping(value = "/clientProfile/training/editCycle", method = RequestMethod.POST)
     public ModelAndView addSchemeToCycle(@RequestParam("id") String id,
                                          @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
                                          ModelAndView modelAndView,
@@ -262,11 +262,11 @@ public class ClientController {
             redirectAttributes.addFlashAttribute("reason", ex.getMessage());
             redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUnusedSchemeListByClient(Integer.parseInt(id)));
         }
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        modelAndView.setViewName("redirect:/clientProfile/training?id=" + id);
         return modelAndView;
     }
 
-    @RequestMapping(value = "/clientProfile/removeFromCycle", method = RequestMethod.POST)
+    @RequestMapping(value = "/clientProfile/training/removeFromCycle", method = RequestMethod.POST)
     public ModelAndView removeSchemeFromCycle(@RequestParam("id") String id,
                                               @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
                                               ModelAndView modelAndView,
@@ -280,7 +280,7 @@ public class ClientController {
             redirectAttributes.addFlashAttribute("reason", ex.getMessage());
             redirectAttributes.addFlashAttribute("schemeList", schemeModel.getUsedSchemeListByClient(Integer.parseInt(id)));
         }
-        modelAndView.setViewName("redirect:/clientProfile?id=" + id);
+        modelAndView.setViewName("redirect:/clientProfile/training?id=" + id);
         return modelAndView;
     }
 }

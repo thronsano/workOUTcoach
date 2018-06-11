@@ -91,6 +91,10 @@
             </div>
         </section>
 
+        <br>
+
+        <button type="button" class="btn-login btn-basic" th:onclick="'javascript:toggleDisplayTrainingSettings(' + ${client.id} + ');'">TRAINING OPTIONS</button>
+
         <div th:if="${isActive}==true">
             <br>
             <a th:href="@{/addAppointment(id=${param.id})}" style="text-decoration: none">

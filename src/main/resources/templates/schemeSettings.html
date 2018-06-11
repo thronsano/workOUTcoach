@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script type="text/javascript" src="schemeScript.js"></script>
+    <title>Scheme Settings</title>
+</head>
+<body>
+<nav>
+    <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
+    <a th:href="@{/home}" class="nav-element">Timetable</a>
+    <a th:href="@{/clientList}" class="nav-element">Client List</a>
+    <a th:href="@{/payments}" class="nav-element">Payments</a>
+    <a th:href="@{/settings}" class="nav-element">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <input class="nav-element" type="submit" value="Log out"/>
+    </form>
+</nav>
+
+<section class="content" th:method="GET">
+    <h2>This is [[${scheme.cycle.client.name}]] [[${scheme.cycle.client.surname}]]'s scheme</h2>
+        <br>
+        <a>Title: <b>[[${scheme.title}]]</b></a>
+        <br>
+        <br>
+
+        <table>
+            <thead>
+            <th>Name</th>
+            <th>Repetitions</th>
+            </thead>
+
+            <tbody>
+            <tr th:each="exercise : ${exercises}" th:onclick="'javascript:rowClicked(\'' + ${exercise.id} + '\');'">
+                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.repetitions}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    <br>
+    <br>
+    <h2> Exercise options</h2>
+
+    <button type="button" class="btn-login btn-basic" th:onclick="'javascript:toggleDisplayNewExercise(' + ${scheme.id} + ');'">ADD NEW EXERCISE</button>
+
+    <br><br>
+    <form th:action="@{/clientProfile/training/scheme/deleteExercise}" method="POST">
+        <input type="hidden" name="id" th:value="${param.schemeId}"/>
+
+        <div>Exercise: <select name="exerciseId">
+            <option th:each="exercise : ${exercises}" th:value="${exercise.getId()}" th:text="${exercise.getName()}"></option>
+        </select></div>
+
+        <button type="submit" th:href="@{/editCycle}" class="btn-login btn-basic">DELETE EXERCISE</button>
+
+        <section class="login-info">
+            <div th:if="${exerciseDeleted}=='successful'">
+                Exercise deleted!
+            </div>
+            <div th:if="${exerciseDeleted}=='failed'">
+                <div th:text="${reason}"></div>
+            </div>
+        </section>
+    </form>
+
+</section>
+</body>
+<script>
+    function rowClicked(value) {
+        location.href = "/clientProfile/training/scheme/exercise?exerciseId=" + value;
+    }
+</script>
+</html>
