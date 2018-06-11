@@ -108,8 +108,7 @@
             </a>
             <br>
             <form th:action="@{/clientProfile/makeArchived}" method="post">
-                <input type="hidden" name="clientID" id="clientID">
-                <script>document.getElementById('clientID').value = window.GetURLParameter('id');</script>
+                <input type="hidden" name="clientID" th:value="${param.id}">
                 <button type="submit" th:href="@{/makeArchived}" class="btn-basic">ARCHIVE</button>
             </form>
 
@@ -118,14 +117,14 @@
         <div th:if="${isActive}==false">
             <br/>
             <form th:action="@{/clientProfile/makeActive}" method="post">
-                <input type="hidden" name="clientID" id="clientID">
+                <input type="hidden" name="clientID" th:value="${param.id}">
                 <script>document.getElementById('clientID').value = window.GetURLParameter('id');</script>
                 <button type="submit" th:href="@{/makeActive}" class="btn-basic">MAKE ACTIVE</button>
             </form>
 
             <br/>
             <form th:action="@{/clientProfile/deleteClient}" method="post">
-                <input type="hidden" name="clientID2" id="clientID2">
+                <input type="hidden" name="clientID" th:value="${param.id}">
                 <script>document.getElementById('clientID2').value = window.GetURLParameter('id');</script>
                 <button type="submit" th:href="@{/deleteClient}" class="btn-basic">DELETE</button>
             </form>
