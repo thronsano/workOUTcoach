@@ -60,7 +60,8 @@ public class AppointmentController {
     }
 
     @RequestMapping(value = "/appointmentPage", method = RequestMethod.GET)
-    public ModelAndView getAppointment(@RequestParam(value = "id") String id, ModelAndView modelAndView) {
+    public ModelAndView getAppointment(@RequestParam(value = "id") String id,
+                                       ModelAndView modelAndView) {
         try {
             modelAndView.addObject("appointment", appointmentModel.getAppointmentById(Integer.parseInt(id)));
             modelAndView.addObject("exercises", schemeModel.getExerciseList(Integer.parseInt(id)));
@@ -72,7 +73,8 @@ public class AppointmentController {
     }
 
     @RequestMapping(value = "/appointmentPage/cancel", method = RequestMethod.POST)
-    public ModelAndView cancelAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView) {
+    public ModelAndView cancelAppointment(@RequestParam(value = "appointmentID") String id,
+                                          ModelAndView modelAndView) {
         try {
             appointmentModel.setAppointmentIsCancelled(true, Integer.parseInt(id));
             modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
@@ -83,7 +85,8 @@ public class AppointmentController {
     }
 
     @RequestMapping(value = "/appointmentPage/active", method = RequestMethod.POST)
-    public ModelAndView activeAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView) {
+    public ModelAndView activeAppointment(@RequestParam(value = "appointmentID") String id,
+                                          ModelAndView modelAndView) {
         try {
             appointmentModel.setAppointmentIsCancelled(false, Integer.parseInt(id));
             modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
@@ -94,7 +97,9 @@ public class AppointmentController {
     }
 
     @RequestMapping(value = "/appointmentPage/delete", method = RequestMethod.POST)
-    public ModelAndView deleteAppointment(@RequestParam(value = "appointmentID") String id, ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
+    public ModelAndView deleteAppointment(@RequestParam(value = "appointmentID") String id,
+                                          ModelAndView modelAndView,
+                                          RedirectAttributes redirectAttributes) {
         try {
             appointmentModel.deleteAppointment(Integer.parseInt(id));
             redirectAttributes.addFlashAttribute("deleteSuccess", true);
@@ -102,6 +107,7 @@ public class AppointmentController {
         } catch (Exception ex) {
             appointmentNotFound(modelAndView);
         }
+
         return modelAndView;
     }
 
@@ -111,7 +117,8 @@ public class AppointmentController {
                                         @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
                                         @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
                                         @RequestParam(value = "schemeId", required = false, defaultValue = "-1") int schemeId,
-                                        ModelAndView modelAndView) {
+                                        ModelAndView modelAndView,
+                                        RedirectAttributes redirectAttributes) {
 
         try {
             LocalDateTime localDateTimeStart = LocalDateTime.of(startDate, startTime);
@@ -119,8 +126,8 @@ public class AppointmentController {
 
             appointmentModel.updateAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, schemeId);
         } catch (Exception ex) {
-            modelAndView.addObject("state", "failed");
-            modelAndView.addObject("reason", ex.getMessage());
+            redirectAttributes.addFlashAttribute("state", "failed");
+            redirectAttributes.addFlashAttribute("reason", ex.getMessage());
         }
 
         modelAndView.setViewName("redirect:/appointmentPage?id=" + id);
