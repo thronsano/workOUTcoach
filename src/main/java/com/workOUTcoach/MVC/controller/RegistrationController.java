@@ -32,7 +32,7 @@ public class RegistrationController {
             @RequestParam("password2") String password2,
             @RequestParam("name") String name,
             @RequestParam("surname") String surname,
-            @RequestParam("hourlyRate") int hourlyRate,
+            @RequestParam(value = "hourlyRate", required = false, defaultValue = "0") int hourlyRate,
             ModelAndView modelAndView,
             RedirectAttributes redirectAttributes) {
 
