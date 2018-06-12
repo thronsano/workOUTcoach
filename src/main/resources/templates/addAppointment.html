@@ -46,10 +46,10 @@
             <button type="submit" class="btn-login btn-basic">APPOINT</button>
 
             <section class="login-info">
-                <div th:if="${status}=='successful'">
+                <div th:if="${state}=='successful'">
                     Appointment has been set correctly!
                 </div>
-                <div th:if="${status}=='failed'">
+                <div th:if="${state}=='failed'">
                     <div th:text="${reason}"></div>
                 </div>
             </section>

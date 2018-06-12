@@ -48,10 +48,10 @@ public class AppointmentController {
 
             appointmentModel.setAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, cyclic, repeatAmount, partOfCycle, schemeId);
 
-            modelAndView.addObject("status", "successful");
+            modelAndView.addObject("state", "successful");
             modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         } catch (Exception ex) {
-            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("state", "failed");
             modelAndView.addObject("reason", ex.getMessage());
             modelAndView.addObject("schemeList", schemeModel.getSchemeListByClientId(Integer.parseInt(id)));
         }
@@ -119,7 +119,7 @@ public class AppointmentController {
 
             appointmentModel.updateAppointment(Integer.parseInt(id), localDateTimeStart, localDateTimeEnd, schemeId);
         } catch (Exception ex) {
-            modelAndView.addObject("status", "failed");
+            modelAndView.addObject("state", "failed");
             modelAndView.addObject("reason", ex.getMessage());
         }
 
@@ -128,7 +128,7 @@ public class AppointmentController {
     }
 
     private void appointmentNotFound(ModelAndView modelAndView) {
-        modelAndView.addObject("status", "failed");
+        modelAndView.addObject("state", "failed");
         modelAndView.addObject("reason", "Appointment not found!");
         modelAndView.setViewName("appointmentPage");
     }

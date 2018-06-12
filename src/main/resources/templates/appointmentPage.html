@@ -19,13 +19,9 @@
         </form>
     </nav>
 
-    <div class="content" th:if="${status}=='failed'">
-        <div th:text="${reason}"></div>
-    </div>
-
     <div th:if="${appointment!=null}">
         <section class="content" th:method="GET">
-            <div th:if="${error}=='true'">
+            <div th:if="${state}=='failed'">
                 <div th:text="${reason}"></div>
             </div>
 
