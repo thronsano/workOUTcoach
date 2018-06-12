@@ -33,8 +33,8 @@
             <button type="submit" class="btn-login btn-basic">CREATE</button>
         </form>
 
-        <div th:if="${dataError}">
-            DON'T CHANGE CODE YOU ****!
+        <div class="error-message" th:if="${dataError}">
+            Invalid code!
         </div>
     </section>
     <section class="content" th:if="${scheme}==null">

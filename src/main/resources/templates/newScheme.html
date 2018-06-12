@@ -7,34 +7,34 @@
 </head>
 <body class="front">
 
-<nav>
-    <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
-    <a th:href="@{/home}" class="nav-element">Timetable</a>
-    <a th:href="@{/clientList}" class="nav-element">Client List</a>
-    <a th:href="@{/payments}" class="nav-element">Payments</a>
-    <a th:href="@{/settings}" class="nav-element">Settings</a>
-    <form th:action="@{/logout}" method="post">
-        <input class="nav-element" type="submit" value="Log out"/>
-    </form>
-</nav>
+    <nav>
+        <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
+        <a th:href="@{/home}" class="nav-element">Timetable</a>
+        <a th:href="@{/clientList}" class="nav-element">Client List</a>
+        <a th:href="@{/payments}" class="nav-element">Payments</a>
+        <a th:href="@{/settings}" class="nav-element">Settings</a>
+        <form th:action="@{/logout}" method="post">
+            <input class="nav-element" type="submit" value="Log out"/>
+        </form>
+    </nav>
 
 
-<section class="content" th:if="${cycle}!=null">
-    <h2>Create new scheme</h2>
-    <br>
-    <form th:action="@{/clientProfile/training/newScheme}" method="post">
-        Name:
-        <div><input type="text" class="input-field" name="name" placeholder="Name" required/></div>
-        <div><input type="hidden" class="input-field" name="clientID" th:value="${cycle.client.id}"/></div>
-        <button type="submit" class="btn-login btn-basic">CREATE</button>
-    </form>
+    <section class="content" th:if="${cycle}!=null">
+        <h2>Create new scheme</h2>
+        <br>
+        <form th:action="@{/clientProfile/training/newScheme}" method="post">
+            Name:
+            <div><input type="text" class="input-field" name="name" placeholder="Name" required/></div>
+            <div><input type="hidden" class="input-field" name="clientID" th:value="${cycle.client.id}"/></div>
+            <button type="submit" class="btn-login btn-basic">CREATE</button>
+        </form>
 
-    <div th:if="${dataError}">
-        DON'T CHANGE CODE YOU ****!
-    </div>
-</section>
-<section class="content" th:if="${cycle}==null">
-    <h2>LOST TRACK TO CYCLE</h2>
-</section>
+        <div class="error-message" th:if="${dataError}">
+            Invalid code!
+        </div>
+    </section>
+    <section class="content" th:if="${cycle}==null">
+        <h2>LOST TRACK TO CYCLE</h2>
+    </section>
 </body>
 </html>

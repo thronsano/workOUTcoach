@@ -51,14 +51,14 @@
                 </div>
 
                 <button type="submit" th:href="@{/editCycle}" class="btn-remove btn-basic btn-login">REMOVE SCHEME FROM
-                    CYCLE
+                                                                                                     CYCLE
                 </button>
             </form>
             <section class="login-info">
                 <div th:if="${schemeRemoved}=='successful'">
                     Scheme has been removed correctly from Cycle!
                 </div>
-                <div th:if="${schemeRemoved}=='failed'">
+                <div class="error-message" th:if="${schemeRemoved}=='failed'">
                     <div th:text="${reason}"></div>
                 </div>
             </section>
@@ -84,7 +84,7 @@
                     Scheme has been set correctly!
                 </div>
                 <div th:if="${schemeAdded}=='failed'">
-                    <div th:text="${reason}"></div>
+                    <div class="error-message" th:text="${reason}"></div>
                 </div>
             </section>
         </form>
@@ -105,7 +105,7 @@
                 <div th:if="${schemeDeleted}=='successful'">
                     Scheme has been deleted!
                 </div>
-                <div th:if="${schemeDeleted}=='failed'">
+                <div class="error-message" th:if="${schemeDeleted}=='failed'">
                     <div th:text="${reason}"></div>
                 </div>
             </section>

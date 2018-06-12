@@ -11,11 +11,16 @@
 
         <form th:action="@{/register}" method="post">
             <div><input type="email" class="input-field center-horizontal" name="email" placeholder="E-mail"/></div>
-            <div><input type="password" class="input-field center-horizontal" name="password" placeholder="Password"/></div>
-            <div><input type="password" class="input-field center-horizontal" name="password2" placeholder="Confirm password"/></div>
+            <div><input type="password" class="input-field center-horizontal" name="password" placeholder="Password"/>
+            </div>
+            <div>
+                <input type="password" class="input-field center-horizontal" name="password2" placeholder="Confirm password"/>
+            </div>
             <div><input type="text" class="input-field center-horizontal" name="name" placeholder="Name"/></div>
             <div><input type="text" class="input-field center-horizontal" name="surname" placeholder="Surname"/></div>
-            <div><input type="number" class="input-field center-horizontal" name="hourlyRate" placeholder="Hourly rate"/></div>
+            <div>
+                <input type="number" class="input-field center-horizontal" name="hourlyRate" placeholder="Hourly rate"/>
+            </div>
             <button type="submit" class="btn-login btn-basic center-horizontal">REGISTER</button>
         </form>
 

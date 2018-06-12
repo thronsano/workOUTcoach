@@ -40,9 +40,11 @@
                 <td th:text="${payment.amount}"></td>
                 <td th:text="${#temporals.format(payment.appointment.startDate, 'yyyy-MM-dd')}"></td>
                 <td th:if="${payment.getIsPaid()}==true"><input type="checkbox" th:checked="true" name="paid"
-                                                                th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                                                                th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/>
+                </td>
                 <td th:if="${payment.getIsPaid()}==false"><input type="checkbox" th:checked="false" name="paid"
-                                                                 th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/></td>
+                                                                 th:onchange="'javascript:changePaid('+ ${payment.id} +')'"/>
+                </td>
                 <td th:text="${payment.paymentDate}"></td>
 
             </tr>

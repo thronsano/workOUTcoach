@@ -25,22 +25,22 @@
         <button type="submit" class="btn-basic" th:onclick="'javascript:changePasswordClicked(\'' + ${user.email} + '\');'">CHANGE PASSWORD</button>
 
         <section class="login-info">
-            <div th:if="${error}=='dataError'">
+            <div class="error-message" th:if="${error}=='dataError'">
                 Incorrect data!
             </div>
-            <div th:if="${error}=='databaseError'">
+            <div class="error-message" th:if="${error}=='databaseError'">
                 Try again!
             </div>
-            <div th:if="${error}=='passwordError'">
+            <div class="error-message" th:if="${error}=='passwordError'">
                 Current password is incorrect!
             </div>
-            <div th:if="${error}=='differentPasswordError'">
+            <div class="error-message" th:if="${error}=='differentPasswordError'">
                 Passwords aren't identical!
             </div>
-            <div th:if="${userEdited}">
+            <div class="error-message" th:if="${userEdited}">
                 Information saved!
             </div>
-            <div th:if="${passwordChanged}">
+            <div class="error-message" th:if="${passwordChanged}">
                 Password is changed!
             </div>
         </section>

@@ -50,7 +50,7 @@
                     Appointment has been set correctly!
                 </div>
                 <div th:if="${state}=='failed'">
-                    <div th:text="${reason}"></div>
+                    <div class="error-message" th:text="${reason}"></div>
                 </div>
             </section>
         </form>

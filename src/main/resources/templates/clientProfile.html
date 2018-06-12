@@ -21,10 +21,10 @@
 
     <section class="content" th:action="@{/clientProfile/?id=${param.id}}" method="GET">
         <div th:if="${status}=='failed'">
-            <div th:text="${reason}"></div>
+            <div class="error-message" th:text="${reason}"></div>
         </div>
         <div th:if="${error}=='failed'">
-            <div th:text="${reason}"></div>
+            <div class="error-message" th:text="${reason}"></div>
         </div>
 
         <section th:if="${client}!=null">
@@ -54,7 +54,7 @@
 
                 <br><br>
                 <button type="button" id="editButton" th:onclick="'javascript:buttonClicked()'" class="btn-basic">EDIT
-                    CLIENT DETAILS
+                                                                                                                  CLIENT DETAILS
                 </button>
             </div>
 
@@ -161,6 +161,7 @@
                     }
                 }
             }
+
             move();
         </script>
 

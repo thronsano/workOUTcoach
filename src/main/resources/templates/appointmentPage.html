@@ -22,7 +22,7 @@
     <div th:if="${appointment!=null}">
         <section class="content" th:method="GET">
             <div th:if="${state}=='failed'">
-                <div th:text="${reason}"></div>
+                <div class="error-message" th:text="${reason}"></div>
             </div>
 
             <h1>Appointment</h1>
