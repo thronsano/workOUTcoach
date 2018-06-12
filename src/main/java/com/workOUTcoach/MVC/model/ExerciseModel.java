@@ -39,7 +39,7 @@ public class ExerciseModel {
         return exercises;
     }
 
-    public void deleteExercise(int exerciseID)throws Exception{
+    public void deleteExercise(int exerciseID) throws Exception {
         Session session = sessionFactory.openSession();
         Exercise exercise = getExerciseById(exerciseID);
         try {
@@ -53,7 +53,7 @@ public class ExerciseModel {
         }
     }
 
-    private Exercise getExerciseById(int exerciseID) {
+    public Exercise getExerciseById(int exerciseID) {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
@@ -71,22 +71,58 @@ public class ExerciseModel {
         return null;
     }
 
-    public void addNewExercise(int schemeID, String name, int repetitions) {
+    public void addNewExercise(int schemeID, String name, int repetitions) throws Exception {
 
         Scheme scheme = schemeModel.getSchemeById(schemeID);
-        Exercise exercise = new Exercise(name, repetitions, scheme);
-        saveExercise(exercise);
+        if ((name != null && name.length() > 0) && repetitions >= 0) {
+            Exercise exercise = new Exercise(name, repetitions, scheme);
+            saveExercise(exercise);
+        } else {
+            throw new Exception("Bad data!");
+        }
     }
 
     private void saveExercise(Exercise exercise) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        try{
+        try {
             session.save(exercise);
-        }catch (Exception e){
+        } catch (Exception e) {
             Logger.logError("Exception during adding new exercise");
-        }finally {
+        } finally {
+            session.getTransaction().commit();
+            session.close();
+        }
+    }
+
+    public void editExerciseById(int exerciseID, String name, int repetitions) throws Exception {
+
+        Exercise exercise = getExerciseById(exerciseID);
+        if (exercise != null) {
+            if ((name != null && name.length() > 0) && repetitions >= 0) {
+                exercise.setName(name);
+                exercise.setRepetitions(repetitions);
+                editExercise(exercise);
+            }else{
+                throw new Exception("Bad data!");
+            }
+        }else{
+            throw new Exception("Bad data!");
+        }
+    }
+
+    private void editExercise(Exercise exercise) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        try {
+            Exercise editExercise = session.get(Exercise.class, exercise.getId());
+            editExercise.setName(exercise.getName());
+            editExercise.setRepetitions(exercise.getRepetitions());
+        } catch (Exception e) {
+            Logger.logError("Exception during editing exercise");
+        } finally {
             session.getTransaction().commit();
             session.close();
         }

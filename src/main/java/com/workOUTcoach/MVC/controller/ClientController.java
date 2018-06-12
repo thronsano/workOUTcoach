@@ -201,7 +201,7 @@ public class ClientController {
 
     @RequestMapping(value = "/clientProfile/progress", method = RequestMethod.POST)
     public ModelAndView editProgress(@RequestParam("clientID") String id,
-                                     @RequestParam("goalValue") int goalValue,
+                                     @RequestParam(value = "goalValue", defaultValue = "0") int goalValue,
                                      ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
         try {
             clientModel.editProgress(Integer.parseInt(id), goalValue);

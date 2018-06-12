@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script type="text/javascript" src="/schemeScript.js"></script>
+    <title>Scheme Settings</title>
+</head>
+<body>
+<nav>
+    <a th:href="@{/home}"><img src="/logo.svg" class="logo" alt="workout coach" height="50" width="125"></a>
+    <a th:href="@{/home}" class="nav-element">Timetable</a>
+    <a th:href="@{/clientList}" class="nav-element">Client List</a>
+    <a th:href="@{/payments}" class="nav-element">Payments</a>
+    <a th:href="@{/settings}" class="nav-element">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <input class="nav-element" type="submit" value="Log out"/>
+    </form>
+</nav>
+<section class="content" th:method="GET">
+    <h2>This is [[${exercise.scheme.cycle.client.name}]] [[${exercise.scheme.cycle.client.surname}]]'s [[${exercise.scheme.title}]] scheme</h2>
+    <br>
+    <h2>Edit exercise</h2>
+    <form th:action="@{/clientProfile/training/scheme/editExercise}" method="POST">
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Repetitions</th>
+            </thead>
+
+            <tbody>
+                <td><input type="text" name="name" required id="name" class="input-field-small" th:value="${exercise.name}"></td>
+                <td><input type="number" class="input-field" name="repetitions" placeholder="Repetitions" min="0" th:value="${exercise.repetitions}"></td>
+            </tbody>
+        </table>
+        <br><br>
+        <input type="hidden" name="exerciseID" th:value="${exercise.id}">
+        <input type="hidden" name="schemeID" th:value="${exercise.scheme.id}">
+        <button type="submit" th:href="@{/clientProfile/training/edit}" id="submitButton" class="btn-basic">
+            SUBMIT
+        </button>
+    </form>
+    <div th:if="${dataError}">
+        EXERCISE TRUCK LOST!
+    </div>
+</section>
+</body>
+<script>
+    function rowClicked(value) {
+        location.href = "/clientProfile/training/scheme/editExercise?exerciseId=" + value;
+    }
+</script>
+</html>
